@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# NTP
+apt install chrony
+
+# Update and upgrade packeage
+apt update && apt dist-upgrade
+
+# Enable openstack repository
+apt install software-properties-common
+add-apt-repository cloud-archive:ocata
+
+# Install python OStack client
+apt install python-openstackclient
+
+# Databases
+apt install mariadb-server python-pymysql
+
+# RabbitMQ
+apt install rabbitmq-server
+
+# Memcached
+apt install memcached python-memcache
