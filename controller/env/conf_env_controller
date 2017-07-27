@@ -1,0 +1,108 @@
+#!/bin/bash
+
+chrony() {
+  echo "======================================================="
+  echo "[OStack] INSTALLING NTP CHRONY"
+  echo "======================================================="
+
+  if [[ -d /etc/chrony ]]; then
+    echo "[OStack] Chrony had installed.."
+
+    echo "[OSTACK] Backup current configuration.."
+    cp /etc/chrony/chrony.conf /etc/chrony/chrony.conf.bak
+
+    cat >> /etc/chrony/chrony.conf <<EOF
+
+# server NTP its
+server ${ntp_server} iburst
+
+# Openstack network
+allow ${app_network}/24
+
+EOF
+
+    service chrony restart
+
+    config_db
+  else
+    echo "[OSTACK] Chrony is not installed. Execute `dep_conf_env_controller` first.. "
+    exit
+  fi
+}
+
+config_db() {
+  echo "======================================================="
+  echo "[OSTACK] Install and configure database.."
+  echo "======================================================="
+
+  if [[ -d /etc/mysql ]]; then
+    echo "[OSTACK] MySQL found.."
+
+    echo "[OSTACK] Backup current configuration.."
+    cp /etc/mysql/conf.d/openstack.cnf /etc/mysql/conf.d/openstack.cnf.bak
+
+    echo "[OSTACK] Replacing current configuration.."
+
+    cat > /etc/mysql/conf.d/openstack.cnf <<EOF
+[mysqld]
+bind-address = ${ip_addr0_eth0}
+
+default-storage-engine = innodb
+innodb_file_per_table
+max_connections = 4096
+collation-server = utf8_general_ci
+character-set-server = utf8
+
+EOF
+
+    echo "[OSTACK] Restarting MySQL.."
+    service mysql restart
+
+    rabbit_mq
+  else
+    echo "[OSTACK] MySQL is not installed. Execute `dep_conf_env_controller` first.. "
+    exit
+  fi
+}
+
+rabbit_mq() {
+  echo "======================================================="
+  echo "[OSTACK] Install and configure rabbitmq-server.."
+  echo "======================================================="
+
+  if [[ -d /etc/rabbitmq ]]; then
+    echo "[OSTACK] Adding openstack as rabbit user.."
+    rabbitmqctl add_user openstack ${rabbit_pass}
+
+    echo "[OSTACK] Granting openstack permission.."
+    rabbitmqctl set_permissions openstack ".*" ".*" ".*"
+
+    echo "[OSTACK] restart rabbitmq-server.."
+    service rabbitmq-server restart
+
+    memcached
+  else
+    echo "[OSTACK] Rabbitmq-server is not installed. Execute `dep_conf_env_controller` first.. "
+    exit
+  fi
+}
+
+memcached() {
+  echo "======================================================="
+  echo "[OSTACK] Install and configure memcached.."
+  echo "======================================================="
+
+  if [[ -f /etc/memcached.conf ]]; then
+    echo "[OSTACK] Configuring and backup memcached.."
+    sed -i.bak -e "35d" /etc/memcached.conf
+    sed -i "35i -l ${ip_addr0_eth0}" /etc/memcached.conf
+
+    echo "[OSTACK] Configuring and backup memcached.."
+    service memcached restart
+  else
+
+  fi
+
+}
+
+chrony

@@ -1,0 +1,49 @@
+#!/bin/bash
+
+# All server use all username
+all_username="rohwid"
+
+# List all servers here!
+# Server 0
+ip_addr0_eth0="192.168.100.9"
+ip_addr0_eth1="10.122.1.210"
+username0="${all_username}"
+description0="Controller Node"
+
+# Server 1
+ip_addr1_eth0="192.168.1.8"
+ip_addr1_eth1="10.122.1.211"
+username1="${all_username}"
+description1="Compute Node 1"
+
+# Server 2
+#ip_addr2_eth0="192.168.1.12"
+#ip_addr2_eth1="10.122.1.212"
+#username2="${all_username}"
+#description2="Compute Node 2"
+
+# Server 3
+#ip_addr3_eth0="192.168.1.13"
+#ip_addr3_eth1="10.122.1.213"
+#username3="${all_username}"
+#description3="Compute Node 3"
+
+# Server 4
+#ip_addr5_eth0="192.168.1.14"
+#ip_addr4_eth1="10.122.1.214"
+#username4="${all_username}"
+#description4="Compute Node 4"
+
+# Server 5
+#ip_addr5_eth0="192.168.1.15"
+#ip_addr5_eth1="10.122.1.215"
+#username5="${all_username}"
+#description5="Compute Node 5"
+
+# .
+# .
+# .
+# Server N
+#ip_addr-n="..."
+#username-n="..."
+#description-n="..."
