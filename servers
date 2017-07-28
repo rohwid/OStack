@@ -11,7 +11,7 @@ username0="${all_username}"
 description0="Controller Node"
 
 # Server 1
-ip_addr1_eth0="192.168.1.8"
+ip_addr1_eth0="192.168.100.8"
 ip_addr1_eth1="10.122.1.211"
 username1="${all_username}"
 description1="Compute Node 1"

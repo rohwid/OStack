@@ -1,12 +1,15 @@
 #!/bin/bash
 
+source ../../servers
+source ../../services
+
 chrony() {
   echo "======================================================="
-  echo "[OStack] INSTALLING NTP CHRONY"
+  echo "[OSTACK] Configure NTP chrony.."
   echo "======================================================="
 
   if [[ -d /etc/chrony ]]; then
-    echo "[OStack] Chrony had installed.."
+    echo "[OStack] Chrony found.."
 
     echo "[OSTACK] Backup current configuration.."
     cp /etc/chrony/chrony.conf /etc/chrony/chrony.conf.bak
@@ -32,7 +35,7 @@ EOF
 
 config_db() {
   echo "======================================================="
-  echo "[OSTACK] Install and configure database.."
+  echo "[OSTACK] Configure database.."
   echo "======================================================="
 
   if [[ -d /etc/mysql ]]; then
@@ -67,10 +70,12 @@ EOF
 
 rabbit_mq() {
   echo "======================================================="
-  echo "[OSTACK] Install and configure rabbitmq-server.."
+  echo "[OSTACK] Configure rabbitmq-server.."
   echo "======================================================="
 
   if [[ -d /etc/rabbitmq ]]; then
+    echo "[OSTACK] Rabbitmq-server found.."
+
     echo "[OSTACK] Adding openstack as rabbit user.."
     rabbitmqctl add_user openstack ${rabbit_pass}
 
@@ -89,10 +94,12 @@ rabbit_mq() {
 
 memcached() {
   echo "======================================================="
-  echo "[OSTACK] Install and configure memcached.."
+  echo "[OSTACK] Configure memcached.."
   echo "======================================================="
 
   if [[ -f /etc/memcached.conf ]]; then
+    echo "[OSTACK] Memcached found.."
+
     echo "[OSTACK] Configuring and backup memcached.."
     sed -i.bak -e "35d" /etc/memcached.conf
     sed -i "35i -l ${ip_addr0_eth0}" /etc/memcached.conf
@@ -100,9 +107,9 @@ memcached() {
     echo "[OSTACK] Configuring and backup memcached.."
     service memcached restart
   else
-
+    echo "[OSTACK] Memcached is not installed. Execute `dep_conf_env_controller` first.. "
+    exit
   fi
-
 }
 
 chrony
