@@ -5,7 +5,7 @@ all_username="rohwid"
 
 # List all servers here!
 # Server 0
-ip_addr0_eth0="192.168.100.9"
+ip_addr0_eth0="10.0.2.30"
 ip_addr0_eth1="10.122.1.210"
 username0="${all_username}"
 description0="Controller Node"

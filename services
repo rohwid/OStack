@@ -4,7 +4,7 @@
 
 # Openstack enviroment
 service_name0="openstack_env"
-app_name0="./dagger/${service_name0}"
+app_name0="${service_name0}"
 app_install0="${dagger}/${service_name0}/install"
 description0="Apply in all openstack node, contain chrony and backports repo"
 # List of all important variable
