@@ -1,23 +1,37 @@
 #!/bin/bash
 
-# NTP
-apt install chrony
+echo "======================================================="
+echo "[OSTACK] Install NTP chrony.."
+echo "======================================================="
+apt install -y chrony
 
-# Update and upgrade packeage
-apt update && apt dist-upgrade
+echo "======================================================="
+echo "[OSTACK] Update and upgrade server.."
+echo "======================================================="
+apt update && apt dist-upgrade -y
 
-# Enable openstack repository
-apt install software-properties-common
+echo "======================================================="
+echo "[OSTACK] Enable openstack repositories.."
+echo "======================================================="
+apt install -y software-properties-common
 add-apt-repository cloud-archive:ocata
 
-# Install python OStack client
-apt install python-openstackclient
+echo "======================================================="
+echo "[OSTACK] Install python-openstackclient.."
+echo "======================================================="
+apt install -y python-openstackclient
 
-# Databases
-apt install mariadb-server python-pymysql
+echo "======================================================="
+echo "[OSTACK] Install mariadb-server and python-pymysql.."
+echo "======================================================="
+apt install -y mariadb-server python-pymysql
 
-# RabbitMQ
-apt install rabbitmq-server
+echo "======================================================="
+echo "[OSTACK] Install rabbitmq-server.."
+echo "======================================================="
+apt install -y rabbitmq-server
 
-# Memcached
-apt install memcached python-memcache
+echo "======================================================="
+echo "[OSTACK] Install memcached and python-memcache.."
+echo "======================================================="
+apt install -y memcached python-memcache

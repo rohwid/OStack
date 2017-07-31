@@ -1,0 +1,16 @@
+#!/bin/bash
+
+source ../../services
+source ../../servers
+
+echo "======================================================="
+echo "install ${service_name1}.."
+echo "======================================================="
+
+apt install -y ${service_name1}
+
+echo "======================================================="
+echo "install apache2.."
+echo "======================================================="
+
+apt install -y apache2

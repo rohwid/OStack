@@ -1,0 +1,10 @@
+#!/bin/bash
+
+source ../../services
+source ../../servers
+
+echo "======================================================="
+echo "[OSTACK] Creating ${service_name1} database.."
+echo "======================================================="
+
+mysql --user="${mysql_user}" --password="${mysql_pass}" --execute="CREATE DATABASE ${service_name1}; GRANT ALL PRIVILEGES ON ${service_name1}.* TO '${service_name1}'@'localhost' IDENTIFIED BY '${keystone_dbpass}'; GRANT ALL PRIVILEGES ON ${service_name1}.* TO '${service_name1}'@'%' IDENTIFIED BY '${keystone_dbpass}';"

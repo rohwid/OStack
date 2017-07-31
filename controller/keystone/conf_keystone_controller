@@ -3,45 +3,38 @@
 source ../../services
 source ../../servers
 
-add_keystone_db() {
-  echo "[MACE] creating ${service_name1} database.."
+conf_keystone() {
+  echo "======================================================="
+  echo "[OSTACK] Configure ${service_name1}.."
+  echo "======================================================="
 
-  mysql --user="${mysql_user}" --password="${mysql_pass}" --execute="CREATE DATABASE ${service_name1}; GRANT ALL PRIVILEGES ON ${service_name1}.* TO '${service_name1}'@'localhost' IDENTIFIED BY '${keystone_dbpass}'; GRANT ALL PRIVILEGES ON ${service_name1}.* TO '${service_name1}'@'%' IDENTIFIED BY '${keystone_dbpass}';"
-
-  install_keystone
-}
-
-install_keystone() {
-  echo "install ${service_name1}.."
-
-  apt-get -y install ${service_name1}
-
-  echo "[MACE] Configuring ${service_name1} database.."
+  echo "[OSTACK] Configuring ${service_name1} database.."
   sed -i.bak -e "605d" /etc/${service_name1}/${service_name1}.conf
   sed -i "605i -l connection = mysql+pymysql://${service_name1}:${keystone_dbpass}@controller/${service_name1}" /etc/${service_name1}/${service_name1}.conf
 
-  echo "[MACE] Configuring ${service_name1} token.."
+  echo "[OSTACK] Configuring ${service_name1} token.."
   sed -i.bak -e "1271d" /etc/${service_name1}/${service_name1}.conf
   sed -i "1271i -l provider = fernet" /etc/${service_name1}/${service_name1}.conf
 
-  echo "[MACA] Populate ${service_name1} database.."
+  echo "[OSTACK] Populate ${service_name1} database.."
   su -s /bin/sh -c "keystone-manage db_sync" ${service_name1}
 
-  echo "[MACE] Initialize Fernet key repositories.."
+  echo "[OSTACK] Initialize Fernet key repositories.."
   keystone-manage fernet_setup --keystone-user ${service_name1} --keystone-group ${service_name1}
   keystone-manage credential_setup --keystone-user ${service_name1} --keystone-group ${service_name1}
 
-  echo "[MACE] Bootstraping ${service_name1}.."
+  echo "[OSTACK] Bootstraping ${service_name1}.."
   keystone-manage bootstrap --bootstrap-password ${keystone_adminpass} --bootstrap-admin-url http://controller:35357/v3/ --bootstrap-internal-url http://controller:35357/v3/ --bootstrap-public-url http://controller:5000/v3/ --bootstrap-region-id RegionOne
 
-  setup_apache2
+  conf_apache2
 }
 
-setup_apache2() {
-  echo "Installing apache2.."
-  apt-get -y install apache2
+conf_apache2() {
+  echo "======================================================="
+  echo "[OSTACK] Configure HTTP server.."
+  echo "======================================================="
 
-  echo "[MACE] Configure the Apache HTTP server.."
+  echo "[OSTACK] Configuring the Apache HTTP server.."
   sed -i.bak -e "223d" /etc/apache2/apache2.conf
   sed -i "223i -l ServerName Controller" /etc/apache2/apache2.conf
 
@@ -49,7 +42,11 @@ setup_apache2() {
 }
 
 set_enviroment() {
-  echo "[MACE] Set enviroment variable.."
+  echo "======================================================="
+  echo "[OSTACK] Set enviroment variable.."
+  echo "======================================================="
+
+  echo "[OSTACK] Setting keystone enviroment variable.."
   cat >> /etc/bash.bashrc <<EOF
 
 export OS_USERNAME=admin
@@ -66,26 +63,33 @@ EOF
 }
 
 service_project() {
-  echo "[MACE] Creating service project.."
+  echo "======================================================="
+  echo "[OSTACK] Create project.."
+  echo "======================================================="
+
+  echo "[OSTACK] Creating service project.."
   openstack project create --domain default --description "Service Project" service
 
-  echo "[MACE] Creating demo project.."
+  echo "[OSTACK] Creating demo project.."
   openstack project create --domain default --description "Demo Project" demo
 
-  echo "[MACE] Creating demo user.."
+  echo "[OSTACK] Creating demo user.."
   openstack user create --domain default --password-prompt demo
 
-  echo "[MACE] Creatingrole.."
+  echo "[OSTACK] Creatingrole.."
   openstack role create user
 
-  echo "[MACE] Add the user role to the demo project and use"
+  echo "[OSTACK] Add the user role to the demo project and use"
   openstack role add --project demo --user demo user
 
-  echo "[MACE] Verify keystone.."
   verify_keystone
 }
 
 verify_keystone() {
+  echo "======================================================="
+  echo "[OSTACK] Verify keystone.."
+  echo "======================================================="
+
   echo "[MACE] Unset the temporary OS_AUTH_URL and OS_PASSWORD environment variable.."
   unset OS_AUTH_URL OS_PASSWORD
 
@@ -95,24 +99,28 @@ verify_keystone() {
   echo "[MACE] As the demo user, request an authentication token.."
   openstack --os-auth-url http://controller:5000/v3 --os-project-domain-name Default --os-user-domain-name Default --os-project-name demo --os-username demo token issue
 
-  echo "[MACE] Adding openstack credentials to gain access.."
-  openstack_env
+  openstack_env_script
 }
 
-openstack_env() {
+openstack_env_script() {
+  echo "======================================================="
+  echo "[OSTACK] Create `admin-openrc` script.."
+  echo "======================================================="
+
+  echo "[OSTACK] Create `admin-openrc` script.."
   cat > /home/${all_username}/admin-openrc <<EOF
-  export OS_PROJECT_DOMAIN_NAME=Default
-  export OS_USER_DOMAIN_NAME=Default
-  export OS_PROJECT_NAME=admin
-  export OS_USERNAME=admin
-  export OS_PASSWORD=${keystone_adminpass}
-  export OS_AUTH_URL=http://controller:35357/v3
-  export OS_IDENTITY_API_VERSION=3
-  export OS_IMAGE_API_VERSION=2
+export OS_PROJECT_DOMAIN_NAME=Default
+export OS_USER_DOMAIN_NAME=Default
+export OS_PROJECT_NAME=admin
+export OS_USERNAME=admin
+export OS_PASSWORD=${keystone_adminpass}
+export OS_AUTH_URL=http://controller:35357/v3
+export OS_IDENTITY_API_VERSION=3
+export OS_IMAGE_API_VERSION=2
 EOF
 
-  echo "[MACE] Changing admin-openrc permission.."
-  chmod +x admin-openrc
+  echo "[OSTACK] Changing admin-openrc permission.."
+  chmod +x /home/${all_username}/admin-openrc
 
   cat > /home/${all_username}/demo-openrc <<EOF
 export OS_PROJECT_DOMAIN_NAME=Default
@@ -125,12 +133,15 @@ export OS_IDENTITY_API_VERSION=3
 export OS_IMAGE_API_VERSION=2
 EOF
 
-  echo "[MACE] Changing demo-openrc permission.."
-  chmod +x demo-openrc
+  echo "[OSTACK] Changing demo-openrc permission.."
+  chmod +x /home/${all_username}/demo-openrc
 
-  echo "[MACE] Exporting admin-openrc.."
+  export_admin
+}
+
+export_admin() {
+  echo "[OSTACK] Exporting admin-openrc.."
   ./home/${all_username}/admin-openrc
 }
 
-echo "[MACE] Configuring ${service_name0}.."
-add_keystone_db
+conf_keystone
