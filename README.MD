@@ -1,4 +1,4 @@
-## The Execute oreder
+## The Execute order
 
 On `controller`:
 1. On `env`:

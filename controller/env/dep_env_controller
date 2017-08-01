@@ -1,37 +1,42 @@
 #!/bin/bash
 
+source ../../servers
+source ../../services
+
+echo "[OSTACK] INSTALLING `${SERVICE_NAME0}` ON `$(hostname)`.."
+
 echo "======================================================="
-echo "[OSTACK] Install NTP chrony.."
+echo "[OSTACK] Install NTP chrony"
 echo "======================================================="
 apt install -y chrony
 
 echo "======================================================="
-echo "[OSTACK] Update and upgrade server.."
+echo "[OSTACK] Update and upgrade server"
 echo "======================================================="
 apt update && apt dist-upgrade -y
 
 echo "======================================================="
-echo "[OSTACK] Enable openstack repositories.."
+echo "[OSTACK] Enable openstack repositories"
 echo "======================================================="
 apt install -y software-properties-common
 add-apt-repository cloud-archive:ocata
 
 echo "======================================================="
-echo "[OSTACK] Install python-openstackclient.."
+echo "[OSTACK] Install python-openstackclient"
 echo "======================================================="
 apt install -y python-openstackclient
 
 echo "======================================================="
-echo "[OSTACK] Install mariadb-server and python-pymysql.."
+echo "[OSTACK] Install mariadb-server and python-pymysql"
 echo "======================================================="
 apt install -y mariadb-server python-pymysql
 
 echo "======================================================="
-echo "[OSTACK] Install rabbitmq-server.."
+echo "[OSTACK] Install rabbitmq-server"
 echo "======================================================="
 apt install -y rabbitmq-server
 
 echo "======================================================="
-echo "[OSTACK] Install memcached and python-memcache.."
+echo "[OSTACK] Install memcached and python-memcache"
 echo "======================================================="
 apt install -y memcached python-memcache

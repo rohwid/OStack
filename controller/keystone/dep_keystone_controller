@@ -3,14 +3,16 @@
 source ../../services
 source ../../servers
 
-echo "======================================================="
-echo "install ${service_name1}.."
-echo "======================================================="
-
-apt install -y ${service_name1}
+echo "[OSTACK] INSTALLING `${SERVICE_NAME1}` ON `$(hostname)`.."
 
 echo "======================================================="
-echo "install apache2.."
+echo "[OSTACK] Install ${SERVICE_NAME1}"
+echo "======================================================="
+
+apt install -y ${SERVICE_NAME1}
+
+echo "======================================================="
+echo "[OSTACK] Install apache2"
 echo "======================================================="
 
 apt install -y apache2

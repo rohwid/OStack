@@ -5,7 +5,7 @@ source ../../services
 
 chrony() {
   echo "======================================================="
-  echo "[OSTACK] Configure NTP chrony.."
+  echo "[OSTACK] Configure NTP chrony"
   echo "======================================================="
 
   if [[ -d /etc/chrony ]]; then
@@ -17,10 +17,10 @@ chrony() {
     cat >> /etc/chrony/chrony.conf <<EOF
 
 # server NTP its
-server ${ntp_server} iburst
+server ${NTP_SERVER} iburst
 
 # Openstack network
-allow ${app_network}/24
+allow ${LOCAL_NET}/24
 
 EOF
 
@@ -35,7 +35,7 @@ EOF
 
 config_db() {
   echo "======================================================="
-  echo "[OSTACK] Configure database.."
+  echo "[OSTACK] Configure database"
   echo "======================================================="
 
   if [[ -d /etc/mysql ]]; then
@@ -48,7 +48,7 @@ config_db() {
 
     cat > /etc/mysql/conf.d/openstack.cnf <<EOF
 [mysqld]
-bind-address = ${ip_addr0_eth0}
+bind-address = ${IP_ADDR0_ETH0}
 
 default-storage-engine = innodb
 innodb_file_per_table
@@ -70,14 +70,14 @@ EOF
 
 rabbit_mq() {
   echo "======================================================="
-  echo "[OSTACK] Configure rabbitmq-server.."
+  echo "[OSTACK] Configure rabbitmq-server"
   echo "======================================================="
 
   if [[ -d /etc/rabbitmq ]]; then
     echo "[OSTACK] Rabbitmq-server found.."
 
     echo "[OSTACK] Adding openstack as rabbit user.."
-    rabbitmqctl add_user openstack ${rabbit_pass}
+    rabbitmqctl add_user openstack ${MQ_PASS}
 
     echo "[OSTACK] Granting openstack permission.."
     rabbitmqctl set_permissions openstack ".*" ".*" ".*"
@@ -94,7 +94,7 @@ rabbit_mq() {
 
 memcached() {
   echo "======================================================="
-  echo "[OSTACK] Configure memcached.."
+  echo "[OSTACK] Configure memcached"
   echo "======================================================="
 
   if [[ -f /etc/memcached.conf ]]; then
@@ -102,7 +102,7 @@ memcached() {
 
     echo "[OSTACK] Configuring and backup memcached.."
     sed -i.bak -e "35d" /etc/memcached.conf
-    sed -i "35i -l ${ip_addr0_eth0}" /etc/memcached.conf
+    sed -i "35i -l ${IP_ADDR0_ETH0}" /etc/memcached.conf
 
     echo "[OSTACK] Configuring and backup memcached.."
     service memcached restart
@@ -112,4 +112,5 @@ memcached() {
   fi
 }
 
+echo "[OSTACK] CONFIGURING `${SERVICE_NAME0}` ON `$(hostname)`.."
 chrony

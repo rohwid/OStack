@@ -25,4 +25,5 @@ EOF
   fi
 }
 
+echo "[OSTACK] CONFIGURING `${SERVICE_NAME0}` ON `$(hostname)`.."
 chrony

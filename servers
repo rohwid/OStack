@@ -1,49 +1,53 @@
 #!/bin/bash
 
 # All server use all username
-all_username="rohwid"
+ALL_USERNAME="rohwid"
 
-# List all servers here!
+# Network
+LOCAL_NET="10.0.2.0"
+EXTRN_NET="10.122.1.0"
+
 # Server 0
-ip_addr0_eth0="10.0.2.30"
-ip_addr0_eth1="10.122.1.210"
-username0="${all_username}"
-description0="Controller Node"
+IP_ADDR0_ETH0="10.0.2.30"
+IP_ADDR0_ETH1="10.122.1.70"
+USERNAME0="${ALL_USRNAME}"
+DESC_SERVER0="Controller Node"
 
 # Server 1
-ip_addr1_eth0="192.168.100.8"
-ip_addr1_eth1="10.122.1.211"
-username1="${all_username}"
-description1="Compute Node 1"
+IP_ADDR1_ETH0="10.0.2.31"
+IP_ADDR1_ETH1="10.122.1.71"
+USERNAME1="${ALL_USRNAME}"
+DESC_SERVER1="Compute Node 1"
 
 # Server 2
-#ip_addr2_eth0="192.168.1.12"
-#ip_addr2_eth1="10.122.1.212"
-#username2="${all_username}"
-#description2="Compute Node 2"
+#IP_ADDR1_ETH0="10.0.2.32"
+#IP_ADDR1_ETH1="10.122.1.72"
+#USERNAME2="${ALL_USRNAME}"
+#DESC_SERVER1="Compute Node 2"
 
 # Server 3
-#ip_addr3_eth0="192.168.1.13"
-#ip_addr3_eth1="10.122.1.213"
-#username3="${all_username}"
-#description3="Compute Node 3"
+#IP_ADDR3_ETH0="10.0.2.33"
+#IP_ADDR3_ETH1="10.122.1.73"
+#USERNAME3="${ALL_USRNAME}"
+#DESC_SERVER3="Compute Node 3"
 
 # Server 4
-#ip_addr5_eth0="192.168.1.14"
-#ip_addr4_eth1="10.122.1.214"
-#username4="${all_username}"
-#description4="Compute Node 4"
+#IP_ADDR4_ETH0="10.0.2.34"
+#IP_ADDR4_ETH1="10.122.1.74"
+#USERNAME4="${ALL_USRNAME}"
+#DESC_SERVER4="Compute Node 4"
 
 # Server 5
-#ip_addr5_eth0="192.168.1.15"
-#ip_addr5_eth1="10.122.1.215"
-#username5="${all_username}"
-#description5="Compute Node 5"
+#IP_ADDR5_ETH0="10.0.2.35"
+#IP_ADDR5_ETH1="10.122.1.75"
+#USERNAME5="${ALL_USRNAME}"
+#DESC_SERVER5="Compute Node 4"
 
 # .
 # .
 # .
-# Server N
-#ip_addr-n="..."
-#username-n="..."
-#description-n="..."
+# Server (n)
+#IP_ADDR(n)_ETH0="..."
+#IP_ADDR(n)_ETH1="..."
+#USERNAME(n)="..."
+#DESC_SERVER(n)="Compute Node (n)"

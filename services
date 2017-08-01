@@ -1,33 +1,21 @@
 #!/bin/bash
 
-# List all services and enviroment setup here!
-
 # Openstack enviroment
-service_name0="openstack_env"
-app_name0="${service_name0}"
-app_install0="${dagger}/${service_name0}/install"
-description0="Apply in all openstack node, contain chrony and backports repo"
-# List of all important variable
-mysql_user="root"
-mysql_pass="i<3emilia"
-rabbit_pass="i<3emilia"
-app_network="192.168.100.0"
-ntp_server="ntp.its.ac.id"
+SERVICE_NAME0="openstack_env"
+DESC_SERVICE0="Apply in all openstack node, contain chrony and backports repo"
+NTP_SERVER="ntp.its.ac.id"
+MYSQL_USER="root"
+MYSQL_PASS="i<3emilia"
+MQ_PASS="i<3emilia"
 
 # Keystone (Identity Service)
-service_name1="keystone"
-app_name1="./dagger/${service_name1}"
-app_install1="${dagger}/${service_name1}/install"
-description1="Apply in controller node to manage all service authentication"
-# List of all important variable
-keystone_dbpass="i<3emilia"
-keystone_adminpass="i<3emilia"
+SERVICE_NAME1="keystone"
+DESC_SERVICE1="Apply in controller node to manage all service authentication"
+KEYSTONE_DBPASS="i<3emilia"
+KEYSTONE_ADMINPASS="i<3emilia"
 
 # Glance (Image Service)
-service_name2="glance"
-app_name2="./dagger/${service_name2}"
-app_install2="${dagger}/${service_name2}/install"
-description2="Apply in controller node to manage operating system images"
-# List of all important variable
-glance_dbpass="i<3emilia"
-glance_adminpass="i<3emilia"
+SERVICE_NAME2="glance"
+DESC_SERVICE2="Apply in controller node to manage operating system images"
+GLANCE_DBPASS="i<3emilia"
+GLANCE_ADMINPASS="i<3emilia"

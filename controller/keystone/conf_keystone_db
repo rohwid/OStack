@@ -3,8 +3,10 @@
 source ../../services
 source ../../servers
 
+echo "[OSTACK] INSTALLING `${SERVICE_NAME1}` ON `$(hostname)`.."
+
 echo "======================================================="
-echo "[OSTACK] Creating ${service_name1} database.."
+echo "[OSTACK] Create ${SERVICE_NAME1} database"
 echo "======================================================="
 
-mysql --user="${mysql_user}" --password="${mysql_pass}" --execute="CREATE DATABASE ${service_name1}; GRANT ALL PRIVILEGES ON ${service_name1}.* TO '${service_name1}'@'localhost' IDENTIFIED BY '${keystone_dbpass}'; GRANT ALL PRIVILEGES ON ${service_name1}.* TO '${service_name1}'@'%' IDENTIFIED BY '${keystone_dbpass}';"
+mysql --user="${MYSQL_USER}" --password="${MYSQL_PASS}" --execute="CREATE DATABASE ${SERVICE_NAME1}; GRANT ALL PRIVILEGES ON ${SERVICE_NAME1}.* TO '${SERVICE_NAME1}'@'localhost' IDENTIFIED BY '${KEYSTONE_DBPASS}'; GRANT ALL PRIVILEGES ON ${SERVICE_NAME1}.* TO '${SERVICE_NAME1}'@'%' IDENTIFIED BY '${KEYSTONE_DBPASS}';"
