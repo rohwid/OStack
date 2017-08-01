@@ -3,7 +3,7 @@
 source ../../services
 source ../../servers
 
-echo "[OSTACK] INSTALLING `${SERVICE_NAME1}` ON `$(hostname)`.."
+echo "[OSTACK] CONFIGURING `${SERVICE_NAME1}` DATABASE ON `$(hostname)`.."
 
 echo "======================================================="
 echo "[OSTACK] Create ${SERVICE_NAME1} database"

@@ -1,0 +1,23 @@
+#!/bin/bash
+
+source ../../../services
+source ../../../servers
+
+add_relation() {
+  echo "[MACE] Exporting admin-openrc.."
+  ./home/${all_username}/admin-openrc
+
+  echo "[MACE] Exporting admin-openrc.."
+  openstack user create --domain default --password-prompt ${service_name2}
+
+  echo "[MACE] Adding admin role.."
+  openstack role add --project service --user ${service_name2} admin
+
+  echo "[MACE] Creating the glance service entity.."
+  openstack service create --name ${service_name2} --description "OpenStack Image" image
+
+  echo "[MACE] Create the Image service API endpoints.."
+  openstack endpoint create --region RegionOne image public http://controller:9292
+}
+
+add_relation

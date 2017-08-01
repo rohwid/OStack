@@ -1,0 +1,33 @@
+#!/bin/bash
+
+source ../../services
+source ../../servers
+
+conf_glance() {
+  echo "======================================================="
+  echo "[OSTACK] Configure ${SERVICE_NAME2}"
+  echo "======================================================="
+
+  echo "[OSTACK] Configuring ${SERVICE_NAME2} database.."
+  sed -i.bak -e "605d" /etc/${SERVICE_NAME2}/${SERVICE_NAME2}-api.conf
+  sed -i "605i -l connection = mysql+pymysql://${SERVICE_NAME2}:${GLANCE_DBPASS}@controller/${SERVICE_NAME2}" /etc/${SERVICE_NAME2}/${SERVICE_NAME2}-api.conf
+
+  echo "[OSTACK] Configuring ${SERVICE_NAME1} access.."
+  sed -i.bak -e "1271d" /etc/${SERVICE_NAME1}/${SERVICE_NAME1}.conf
+  sed -i "1271i -l provider = fernet" /etc/${SERVICE_NAME1}/${SERVICE_NAME1}.conf
+
+  echo "[OSTACK] Populate ${SERVICE_NAME1} database.."
+  su -s /bin/sh -c "keystone-manage db_sync" ${SERVICE_NAME1}
+
+  echo "[OSTACK] Initialize Fernet key repositories.."
+  keystone-manage fernet_setup --keystone-user ${SERVICE_NAME1} --keystone-group ${SERVICE_NAME1}
+  keystone-manage credential_setup --keystone-user ${SERVICE_NAME1} --keystone-group ${SERVICE_NAME1}
+
+  echo "[MACE] Bootstraping ${SERVICE_NAME1}.."
+  keystone-manage bootstrap --bootstrap-password ${KEYSTONE_ADMINPASS} --bootstrap-admin-url http://controller:35357/v3/ --bootstrap-internal-url http://controller:35357/v3/ --bootstrap-public-url http://controller:5000/v3/ --bootstrap-region-id RegionOne
+
+  setup_apache2
+}
+
+echo "[OSTACK] CONFIGURING `${SERVICE_NAME2}` ON `$(hostname)`.."
+conf_glance
