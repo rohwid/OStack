@@ -23,7 +23,7 @@ conf_glance() {
   keystone-manage fernet_setup --keystone-user ${SERVICE_NAME1} --keystone-group ${SERVICE_NAME1}
   keystone-manage credential_setup --keystone-user ${SERVICE_NAME1} --keystone-group ${SERVICE_NAME1}
 
-  echo "[MACE] Bootstraping ${SERVICE_NAME1}.."
+  echo "[OSTACK] Bootstraping ${SERVICE_NAME1}.."
   keystone-manage bootstrap --bootstrap-password ${KEYSTONE_ADMINPASS} --bootstrap-admin-url http://controller:35357/v3/ --bootstrap-internal-url http://controller:35357/v3/ --bootstrap-public-url http://controller:5000/v3/ --bootstrap-region-id RegionOne
 
   setup_apache2
