@@ -12,6 +12,8 @@ On `controller`:
     + conf_glance_db
     + dep_glace_ctrl
     + conf_glace_ctrl
+
+
 On `compute`:
 1. On `env`:
     + dep_env_comp
