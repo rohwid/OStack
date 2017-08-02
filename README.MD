@@ -1,6 +1,6 @@
 ## The Execute order
 
-On `controller`:
+### On `controller`
 1. On `env`:
     + dep_env_ctrl
     + conf_env_ctrl
@@ -14,7 +14,7 @@ On `controller`:
     + conf_glace_ctrl
 
 
-On `compute`:
+### On `compute`
 1. On `env`:
     + dep_env_comp
     + conf_env_comp
