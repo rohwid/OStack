@@ -10,12 +10,34 @@ conf_keystone() {
 
   if [[ -d /etc/${SERVICE_NAME1} ]]; then
     echo "[OSTACK] Configuring ${SERVICE_NAME1} database.."
-    sed -i.bak -e "605d" /etc/${SERVICE_NAME1}/${SERVICE_NAME1}.conf
-    sed -i "605i -l connection = mysql+pymysql://${SERVICE_NAME1}:${KEYSTONE_DBPASS}@controller/${SERVICE_NAME1}" /etc/${SERVICE_NAME1}/${SERVICE_NAME1}.conf
+    if [[ -f /etc/${SERVICE_NAME1}/${SERVICE_NAME1}.conf.ori ]]; then
+      echo "[OSTACK] Orginal config found, create temporary config backup.."
+      sed -i.bak -e "605d" /etc/${SERVICE_NAME1}/${SERVICE_NAME1}.conf
+      echo "[OSTACK] Setting connection.."
+      sed -i "605i -l connection = mysql+pymysql://${SERVICE_NAME1}:${KEYSTONE_DBPASS}@controller/${SERVICE_NAME1}" /etc/${SERVICE_NAME1}/${SERVICE_NAME1}.conf
+      echo "[OSTACK] Done."
+    else
+      echo "[OSTACK] Original config not found, create original config backup.."
+      sed -i.ori -e "605d" /etc/${SERVICE_NAME1}/${SERVICE_NAME1}.conf
+      echo "[OSTACK] Setting connection.."
+      sed -i "605i -l connection = mysql+pymysql://${SERVICE_NAME1}:${KEYSTONE_DBPASS}@controller/${SERVICE_NAME1}" /etc/${SERVICE_NAME1}/${SERVICE_NAME1}.conf
+      echo "[OSTACK] Done."
+    fi
 
     echo "[OSTACK] Configuring ${SERVICE_NAME1} token.."
-    sed -i.bak -e "1271d" /etc/${SERVICE_NAME1}/${SERVICE_NAME1}.conf
-    sed -i "1271i -l provider = fernet" /etc/${SERVICE_NAME1}/${SERVICE_NAME1}.conf
+    if [[ -f /etc/${SERVICE_NAME1}/${SERVICE_NAME1}.conf.ori ]]; then
+      echo "[OSTACK] Orginal config found, create temporary config backup.."
+      sed -i.bak -e "1271d" /etc/${SERVICE_NAME1}/${SERVICE_NAME1}.conf
+      echo "[OSTACK] Setting provider.."
+      sed -i "1271i -l provider = fernet" /etc/${SERVICE_NAME1}/${SERVICE_NAME1}.conf
+      echo "[OSTACK] Done."
+    else
+      echo "[OSTACK] Orginal config not found, create original config backup.."
+      sed -i.ori -e "1271d" /etc/${SERVICE_NAME1}/${SERVICE_NAME1}.conf
+      echo "[OSTACK] Setting provider.."
+      sed -i "1271i -l provider = fernet" /etc/${SERVICE_NAME1}/${SERVICE_NAME1}.conf
+      echo "[OSTACK] Done."
+    fi
 
     echo "[OSTACK] Populate ${SERVICE_NAME1} database.."
     su -s /bin/sh -c "keystone-manage db_sync" ${SERVICE_NAME1}
@@ -27,9 +49,11 @@ conf_keystone() {
     echo "[OSTACK] Bootstraping ${SERVICE_NAME1}.."
     keystone-manage bootstrap --bootstrap-password ${KEYSTONE_ADMINPASS} --bootstrap-admin-url http://controller:35357/v3/ --bootstrap-internal-url http://controller:35357/v3/ --bootstrap-public-url http://controller:5000/v3/ --bootstrap-region-id RegionOne
 
+    echo "[OSTACK] Done."
     conf_apache2
   else
-    echo "[OSTACK] Chrony is not installed. Execute `dep_conf_env_controller` first.. "
+    echo "[OSTACK] Chrony is not installed. Execute `dep_conf_env_controller` first!"
+    echo "[OSTACK] Abort."
     exit
   fi
 }
@@ -41,12 +65,31 @@ conf_apache2() {
 
   if [[ -d /etc/apache2 ]]; then
     echo "[OSTACK] Configuring the Apache HTTP server.."
-    sed -i.bak -e "223d" /etc/apache2/apache2.conf
-    sed -i "223i -l ServerName Controller" /etc/apache2/apache2.conf
+    if [[ -f /etc/apache2/apache2.conf.ori ]]; then
+      echo "[OSTACK] Orginal config found, create temporary config backup.."
+      sed -i.bak -e "223d" /etc/apache2/apache2.conf
+      echo "[OSTACK] Setting ServerName.."
+      sed -i "223i -l ServerName ${IP_ADDR0_ETH1}" /etc/apache2/apache2.conf
+      echo "[OSTACK] Done."
+    else
+      echo "[OSTACK] Orginal config not found, create original config backup.."
+      sed -i.ori -e "223d" /etc/apache2/apache2.conf
+      echo "[OSTACK] Setting ServerName.."
+      sed -i "223i -l ServerName ${IP_ADDR0_ETH1}" /etc/apache2/apache2.conf
+      echo "[OSTACK] Done."
+    fi
 
+    echo "[OSTACK] Restarting apache2.."
+    service apache2 restart
+
+    echo "[OSTACK] Removing default SQlite database"
+    rm -f /var/lib/keystone/keystone.db
+
+    echo "[OSTACK] Done."
     set_enviroment
   else
-    echo "[OSTACK] Chrony is not installed. Execute `dep_conf_env_controller` first.. "
+    echo "[OSTACK] Chrony is not installed. Execute `dep_conf_env_controller` first!"
+    echo "[OSTACK] Abort."
     exit
   fi
 }
@@ -57,7 +100,12 @@ set_enviroment() {
   echo "======================================================="
 
   echo "[OSTACK] Setting keystone enviroment variable.."
-  cat >> /etc/bash.bashrc <<EOF
+  if [[ -f /etc/bash.bashrc.ori ]]; then
+    echo "[OSTACK] Orginal config found, restore root enviroment.."
+    cp /etc/bash.bashrc.ori /etc/bash.bashrc
+
+    echo "[OSTACK] Setting enviroment.."
+    cat >> /etc/bash.bashrc <<EOF
 
 export OS_USERNAME=admin
 export OS_PASSWORD=${KEYSTONE_ADMINPASS}
@@ -68,6 +116,25 @@ export OS_AUTH_URL=http://controller:35357/v3
 export OS_IDENTITY_API_VERSION=3
 
 EOF
+    echo "[OSTACK] Done."
+  else
+    echo "[OSTACK] Orginal not config found, backup root enviroment.."
+    cp /etc/bash.bashrc /etc/bash.bashrc.ori
+
+    echo "[OSTACK] Setting enviroment.."
+    cat >> /etc/bash.bashrc <<EOF
+
+export OS_USERNAME=admin
+export OS_PASSWORD=${KEYSTONE_ADMINPASS}
+export OS_PROJECT_NAME=admin
+export OS_USER_DOMAIN_NAME=Default
+export OS_PROJECT_DOMAIN_NAME=Default
+export OS_AUTH_URL=http://controller:35357/v3
+export OS_IDENTITY_API_VERSION=3
+
+EOF
+    echo "[OSTACK] Done."
+  fi
 
   service_project
 }
@@ -92,6 +159,7 @@ service_project() {
   echo "[OSTACK] Add the user role to the demo project and use"
   openstack role add --project demo --user demo user
 
+  echo "[OSTACK] Done."
   verify_keystone
 }
 
@@ -109,6 +177,7 @@ verify_keystone() {
   echo "[OSTACK] As the demo user, request an authentication token.."
   openstack --os-auth-url http://controller:5000/v3 --os-project-domain-name Default --os-user-domain-name Default --os-project-name demo --os-username demo token issue
 
+  echo "[OSTACK] Done."
   openstack_env_script
 }
 
@@ -132,6 +201,7 @@ EOF
   echo "[OSTACK] Changing admin-openrc permission.."
   chmod +x /home/${USERNAME0}/admin-openrc
 
+  echo "[OSTACK] Create `demo-openrc` script.."
   cat > /home/${USERNAME0}/demo-openrc <<EOF
 export OS_PROJECT_DOMAIN_NAME=Default
 export OS_USER_DOMAIN_NAME=Default
@@ -146,12 +216,15 @@ EOF
   echo "[OSTACK] Changing demo-openrc permission.."
   chmod +x /home/${USERNAME0}/demo-openrc
 
+  echo "[OSTACK] Done."
   export_admin
 }
 
 export_admin() {
   echo "[OSTACK] Exporting admin-openrc.."
   ./home/${USERNAME0}/admin-openrc
+
+  echo "[OSTACK] Finish."
 }
 
 echo "[OSTACK] CONFIGURING `${SERVICE_NAME1}` ON `$(hostname)`.."

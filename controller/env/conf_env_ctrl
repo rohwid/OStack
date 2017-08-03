@@ -10,11 +10,15 @@ chrony() {
 
   if [[ -d /etc/chrony ]]; then
     echo "[OStack] Chrony found.."
+    if [[ -f /etc/chrony/chrony.conf.ori ]]; then
+      echo "[OSTACK] Creating temporary configuration backup.."
+      cp /etc/chrony/chrony.conf /etc/chrony/chrony.conf.bak
 
-    echo "[OSTACK] Backup current configuration.."
-    cp /etc/chrony/chrony.conf /etc/chrony/chrony.conf.bak
+      echo "[OSTACK] Restoring to original configuration.."
+      cp /etc/chrony/chrony.conf.ori /etc/chrony/chrony.conf
 
-    cat >> /etc/chrony/chrony.conf <<EOF
+      echo "[OSTACK] Configuring to NTP server.."
+      cat >> /etc/chrony/chrony.conf <<EOF
 
 # server NTP its
 server ${NTP_SERVER} iburst
@@ -23,12 +27,30 @@ server ${NTP_SERVER} iburst
 allow ${LOCAL_NET}/24
 
 EOF
+    else
+      echo "[OSTACK] Creating original configuration backup.."
+      cp /etc/chrony/chrony.conf /etc/chrony/chrony.conf.ori
 
+      echo "[OSTACK] Configuring to NTP server.."
+      cat >> /etc/chrony/chrony.conf <<EOF
+
+# server NTP its
+server ${NTP_SERVER} iburst
+
+# Openstack network
+allow ${LOCAL_NET}/24
+
+EOF
+    fi
+
+    echo "[OSTACK] Restarting chrony.."
     service chrony restart
 
+    echo "[OSTACK] Done."
     config_db
   else
     echo "[OSTACK] Chrony is not installed. Execute `dep_conf_env_controller` first.. "
+    echo "[OSTACK] Abort."
     exit
   fi
 }
@@ -40,13 +62,12 @@ config_db() {
 
   if [[ -d /etc/mysql ]]; then
     echo "[OSTACK] MySQL found.."
+    if [[ -f /etc/mysql/conf.d/openstack.cnf.ori ]]; then
+      echo "[OSTACK] Backup original configuration.."
+      cp /etc/mysql/conf.d/openstack.cnf /etc/mysql/conf.d/openstack.cnf.ori
 
-    echo "[OSTACK] Backup current configuration.."
-    cp /etc/mysql/conf.d/openstack.cnf /etc/mysql/conf.d/openstack.cnf.bak
-
-    echo "[OSTACK] Replacing current configuration.."
-
-    cat > /etc/mysql/conf.d/openstack.cnf <<EOF
+      echo "[OSTACK] Configuring mysql for openstack.."
+      cat > /etc/mysql/conf.d/openstack.cnf <<EOF
 [mysqld]
 bind-address = ${IP_ADDR0_ETH0}
 
@@ -57,13 +78,35 @@ collation-server = utf8_general_ci
 character-set-server = utf8
 
 EOF
+    else
+      echo "[OSTACK] Backup current configuration.."
+      cp /etc/mysql/conf.d/openstack.cnf /etc/mysql/conf.d/openstack.cnf.bak
+
+      echo "[OSTACK] Restoring to original configuration.."
+      cp /etc/mysql/conf.d/openstack.cnf.ori /etc/mysql/conf.d/openstack.cnf
+
+      echo "[OSTACK] Configuring mysql for openstack.."
+      cat > /etc/mysql/conf.d/openstack.cnf <<EOF
+[mysqld]
+bind-address = ${IP_ADDR0_ETH0}
+
+default-storage-engine = innodb
+innodb_file_per_table
+max_connections = 4096
+collation-server = utf8_general_ci
+character-set-server = utf8
+
+EOF
+    fi
 
     echo "[OSTACK] Restarting MySQL.."
     service mysql restart
 
+    echo "[OSTACK] Done."
     rabbit_mq
   else
     echo "[OSTACK] MySQL is not installed. Execute `dep_conf_env_controller` first.. "
+    echo "[OSTACK] Abort."
     exit
   fi
 }
@@ -88,6 +131,7 @@ rabbit_mq() {
     memcached
   else
     echo "[OSTACK] Rabbitmq-server is not installed. Execute `dep_conf_env_controller` first.. "
+    echo "[OSTACK] Abort."
     exit
   fi
 }
@@ -106,8 +150,11 @@ memcached() {
 
     echo "[OSTACK] Configuring and backup memcached.."
     service memcached restart
+
+    echo "[OSTACK] Finish."
   else
     echo "[OSTACK] Memcached is not installed. Execute `dep_conf_env_controller` first.. "
+    echo "[OSTACK] Abort."
     exit
   fi
 }
