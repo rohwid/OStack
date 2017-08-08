@@ -10,6 +10,7 @@
     + conf_keystone_ctrl
 3. On `glance`:
     + conf_glance_db
+    + rel_glance_keystone
     + dep_glace_ctrl
     + conf_glace_ctrl
 
