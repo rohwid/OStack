@@ -3,9 +3,9 @@
 Modify the `servers` and `conf_hosts` script. The `conf_hosts` was located on `controller\env` and `compute\env`. Make sure the IP address, ethernet card, and server number are correct. The default configuration is:
 
 + Start on `server 0` as `controller`.
-+ `server 1` - `server-n` as `compute1` - `compute-n`, you can expand it.
++ On `server 1` - `server-n` as `compute1` - `compute-n`, you can expand it.
 + Default ethernet card variable is `IP_ADDR0_ETH0` and `IP_ADDR0_ETH1`.
-+ `compute1` use `IP_ADDR1_ETH0` and `IP_ADDR1_ETH1`, so `IP_ADDR-n_ETH0` and `IP_ADDR-n_ETH1` for `compute-n`.
++ On `compute1` use `IP_ADDR1_ETH0` and `IP_ADDR1_ETH1`, so `IP_ADDR-n_ETH0` and `IP_ADDR-n_ETH1` for `compute-n`.
 
 #### On `controller`
 
