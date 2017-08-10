@@ -7,37 +7,37 @@ ALL_USERNAME="rohwid"
 LOCAL_NET="10.0.2.0"
 EXTRN_NET="10.122.1.0"
 
-# Server 0
+# controller
 IP_ADDR0_ETH0="10.0.2.30"
 IP_ADDR0_ETH1="10.122.1.70"
 USERNAME0="${ALL_USRNAME}"
 DESC_SERVER0="Controller Node"
 
-# Server 1
+# compute1
 IP_ADDR1_ETH0="10.0.2.31"
 IP_ADDR1_ETH1="10.122.1.71"
 USERNAME1="${ALL_USRNAME}"
 DESC_SERVER1="Compute Node 1"
 
-# Server 2
+# compute2
 #IP_ADDR1_ETH0="10.0.2.32"
 #IP_ADDR1_ETH1="10.122.1.72"
 #USERNAME2="${ALL_USRNAME}"
 #DESC_SERVER1="Compute Node 2"
 
-# Server 3
+# compute3
 #IP_ADDR3_ETH0="10.0.2.33"
 #IP_ADDR3_ETH1="10.122.1.73"
 #USERNAME3="${ALL_USRNAME}"
 #DESC_SERVER3="Compute Node 3"
 
-# Server 4
+# compute4
 #IP_ADDR4_ETH0="10.0.2.34"
 #IP_ADDR4_ETH1="10.122.1.74"
 #USERNAME4="${ALL_USRNAME}"
 #DESC_SERVER4="Compute Node 4"
 
-# Server 5
+# compute5
 #IP_ADDR5_ETH0="10.0.2.35"
 #IP_ADDR5_ETH1="10.122.1.75"
 #USERNAME5="${ALL_USRNAME}"
@@ -46,8 +46,8 @@ DESC_SERVER1="Compute Node 1"
 # .
 # .
 # .
-# Server (n)
-#IP_ADDR(n)_ETH0="..."
-#IP_ADDR(n)_ETH1="..."
-#USERNAME(n)="..."
-#DESC_SERVER(n)="Compute Node (n)"
+# compute-n
+#IP_ADDR-n_ETH0="..."
+#IP_ADDR-n_ETH1="..."
+#USERNAME-n="..."
+#DESC_SERVER-n="Compute Node n"
