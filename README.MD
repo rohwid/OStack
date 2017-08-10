@@ -27,11 +27,11 @@ Execute everything on `controller` before `compute`, like the execute order bell
 
 ### On `controller`
 
-2. On `keystone`:
+1. On `keystone`:
     + conf_keystone_db
     + dep_keystone_ctrl
     + conf_keystone_ctrl
-3. On `glance`:
+2. On `glance`:
     + conf_glance_db
     + rel_glance_keystone
     + dep_glace_ctrl
