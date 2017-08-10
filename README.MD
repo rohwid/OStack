@@ -7,14 +7,14 @@ Modify the `servers` and `conf_hosts` script. The `conf_hosts` was located on `c
 + Default ethernet card variable is `IP_ADDR0_ETH0` and `IP_ADDR0_ETH1`.
 + `compute1` use `IP_ADDR1_ETH0` and `IP_ADDR1_ETH1`, so `IP_ADDR-n_ETH0` and `IP_ADDR-n_ETH1` for `compute-n`.
 
-### On `controller`
+#### On `controller`
 
 1. On `env`:
     + conf_hosts
     + dep_env_ctrl
     + conf_env_ctrl
 
-### On `compute`
+#### On `compute`
 
 1. On `env`:
     + conf_host
@@ -25,7 +25,7 @@ Modify the `servers` and `conf_hosts` script. The `conf_hosts` was located on `c
 
 Execute everything on `controller` before `compute`, like the execute order bellow. Make sure the IP address and the nodes were sycroinzed each other.
 
-### On `controller`
+#### On `controller`
 
 1. On `keystone`:
     + conf_keystone_db
