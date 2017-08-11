@@ -67,16 +67,24 @@ conf_apache2() {
     echo "[OSTACK] Configuring the Apache HTTP server.."
     if [[ -f /etc/apache2/apache2.conf.ori ]]; then
       echo "[OSTACK] Orginal config found, create temporary config backup.."
-      sed -i.bak -e "223d" /etc/apache2/apache2.conf
+      cp /etc/apache2/apache2.conf /etc/apache2/apache2.conf.bak
+
       echo "[OSTACK] Setting ServerName.."
-      sed -i "223i -l ServerName ${IP_ADDR0_ETH1}" /etc/apache2/apache2.conf
-      echo "[OSTACK] Done."
+      cat >> /etc/apache2/apache2.conf <<EOF
+
+# Openstack ServerName
+ServerName ${IP_ADDR0_ETH1}
+EOF
     else
-      echo "[OSTACK] Orginal config not found, create original config backup.."
-      sed -i.ori -e "223d" /etc/apache2/apache2.conf
+      echo "[OSTACK] Orginal config not found, creating backup.."
+      cp /etc/apache2/apache2.conf /etc/apache2/apache2.conf.ori
+
       echo "[OSTACK] Setting ServerName.."
-      sed -i "223i -l ServerName ${IP_ADDR0_ETH1}" /etc/apache2/apache2.conf
-      echo "[OSTACK] Done."
+      cat >> /etc/apache2/apache2.conf <<EOF
+
+# Openstack ServerName
+ServerName ${IP_ADDR0_ETH1}
+EOF
     fi
 
     echo "[OSTACK] Restarting apache2.."
@@ -107,7 +115,7 @@ set_enviroment() {
   export OS_PROJECT_DOMAIN_NAME=Default
   export OS_AUTH_URL=http://controller:35357/v3
   export OS_IDENTITY_API_VERSION=3
-  
+
   echo "[OSTACK] Done."
   service_project
 }
