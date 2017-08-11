@@ -24,7 +24,7 @@ Execute everything on `controller` before `compute`, like the execute order bell
     + conf_env_ctrl
 
 2. On `keystone`:
-    + conf_keystone_db
+    + conf_keystonedb_ctrl
     + dep_keystone_ctrl
     + conf_keystone_ctrl
 
