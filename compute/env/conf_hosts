@@ -1,5 +1,8 @@
 #!/bin/bash
 
+source ../../servers
+source ../../services
+
 read -p "Insert the compute number: " COMPUTE_N
 
 case "${COMPUTE_N}" in

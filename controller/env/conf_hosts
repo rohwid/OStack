@@ -1,5 +1,8 @@
 #!/bin/bash
 
+source ../../servers
+source ../../services
+
 config_hosts() {
   echo "======================================================="
   echo "[OSTACK] Configure controller hosts"
@@ -17,7 +20,7 @@ ${IP_ADDR0_ETH0}    controller
 ${IP_ADDR1_ETH0}    compute1
 
 # Add more compute..
-n.n.n.n             compute-n
+#n.n.n.n             compute-n
 
 # The following lines are desirable for IPv6 capable hosts
 ::1     localhost ip6-localhost ip6-loopback
@@ -39,7 +42,7 @@ ${IP_ADDR0_ETH0}    controller
 ${IP_ADDR1_ETH0}    compute1
 
 # Add more compute..
-n.n.n.n             compute(n)
+#n.n.n.n             compute(n)
 
 # The following lines are desirable for IPv6 capable hosts
 ::1     localhost ip6-localhost ip6-loopback
@@ -62,7 +65,7 @@ config_hostname() {
     echo "controller" > hostname
   else
     echo "[OSTACK] Backup original configuration.."
-    cp /etc/hostname /etc/hostname
+    cp /etc/hostname /etc/hostname.ori
 
     echo "[OSTACK] Configuring openstack controller hosts.."
     echo "controller" > hostname
