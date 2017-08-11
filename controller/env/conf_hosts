@@ -62,13 +62,13 @@ config_hostname() {
 
   if [[ -f /etc/hostname.ori ]]; then
     echo "[OSTACK] Configuring openstack controller hostname.."
-    echo "controller" > hostname
+    echo "controller" > /etc/hostname
   else
     echo "[OSTACK] Backup original configuration.."
     cp /etc/hostname /etc/hostname.ori
 
     echo "[OSTACK] Configuring openstack controller hosts.."
-    echo "controller" > hostname
+    echo "controller" > /etc/hostname
   fi
 
   echo "[OSTACK] Finish."
