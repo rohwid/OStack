@@ -99,33 +99,15 @@ set_enviroment() {
   echo "[OSTACK] Set enviroment variable"
   echo "======================================================="
 
-  echo "[OSTACK] Setting keystone enviroment variable.."
-  if [[ -f /etc/bash.bashrc.ori ]]; then
-    echo "[OSTACK] Orginal config found, restore root enviroment.."
-    cp /etc/bash.bashrc.ori /etc/bash.bashrc
-
-    echo "[OSTACK] Setting enviroment.."
-    export OS_USERNAME=admin
-    export OS_PASSWORD=${KEYSTONE_ADMINPASS}
-    export OS_PROJECT_NAME=admin
-    export OS_USER_DOMAIN_NAME=Default
-    export OS_PROJECT_DOMAIN_NAME=Default
-    export OS_AUTH_URL=http://controller:35357/v3
-    export OS_IDENTITY_API_VERSION=3
-  else
-    echo "[OSTACK] Orginal not config found, backup root enviroment.."
-    cp /etc/bash.bashrc /etc/bash.bashrc.ori
-
-    echo "[OSTACK] Setting enviroment.."
-    export OS_USERNAME=admin
-    export OS_PASSWORD=${KEYSTONE_ADMINPASS}
-    export OS_PROJECT_NAME=admin
-    export OS_USER_DOMAIN_NAME=Default
-    export OS_PROJECT_DOMAIN_NAME=Default
-    export OS_AUTH_URL=http://controller:35357/v3
-    export OS_IDENTITY_API_VERSION=3
-  fi
-
+  echo "[OSTACK] Setting enviroment.."
+  export OS_USERNAME=admin
+  export OS_PASSWORD=${KEYSTONE_ADMINPASS}
+  export OS_PROJECT_NAME=admin
+  export OS_USER_DOMAIN_NAME=Default
+  export OS_PROJECT_DOMAIN_NAME=Default
+  export OS_AUTH_URL=http://controller:35357/v3
+  export OS_IDENTITY_API_VERSION=3
+  
   echo "[OSTACK] Done."
   service_project
 }
