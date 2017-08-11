@@ -62,14 +62,11 @@ config_db() {
 
   if [[ -d /etc/mysql ]]; then
     echo "[OSTACK] MySQL found.."
-    if [[ -f /etc/mysql/conf.d/openstack.cnf.ori ]]; then
-      echo "[OSTACK] Backup current configuration to temporary.."
+    if [[ -f /etc/mysql/conf.d/openstack.cnf ]]; then
+      echo "[OSTACK] Backup current configuration.."
       cp /etc/mysql/conf.d/openstack.cnf /etc/mysql/conf.d/openstack.cnf.bak
 
-      echo "[OSTACK] Restoring to original configuration.."
-      cp /etc/mysql/conf.d/openstack.cnf.ori /etc/mysql/conf.d/openstack.cnf
-
-      echo "[OSTACK] Configuring mysql for openstack.."
+      echo "[OSTACK] Creating openstack mysql configuration for openstack.."
       cat > /etc/mysql/conf.d/openstack.cnf <<EOF
 [mysqld]
 bind-address = ${IP_ADDR0_ETH0}
@@ -82,7 +79,7 @@ character-set-server = utf8
 
 EOF
     else
-      echo "[OSTACK] Configuring mysql for openstack.."
+      echo "[OSTACK] Creating openstack mysql configuration for openstack.."
       cat > /etc/mysql/conf.d/openstack.cnf <<EOF
 [mysqld]
 bind-address = ${IP_ADDR0_ETH0}
@@ -94,9 +91,6 @@ collation-server = utf8_general_ci
 character-set-server = utf8
 
 EOF
-
-      echo "[OSTACK] Backup to original configuration.."
-      cp /etc/mysql/conf.d/openstack.cnf /etc/mysql/conf.d/openstack.cnf.ori
     fi
 
     echo "[OSTACK] Restarting MySQL.."
