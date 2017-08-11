@@ -71,6 +71,7 @@ config_hostname() {
     echo "controller" > /etc/hostname
   fi
 
+  echo "[OSTACK] Dont forget to REBOOT this pc to apply all changed!"
   echo "[OSTACK] Finish."
 }
 

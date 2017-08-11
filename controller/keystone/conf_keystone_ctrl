@@ -52,7 +52,7 @@ conf_keystone() {
     echo "[OSTACK] Done."
     conf_apache2
   else
-    echo "[OSTACK] Chrony is not installed. Execute `dep_conf_env_controller` first!"
+    echo "[OSTACK] Chrony is not installed. Execute 'dep_conf_env_controller' first!"
     echo "[OSTACK] Abort."
     exit
   fi
@@ -88,7 +88,7 @@ conf_apache2() {
     echo "[OSTACK] Done."
     set_enviroment
   else
-    echo "[OSTACK] Chrony is not installed. Execute `dep_conf_env_controller` first!"
+    echo "[OSTACK] Chrony is not installed. Execute 'dep_conf_env_controller' first!"
     echo "[OSTACK] Abort."
     exit
   fi
@@ -105,37 +105,28 @@ set_enviroment() {
     cp /etc/bash.bashrc.ori /etc/bash.bashrc
 
     echo "[OSTACK] Setting enviroment.."
-    cat >> /etc/bash.bashrc <<EOF
-
-export OS_USERNAME=admin
-export OS_PASSWORD=${KEYSTONE_ADMINPASS}
-export OS_PROJECT_NAME=admin
-export OS_USER_DOMAIN_NAME=Default
-export OS_PROJECT_DOMAIN_NAME=Default
-export OS_AUTH_URL=http://controller:35357/v3
-export OS_IDENTITY_API_VERSION=3
-
-EOF
-    echo "[OSTACK] Done."
+    export OS_USERNAME=admin
+    export OS_PASSWORD=${KEYSTONE_ADMINPASS}
+    export OS_PROJECT_NAME=admin
+    export OS_USER_DOMAIN_NAME=Default
+    export OS_PROJECT_DOMAIN_NAME=Default
+    export OS_AUTH_URL=http://controller:35357/v3
+    export OS_IDENTITY_API_VERSION=3
   else
     echo "[OSTACK] Orginal not config found, backup root enviroment.."
     cp /etc/bash.bashrc /etc/bash.bashrc.ori
 
     echo "[OSTACK] Setting enviroment.."
-    cat >> /etc/bash.bashrc <<EOF
-
-export OS_USERNAME=admin
-export OS_PASSWORD=${KEYSTONE_ADMINPASS}
-export OS_PROJECT_NAME=admin
-export OS_USER_DOMAIN_NAME=Default
-export OS_PROJECT_DOMAIN_NAME=Default
-export OS_AUTH_URL=http://controller:35357/v3
-export OS_IDENTITY_API_VERSION=3
-
-EOF
-    echo "[OSTACK] Done."
+    export OS_USERNAME=admin
+    export OS_PASSWORD=${KEYSTONE_ADMINPASS}
+    export OS_PROJECT_NAME=admin
+    export OS_USER_DOMAIN_NAME=Default
+    export OS_PROJECT_DOMAIN_NAME=Default
+    export OS_AUTH_URL=http://controller:35357/v3
+    export OS_IDENTITY_API_VERSION=3
   fi
 
+  echo "[OSTACK] Done."
   service_project
 }
 
@@ -183,11 +174,13 @@ verify_keystone() {
 
 openstack_env_script() {
   echo "======================================================="
-  echo "[OSTACK] Create `admin-openrc` script"
+  echo "[OSTACK] Create 'admin-openrc' script"
   echo "======================================================="
 
-  echo "[OSTACK] Create `admin-openrc` script.."
+  echo "[OSTACK] Create 'admin-openrc' script.."
   cat > /home/${USERNAME0}/admin-openrc <<EOF
+#!/bin/bash
+
 export OS_PROJECT_DOMAIN_NAME=Default
 export OS_USER_DOMAIN_NAME=Default
 export OS_PROJECT_NAME=admin
@@ -201,8 +194,10 @@ EOF
   echo "[OSTACK] Changing admin-openrc permission.."
   chmod +x /home/${USERNAME0}/admin-openrc
 
-  echo "[OSTACK] Create `demo-openrc` script.."
+  echo "[OSTACK] Create 'demo-openrc' script.."
   cat > /home/${USERNAME0}/demo-openrc <<EOF
+#!/bin/bash
+
 export OS_PROJECT_DOMAIN_NAME=Default
 export OS_USER_DOMAIN_NAME=Default
 export OS_PROJECT_NAME=demo
@@ -227,5 +222,5 @@ export_admin() {
   echo "[OSTACK] Finish."
 }
 
-echo "[OSTACK] CONFIGURING `${SERVICE_NAME1}` ON `$(hostname)`.."
+echo "[OSTACK] CONFIGURING '${SERVICE_NAME1}' ON '$(hostname)'.."
 conf_keystone

@@ -16,6 +16,11 @@ echo "======================================================="
 apt update && apt dist-upgrade -y
 
 echo "======================================================="
+echo "[OSTACK] Remove all unused image and software"
+echo "======================================================="
+apt autoremove -y
+
+echo "======================================================="
 echo "[OSTACK] Enable openstack repositories"
 echo "======================================================="
 apt install -y software-properties-common
