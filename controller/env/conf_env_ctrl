@@ -96,6 +96,9 @@ EOF
     echo "[OSTACK] Restarting MySQL.."
     service mysql restart
 
+    echo "[OSTACK] MySQL secure installation.."
+    mysql_secure_installation
+
     echo "[OSTACK] Done."
     rabbit_mq
   else
