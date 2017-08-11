@@ -3,7 +3,7 @@
 source ../../servers
 source ../../services
 
-echo "[OSTACK] INSTALLING `${SERVICE_NAME0}` ON `$(hostname)`.."
+echo "[OSTACK] INSTALLING '${SERVICE_NAME0}' ON '$(hostname)'.."
 
 echo "======================================================="
 echo "[OSTACK] Install NTP chrony"
@@ -19,7 +19,7 @@ echo "======================================================="
 echo "[OSTACK] Enable openstack repositories"
 echo "======================================================="
 apt install -y software-properties-common
-add-apt-repository cloud-archive:ocata
+add-apt-repository -y cloud-archive:ocata
 
 echo "======================================================="
 echo "[OSTACK] Install python-openstackclient"

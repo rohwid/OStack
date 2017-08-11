@@ -82,13 +82,13 @@ config_hostname() {
 
   if [[ -f /etc/hostname.ori ]]; then
     echo "[OSTACK] Configuring openstack compute hostname.."
-    echo "compute${COMPUTE_N}" > hostname
+    echo "compute${COMPUTE_N}" > /etc/hostname
   else
     echo "[OSTACK] Backup original configuration.."
-    cp /etc/hostname /etc/hostname
+    cp /etc/hostname /etc/hostname.ori
 
     echo "[OSTACK] Configuring openstack compute hostname.."
-    echo "compute${COMPUTE_N}" > hostname
+    echo "compute${COMPUTE_N}" > /etc/hostname
   fi
 
   echo "[OSTACK] Finish."

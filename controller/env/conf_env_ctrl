@@ -63,23 +63,7 @@ config_db() {
   if [[ -d /etc/mysql ]]; then
     echo "[OSTACK] MySQL found.."
     if [[ -f /etc/mysql/conf.d/openstack.cnf.ori ]]; then
-      echo "[OSTACK] Backup original configuration.."
-      cp /etc/mysql/conf.d/openstack.cnf /etc/mysql/conf.d/openstack.cnf.ori
-
-      echo "[OSTACK] Configuring mysql for openstack.."
-      cat > /etc/mysql/conf.d/openstack.cnf <<EOF
-[mysqld]
-bind-address = ${IP_ADDR0_ETH0}
-
-default-storage-engine = innodb
-innodb_file_per_table
-max_connections = 4096
-collation-server = utf8_general_ci
-character-set-server = utf8
-
-EOF
-    else
-      echo "[OSTACK] Backup current configuration.."
+      echo "[OSTACK] Backup current configuration to temporary.."
       cp /etc/mysql/conf.d/openstack.cnf /etc/mysql/conf.d/openstack.cnf.bak
 
       echo "[OSTACK] Restoring to original configuration.."
@@ -97,6 +81,22 @@ collation-server = utf8_general_ci
 character-set-server = utf8
 
 EOF
+    else
+      echo "[OSTACK] Configuring mysql for openstack.."
+      cat > /etc/mysql/conf.d/openstack.cnf <<EOF
+[mysqld]
+bind-address = ${IP_ADDR0_ETH0}
+
+default-storage-engine = innodb
+innodb_file_per_table
+max_connections = 4096
+collation-server = utf8_general_ci
+character-set-server = utf8
+
+EOF
+
+      echo "[OSTACK] Backup to original configuration.."
+      cp /etc/mysql/conf.d/openstack.cnf /etc/mysql/conf.d/openstack.cnf.ori
     fi
 
     echo "[OSTACK] Restarting MySQL.."
@@ -128,6 +128,7 @@ rabbit_mq() {
     echo "[OSTACK] restart rabbitmq-server.."
     service rabbitmq-server restart
 
+    echo "[OSTACK] Done."
     memcached
   else
     echo "[OSTACK] Rabbitmq-server is not installed. Execute `dep_conf_env_controller` first.. "
@@ -159,5 +160,5 @@ memcached() {
   fi
 }
 
-echo "[OSTACK] CONFIGURING `${SERVICE_NAME0}` ON `$(hostname)`.."
+echo "[OSTACK] CONFIGURING '${SERVICE_NAME0}' ON '$(hostname)'.."
 chrony
