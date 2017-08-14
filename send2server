@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source server
+source servers
 
 without_port() {
   scp -r [!.]* $ALL_USERNAME@$IP_ADDR:~/ostack
