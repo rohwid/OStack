@@ -78,7 +78,7 @@ config_hostname() {
 }
 
 do_reboot() {
-  read -n1 -r -p "This server need to reboot. Press [ENTER] to reboot!" ENTER
+  read -n1 -r -p "Reboot to apply all changes. Press ENTER to reboot!" ENTER
 
   if [[ $ENTER=\n ]]; then
     reboot

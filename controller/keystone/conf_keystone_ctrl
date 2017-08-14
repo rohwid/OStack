@@ -103,83 +103,42 @@ EOF
 }
 
 set_enviroment() {
-  echo "======================================================="
-  echo "[OSTACK] Set enviroment variable"
-  echo "======================================================="
+  echo "[OSTACK] Creating temp-admin-openrc.."
+  cat > ./temp-admin-openrc <<EOF
+export OS_USERNAME="admin"
+export OS_PASSWORD="${KEYSTONE_ADMINPASS}"
+export OS_PROJECT_NAME="admin"
+export OS_USER_DOMAIN_NAME="Default"
+export OS_PROJECT_DOMAIN_NAME="Default"
+export OS_AUTH_URL="http://controller:35357/v3"
+export OS_IDENTITY_API_VERSION=3
+EOF
 
-  echo "[OSTACK] Setting enviroment.."
-  . admin-openrc
+  echo "[OSTACK] Creating admin-openrc to /home/${USERNAME0}.."
+  cat > /home/${USERNAME0}/admin-openrc <<EOF
+export OS_USERNAME="admin"
+export OS_PASSWORD="${KEYSTONE_ADMINPASS}"
+export OS_PROJECT_NAME="admin"
+export OS_USER_DOMAIN_NAME="Default"
+export OS_PROJECT_DOMAIN_NAME="Default"
+export OS_AUTH_URL="http://controller:35357/v3"
+export OS_IDENTITY_API_VERSION=3
+export OS_IMAGE_API_VERSION=2
+EOF
 
-  echo "[OSTACK] Done."
-  service_project
-}
-
-service_project() {
-  echo "======================================================="
-  echo "[OSTACK] Create project"
-  echo "======================================================="
-
-  echo "[OSTACK] Creating service project.."
-  openstack project create --domain default --description "Service Project" service
-
-  echo "[OSTACK] Creating demo project.."
-  openstack project create --domain default --description "Demo Project" demo
-
-  echo "[OSTACK] Creating demo user.."
-  openstack user create --domain default --password-prompt demo
-
-  echo "[OSTACK] Creatingrole.."
-  openstack role create user
-
-  echo "[OSTACK] Add the user role to the demo project and use"
-  openstack role add --project demo --user demo user
-
-  echo "[OSTACK] Done."
-  verify_keystone
-}
-
-verify_keystone() {
-  echo "======================================================="
-  echo "[OSTACK] Verify keystone"
-  echo "======================================================="
-
-  echo "[OSTACK] Unset the temporary OS_AUTH_URL and OS_PASSWORD environment variable.."
-  unset OS_AUTH_URL OS_PASSWORD
-
-  echo "[OSTACK] As the admin user, request an authentication token.."
-  openstack --os-auth-url http://controller:35357/v3 --os-project-domain-name Default --os-user-domain-name Default --os-project-name admin --os-username admin token issue
-
-  echo "[OSTACK] As the demo user, request an authentication token.."
-  openstack --os-auth-url http://controller:5000/v3 --os-project-domain-name Default --os-user-domain-name Default --os-project-name demo --os-username demo token issue
+  echo "[OSTACK] Creating demo-openrc to /home/${USERNAME0}.."
+  cat > /home/${USERNAME0}/demo-openrc <<EOF
+export OS_USERNAME="demo"
+export OS_PASSWORD="${KEYSTONE_ADMINPASS}"
+export OS_PROJECT_NAME="demo"
+export OS_USER_DOMAIN_NAME="Default"
+export OS_PROJECT_DOMAIN_NAME="Default"
+export OS_AUTH_URL="http://controller:5000/v3"
+export OS_IDENTITY_API_VERSION=3
+export OS_IMAGE_API_VERSION=2
+EOF
 
   echo "[OSTACK] Done."
-  env_var
-}
-
-env_var() {
-  echo "[OSTACK] Copying admin-openrc to /home/${USERNAME0}.."
-  cp admin-openrc /home/${USERNAME0}/
-
-  echo "[OSTACK] Copying demo-openrc to /home/${USERNAME0}.."
-  cp demo-openrc /home/${USERNAME0}/
-
-  echo "[OSTACK] Done."
-  export_admin
-}
-
-export_admin() {
-  echo "[OSTACK] Exporting admin-openrc.."
-  . /home/${USERNAME0}/admin-openrc
-
-  echo "[OSTACK] Done."
-  token_issue
-}
-
-token_issue() {
-  echo "[OSTACK] Requesting an authentication token.."
-  openstack token issue
-
-  echo "[OSTACK] Finish."
 }
 
 echo "[OSTACK] CONFIGURING '${SERVICE_NAME1}' ON '$(hostname)'.."

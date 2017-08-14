@@ -27,6 +27,10 @@ Execute everything on `controller` before `compute`, like the execute order bell
     + conf_keystonedb_ctrl
     + dep_keystone_ctrl
     + conf_keystone_ctrl
+    + `temp-admin-openrc`, command to execute: `. temp-admin-openrc`.
+    + apl_keystone_ctrl
+    + `admin-openrc`, command to execute: `. ~/admin-openrc`.
+    + token_issue_ctrl
 
 3. On `glance`:
     + conf_glance_db

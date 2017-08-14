@@ -45,3 +45,16 @@ echo "======================================================="
 echo "[OSTACK] Install memcached and python-memcache"
 echo "======================================================="
 apt install -y memcached python-memcache
+
+do_reboot() {
+  read -n1 -r -p "Reboot to apply all changes. Press ENTER to reboot!" ENTER
+
+  if [[ $ENTER=\n ]]; then
+    reboot
+  else
+    echo "[OSTACK] This server need to reboot. Please reboot to apply all changes!"
+    echo "[OSTACK] Finish."
+  fi
+}
+
+do_reboot
