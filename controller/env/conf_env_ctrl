@@ -10,6 +10,7 @@ chrony() {
 
   if [[ -d /etc/chrony ]]; then
     echo "[OStack] Chrony found.."
+
     if [[ -f /etc/chrony/chrony.conf.ori ]]; then
       echo "[OSTACK] Creating temporary configuration backup.."
       cp /etc/chrony/chrony.conf /etc/chrony/chrony.conf.bak
@@ -142,11 +143,23 @@ memcached() {
   if [[ -f /etc/memcached.conf ]]; then
     echo "[OSTACK] Memcached found.."
 
-    echo "[OSTACK] Configuring and backup memcached.."
-    sed -i.bak -e "35d" /etc/memcached.conf
-    sed -i "35i -l ${IP_ADDR0_ETH0}" /etc/memcached.conf
+    if [[ -f /etc/memcached.conf.ori ]]; then
+      echo "[OSTACK] Restoring memcached original backup.."
+      cp /etc/memcached.conf.ori /etc/memcached.conf
+      echo "[OSTACK] Creating memcached temporary backup.."
+      sed -i.bak -e "35d" /etc/memcached.conf
+      echo "[OSTACK] Configuring memcached.."
+      sed -i "35i -l ${IP_ADDR0_ETH0}" /etc/memcached.conf
+    else
+      echo "[OSTACK] Creating memcached original backup.."
+      cp /etc/memcached.conf /etc/memcached.conf.ori
+      echo "[OSTACK] Creating memcached temporary backup.."
+      sed -i.bak -e "35d" /etc/memcached.conf
+      echo "[OSTACK] Configuring memcached.."
+      sed -i "35i -l ${IP_ADDR0_ETH0}" /etc/memcached.conf
+    fi
 
-    echo "[OSTACK] Configuring and backup memcached.."
+    echo "[OSTACK] Restarting memcached.."
     service memcached restart
 
     echo "[OSTACK] Finish."
