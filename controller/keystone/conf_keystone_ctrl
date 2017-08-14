@@ -8,6 +8,8 @@ conf_keystone() {
   echo "[OSTACK] Configure ${SERVICE_NAME1}"
   echo "======================================================="
 
+  # TO DO, check configuration on server!
+
   if [[ -d /etc/${SERVICE_NAME1} ]]; then
     echo "[OSTACK] Configuring ${SERVICE_NAME1} database.."
     if [[ -f /etc/${SERVICE_NAME1}/${SERVICE_NAME1}.conf.ori ]]; then
