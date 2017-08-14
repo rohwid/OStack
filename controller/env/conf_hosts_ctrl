@@ -78,17 +78,14 @@ config_hostname() {
 }
 
 do_reboot() {
-  read -p "Press [Y] to reboot or [ANY KEYS] to cancel: " DO_REBOOT
+  read -n1 -r -p "This server need to reboot. Press [ENTER] to reboot!" ENTER
 
-  case "${DO_REBOOT}" in
-    Y) reboot
-        ;;
-    y) reboot
-        ;;
-    *) echo "[OSTACK] Please reboot to apply all changes!"
-       echo "[OSTACK] Finish."
-       exit
-  esac
+  if [[ $ENTER=\n ]]; then
+    reboot
+  else
+    echo "[OSTACK] This server need to reboot. Please reboot to apply all changes!"
+    echo "[OSTACK] Finish."
+  fi
 }
 
 config_hosts
