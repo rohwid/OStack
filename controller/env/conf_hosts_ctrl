@@ -72,7 +72,23 @@ config_hostname() {
   fi
 
   echo "[OSTACK] Dont forget to REBOOT this pc to apply all changed!"
-  echo "[OSTACK] Finish."
+  echo "[OSTACK] Done."
+
+  do_reboot
+}
+
+do_reboot() {
+  read -p "Press [Y] to reboot or [ANY KEYS] to cancel: " DO_REBOOT
+
+  case "${USE_PORT}" in
+    Y) reboot
+        ;;
+    y) reboot
+        ;;
+    *) echo "[OSTACK] Please reboot to apply all changes!"
+       echo "[OSTACK] Finish."
+       exit
+  esac
 }
 
 config_hosts
