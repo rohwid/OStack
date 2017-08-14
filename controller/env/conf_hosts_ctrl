@@ -80,7 +80,7 @@ config_hostname() {
 do_reboot() {
   read -p "Press [Y] to reboot or [ANY KEYS] to cancel: " DO_REBOOT
 
-  case "${USE_PORT}" in
+  case "${DO_REBOOT}" in
     Y) reboot
         ;;
     y) reboot
