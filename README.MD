@@ -19,7 +19,7 @@ Execute everything on `controller` before `compute`, like the execute order bell
 #### On `controller`
 
 1. On `env`:
-    + conf_hosts
+    + conf_hosts_ctrl
     + dep_env_ctrl
     + conf_env_ctrl
 
@@ -37,6 +37,6 @@ Execute everything on `controller` before `compute`, like the execute order bell
 #### On `compute`
 
 1. On `env`:
-    + conf_host
+    + conf_hosts_comp
     + dep_env_comp
     + conf_env_comp
