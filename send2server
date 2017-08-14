@@ -1,15 +1,16 @@
 #!/bin/bash
 
+source server
+
 without_port() {
-  scp -P $PORT -r [!.]* $USER_NAME@$IP_ADDR:~/ostack
+  scp -r [!.]* $ALL_USERNAME@$IP_ADDR:~/ostack
 }
 
 with_port() {
   read -p "Enter port number:" PORT
-  scp -P $PORT -r [!.]* $USER_NAME@$IP_ADDR:~/ostack
+  scp -P $PORT -r [!.]* $ALL_USERNAME@$IP_ADDR:~/ostack
 }
 
-read -p "Enter Username: " USER_NAME
 read -p "Enter IP Address: " IP_ADDR
 read -p "Use Specific Port [Y/N]: " USE_PORT
 
