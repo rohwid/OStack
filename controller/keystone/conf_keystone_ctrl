@@ -14,30 +14,30 @@ conf_keystone() {
     echo "[OSTACK] Configuring ${SERVICE_NAME1} database.."
     if [[ -f /etc/${SERVICE_NAME1}/${SERVICE_NAME1}.conf.ori ]]; then
       echo "[OSTACK] Orginal config found, create temporary config backup.."
-      sed -i.bak -e "605d" /etc/${SERVICE_NAME1}/${SERVICE_NAME1}.conf
+      sed -i.bak -e "551d" /etc/${SERVICE_NAME1}/${SERVICE_NAME1}.conf
       echo "[OSTACK] Setting connection.."
-      sed -i "605i -l connection = mysql+pymysql://${SERVICE_NAME1}:${KEYSTONE_DBPASS}@controller/${SERVICE_NAME1}" /etc/${SERVICE_NAME1}/${SERVICE_NAME1}.conf
+      sed -i "551i connection = mysql+pymysql://${SERVICE_NAME1}:${KEYSTONE_DBPASS}@controller/${SERVICE_NAME1}" /etc/${SERVICE_NAME1}/${SERVICE_NAME1}.conf
       echo "[OSTACK] Done."
     else
       echo "[OSTACK] Original config not found, create original config backup.."
-      sed -i.ori -e "605d" /etc/${SERVICE_NAME1}/${SERVICE_NAME1}.conf
+      sed -i.ori -e "551d" /etc/${SERVICE_NAME1}/${SERVICE_NAME1}.conf
       echo "[OSTACK] Setting connection.."
-      sed -i "605i -l connection = mysql+pymysql://${SERVICE_NAME1}:${KEYSTONE_DBPASS}@controller/${SERVICE_NAME1}" /etc/${SERVICE_NAME1}/${SERVICE_NAME1}.conf
+      sed -i "551i connection = mysql+pymysql://${SERVICE_NAME1}:${KEYSTONE_DBPASS}@controller/${SERVICE_NAME1}" /etc/${SERVICE_NAME1}/${SERVICE_NAME1}.conf
       echo "[OSTACK] Done."
     fi
 
     echo "[OSTACK] Configuring ${SERVICE_NAME1} token.."
     if [[ -f /etc/${SERVICE_NAME1}/${SERVICE_NAME1}.conf.ori ]]; then
       echo "[OSTACK] Orginal config found, create temporary config backup.."
-      sed -i.bak -e "1271d" /etc/${SERVICE_NAME1}/${SERVICE_NAME1}.conf
+      sed -i.bak -e "2047d" /etc/${SERVICE_NAME1}/${SERVICE_NAME1}.conf
       echo "[OSTACK] Setting provider.."
-      sed -i "1271i -l provider = fernet" /etc/${SERVICE_NAME1}/${SERVICE_NAME1}.conf
+      sed -i "2047i provider = fernet" /etc/${SERVICE_NAME1}/${SERVICE_NAME1}.conf
       echo "[OSTACK] Done."
     else
       echo "[OSTACK] Orginal config not found, create original config backup.."
-      sed -i.ori -e "1271d" /etc/${SERVICE_NAME1}/${SERVICE_NAME1}.conf
+      sed -i.ori -e "2047d" /etc/${SERVICE_NAME1}/${SERVICE_NAME1}.conf
       echo "[OSTACK] Setting provider.."
-      sed -i "1271i -l provider = fernet" /etc/${SERVICE_NAME1}/${SERVICE_NAME1}.conf
+      sed -i "2047i -l provider = fernet" /etc/${SERVICE_NAME1}/${SERVICE_NAME1}.conf
       echo "[OSTACK] Done."
     fi
 
