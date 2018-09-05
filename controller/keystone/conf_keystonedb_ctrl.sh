@@ -1,14 +1,13 @@
 #!/bin/bash
 
 source ../../services
-source ../../servers
 
 echo "======================================================="
-echo "[OSTACK] Create ${SERVICE_NAME1} database"
+echo "[OSTACK] Create keystone database"
 echo "======================================================="
 
-echo "[OSTACK] CONFIGURING '${SERVICE_NAME1}' DATABASE ON '$(hostname)'.."
+echo "[OSTACK] CONFIGURING 'keystone' DATABASE ON '$(hostname)'.."
 
-mysql --user="${MYSQL_USER}" --password="${MYSQL_PASS}" --execute="CREATE DATABASE ${SERVICE_NAME1}; GRANT ALL PRIVILEGES ON ${SERVICE_NAME1}.* TO '${SERVICE_NAME1}'@'localhost' IDENTIFIED BY '${KEYSTONE_DBPASS}'; GRANT ALL PRIVILEGES ON ${SERVICE_NAME1}.* TO '${SERVICE_NAME1}'@'%' IDENTIFIED BY '${KEYSTONE_DBPASS}';"
+mysql --user="${MYSQL_USER}" --password="${MYSQL_PASS}" --execute="CREATE DATABASE keystone; GRANT ALL PRIVILEGES ON keystone.* TO 'keystone'@'localhost' IDENTIFIED BY '${KEYSTONE_DBPASS}'; GRANT ALL PRIVILEGES ON keystone.* TO 'keystone'@'%' IDENTIFIED BY '${KEYSTONE_DBPASS}';"
 
 echo "[OSTACK] Done."

@@ -1,54 +1,65 @@
 #!/bin/bash
 
 source ../../services
-source ../../servers
+
+add_db() {
+  echo "======================================================="
+  echo "[OSTACK] Create keystone database"
+  echo "======================================================="
+
+  echo "[OSTACK] CONFIGURING 'keystone' DATABASE ON '$(hostname)'.."
+
+  mysql --user="${MYSQL_USER}" --password="${MYSQL_PASS}" --execute="CREATE DATABASE keystone; GRANT ALL PRIVILEGES ON keystone.* TO 'keystone'@'localhost' IDENTIFIED BY '${KEYSTONE_DBPASS}'; GRANT ALL PRIVILEGES ON keystone.* TO 'keystone'@'%' IDENTIFIED BY '${KEYSTONE_DBPASS}';"
+
+  echo "[OSTACK] Done."
+}
 
 conf_keystone() {
   echo "======================================================="
-  echo "[OSTACK] Configure ${SERVICE_NAME1}"
+  echo "[OSTACK] Configure Keystone"
   echo "======================================================="
 
   # TO DO, check configuration on server!
 
-  if [[ -d /etc/${SERVICE_NAME1} ]]; then
-    echo "[OSTACK] Configuring ${SERVICE_NAME1} database.."
-    if [[ -f /etc/${SERVICE_NAME1}/${SERVICE_NAME1}.conf.ori ]]; then
+  if [[ -d /etc/keystone ]]; then
+    echo "[OSTACK] Configuring keystone database.."
+    if [[ -f /etc/keystone/keystone.conf.ori ]]; then
       echo "[OSTACK] Orginal config found, create temporary config backup.."
-      sed -i.bak -e "551d" /etc/${SERVICE_NAME1}/${SERVICE_NAME1}.conf
+      sed -i.bak -e "551d" /etc/keystone/keystone.conf
       echo "[OSTACK] Setting connection.."
-      sed -i "551i connection = mysql+pymysql://${SERVICE_NAME1}:${KEYSTONE_DBPASS}@controller/${SERVICE_NAME1}" /etc/${SERVICE_NAME1}/${SERVICE_NAME1}.conf
+      sed -i "551i connection = mysql+pymysql://keystone:${KEYSTONE_DBPASS}@controller/keystone" /etc/keystone/keystone.conf
       echo "[OSTACK] Done."
     else
       echo "[OSTACK] Original config not found, create original config backup.."
-      sed -i.ori -e "551d" /etc/${SERVICE_NAME1}/${SERVICE_NAME1}.conf
+      sed -i.ori -e "551d" /etc/keystone/keystone.conf
       echo "[OSTACK] Setting connection.."
-      sed -i "551i connection = mysql+pymysql://${SERVICE_NAME1}:${KEYSTONE_DBPASS}@controller/${SERVICE_NAME1}" /etc/${SERVICE_NAME1}/${SERVICE_NAME1}.conf
+      sed -i "551i connection = mysql+pymysql://keystone:${KEYSTONE_DBPASS}@controller/keystone" /etc/keystone/keystone.conf
       echo "[OSTACK] Done."
     fi
 
-    echo "[OSTACK] Configuring ${SERVICE_NAME1} token.."
-    if [[ -f /etc/${SERVICE_NAME1}/${SERVICE_NAME1}.conf.ori ]]; then
+    echo "[OSTACK] Configuring keystone token.."
+    if [[ -f /etc/keystone/keystone.conf.ori ]]; then
       echo "[OSTACK] Orginal config found, create temporary config backup.."
-      sed -i.bak -e "2047d" /etc/${SERVICE_NAME1}/${SERVICE_NAME1}.conf
+      sed -i.bak -e "2047d" /etc/keystone/keystone.conf
       echo "[OSTACK] Setting provider.."
-      sed -i "2047i provider = fernet" /etc/${SERVICE_NAME1}/${SERVICE_NAME1}.conf
+      sed -i "2047i provider = fernet" /etc/keystone/keystone.conf
       echo "[OSTACK] Done."
     else
       echo "[OSTACK] Orginal config not found, create original config backup.."
-      sed -i.ori -e "2047d" /etc/${SERVICE_NAME1}/${SERVICE_NAME1}.conf
+      sed -i.ori -e "2047d" /etc/keystone/keystone.conf
       echo "[OSTACK] Setting provider.."
-      sed -i "2047i -l provider = fernet" /etc/${SERVICE_NAME1}/${SERVICE_NAME1}.conf
+      sed -i "2047i -l provider = fernet" /etc/keystone/keystone.conf
       echo "[OSTACK] Done."
     fi
 
-    echo "[OSTACK] Populate ${SERVICE_NAME1} database.."
-    su -s /bin/sh -c "keystone-manage db_sync" ${SERVICE_NAME1}
+    echo "[OSTACK] Populate keystone database.."
+    su -s /bin/sh -c "keystone-manage db_sync" keystone
 
     echo "[OSTACK] Initialize Fernet key repositories.."
-    keystone-manage fernet_setup --keystone-user ${SERVICE_NAME1} --keystone-group ${SERVICE_NAME1}
-    keystone-manage credential_setup --keystone-user ${SERVICE_NAME1} --keystone-group ${SERVICE_NAME1}
+    keystone-manage fernet_setup --keystone-user keystone --keystone-group keystone
+    keystone-manage credential_setup --keystone-user keystone --keystone-group keystone
 
-    echo "[OSTACK] Bootstraping ${SERVICE_NAME1}.."
+    echo "[OSTACK] Bootstraping keystone.."
     keystone-manage bootstrap --bootstrap-password ${KEYSTONE_ADMINPASS} --bootstrap-admin-url http://controller:35357/v3/ --bootstrap-internal-url http://controller:35357/v3/ --bootstrap-public-url http://controller:5000/v3/ --bootstrap-region-id RegionOne
 
     echo "[OSTACK] Done."
@@ -143,5 +154,5 @@ EOF
   echo "[OSTACK] Done."
 }
 
-echo "[OSTACK] CONFIGURING '${SERVICE_NAME1}' ON '$(hostname)'.."
+echo "[OSTACK] CONFIGURING 'keystone' ON '$(hostname)'.."
 conf_keystone

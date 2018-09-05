@@ -1,7 +1,7 @@
 #!/bin/bash
 
-source ../../servers
-source ../../services
+source ../../servers.sh
+source ../../services.sh
 
 config_hosts() {
   echo "======================================================="
@@ -10,45 +10,13 @@ config_hosts() {
 
   if [[ -f /etc/hosts.ori ]]; then
     echo "[OSTACK] Configuring openstack controller hosts.."
-    cat > /etc/hosts <<EOF
-127.0.0.1       localhost
-
-# Controller
-${IP_ADDR0_ETH0}    controller
-
-# Compute1
-${IP_ADDR1_ETH0}    compute1
-
-# Add more compute..
-#n.n.n.n             compute-n
-
-# The following lines are desirable for IPv6 capable hosts
-::1     localhost ip6-localhost ip6-loopback
-ff02::1 ip6-allnodes
-ff02::2 ip6-allrouters
-EOF
+    
   else
     echo "[OSTACK] Backup original configuration.."
     cp /etc/hosts /etc/hosts.ori
 
     echo "[OSTACK] Configuring openstack controller hosts.."
-    cat > /etc/hosts <<EOF
-127.0.0.1       localhost
-
-# Controller
-${IP_ADDR0_ETH0}    controller
-
-# Compute1
-${IP_ADDR1_ETH0}    compute1
-
-# Add more compute..
-#n.n.n.n             compute(n)
-
-# The following lines are desirable for IPv6 capable hosts
-::1     localhost ip6-localhost ip6-loopback
-ff02::1 ip6-allnodes
-ff02::2 ip6-allrouters
-EOF
+    cp ../config/hosts /etc/hosts
   fi
 
   echo "[OSTACK] Done."
