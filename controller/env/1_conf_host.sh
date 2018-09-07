@@ -1,6 +1,5 @@
 #!/bin/bash
 
-source ../../servers.sh
 source ../../services.sh
 
 config_hosts() {
@@ -10,7 +9,7 @@ config_hosts() {
 
   if [[ -f /etc/hosts.ori ]]; then
     echo "[OSTACK] Configuring openstack controller hosts.."
-    
+
   else
     echo "[OSTACK] Backup original configuration.."
     cp /etc/hosts /etc/hosts.ori

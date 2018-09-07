@@ -1,19 +1,20 @@
 #!/bin/bash
 
+# All Password
+ALL_PASS="b201_cloud"
+
 # MariaDB
 MYSQL_USER="root"
-MYSQL_PASS="serverunida2018"
+MYSQL_PASS=${ALL_PASS}"
 
 # RabbitMQ
 MQ_USER="openstack"
-MQ_PASS="serverunida2018"
+MQ_PASS=${ALL_PASS}
 
 # Keystone (Identity Service)
-KEYSTONE_DBPASS="serverunida2018"
-KEYSTONE_ADMINPASS="serverunida2018"
+KEYSTONE_DBPASS=${ALL_PASS}
+KEYSTONE_ADMINPASS=${ALL_PASS}
 
 # Glance (Image Service)
-SERVICE_NAME2="glance"
-DESC_SERVICE2="Apply in controller node to manage operating system images"
-GLANCE_DBPASS="i<3emilia"
-GLANCE_ADMINPASS="i<3emilia"
+GLANCE_DBPASS=${ALL_PASS}
+GLANCE_ADMINPASS=${ALL_PASS}

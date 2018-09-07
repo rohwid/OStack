@@ -1,16 +1,5 @@
 #!/bin/bash
 
-## TODO
-## Auto generate config --> generate-config.sh
-## save temp IP address --> servers.sh
-## include rabbitmq user and pass--> services.sh
-## host --> hosts --> auto assign IP and host
-## chrony --> chrony.conf --> auto assign chrony server
-## mariadb --> 99-openstack.cnf --> auto assign IP
-## memcached --> memecached.conf --> auto assign IP
-## etcd --> etcd --> auto assign IP
-
-
 source ../services.sh
 
 chrony() {
@@ -18,6 +7,8 @@ chrony() {
   echo "[OSTACK] Configure NTP in controller"
   echo "======================================================="
 
+  read -n1 -r -p "Download opencv-${VERSION}. press ENTER to continue!" ENTER
+  
   if [[ -d /etc/chrony ]]; then
     echo "[OStack] Chrony found.."
 
@@ -39,7 +30,7 @@ chrony() {
     service chrony restart
 
     echo "[OSTACK] Done."
-    config_db
+    ostack_pkg
   else
     echo "[OSTACK] Chrony not found.."
     echo "[OSTACK] Installing chrony.."
@@ -58,6 +49,27 @@ chrony() {
       echo "[OSTACK] Configuring NTP with chrony.."
       cp ../config/chrony.conf /etc/chrony/
     fi
+
+    echo "[OSTACK] Restarting chrony.."
+    service chrony restart
+
+    echo "[OSTACK] Done."
+    ostack_pkg
+  fi
+}
+
+ostack_pkg() {
+  echo "======================================================="
+  echo "[OSTACK] Install Openstack Packages"
+  echo "======================================================="
+
+  if [[ -f /usr/bin/openstack ]]; then
+    config_db
+  else
+    echo "[OSTACK] Installing Openstack packages.."
+    apt install python-openstackclient -y
+
+    config_db
   fi
 }
 
@@ -176,6 +188,7 @@ memcached() {
     service memcached restart
 
     echo "[OSTACK] Done."
+    etcd
   else
     echo "[OSTACK] Memcached not found.."
     echo "[OSTACK] Installing memcached.."
@@ -195,6 +208,57 @@ memcached() {
 
     echo "[OSTACK] Restarting memcached.."
     service memcached restart
+
+    echo "[OSTACK] Done."
+    etcd
+  fi
+}
+
+etcd() {
+  echo "======================================================="
+  echo "[OSTACK] Configure etcd"
+  echo "======================================================="
+
+  if [[ -f /etc/default/etcd ]]; then
+    echo "[OSTACK] Etcd found.."
+
+    if [[ -f /etc/default/etcd.ori ]]; then
+      echo "[OSTACK] Backup current configuration.."
+      cp /etc/default/etcd /etc/default/etcd.bak
+      echo "[OSTACK] Configuring etcd.."
+      cp ../config/etcd /etc/default/
+    else
+      echo "[OSTACK] Backup original configuration.."
+      cp /etc/default/etcd /etc/default/etcd.ori
+      echo "[OSTACK] Configuring etcd.."
+      cp ../config/etcd /etc/default/
+    fi
+
+    echo "[OSTACK] Restarting etcd.."
+    systemctl enable etcd
+    systemctl start etcd
+
+    echo "[OSTACK] Done."
+  else
+    echo "[OSTACK] Etcd not found.."
+    echo "[OSTACK] Installing etcd.."
+    apt install memcached python-memcache -y
+
+    if [[ -f /etc/default/etcd.ori ]]; then
+      echo "[OSTACK] Backup current configuration.."
+      cp /etc/default/etcd /etc/default/etcd.bak
+      echo "[OSTACK] Configuring etcd.."
+      cp ../config/etcd /etc/default/
+    else
+      echo "[OSTACK] Backup original configuration.."
+      cp /etc/default/etcd /etc/default/etcd.ori
+      echo "[OSTACK] Configuring etcd.."
+      cp ../config/etcd /etc/default/
+    fi
+
+    echo "[OSTACK] Restarting etcd.."
+    systemctl enable etcd
+    systemctl start etcd
 
     echo "[OSTACK] Done."
   fi
