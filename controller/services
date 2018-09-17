@@ -1,11 +1,9 @@
-#!/bin/bash
-
 # All Password
 ALL_PASS="b201_cloud"
 
 # MariaDB
 MYSQL_USER="root"
-MYSQL_PASS=${ALL_PASS}"
+MYSQL_PASS=${ALL_PASS}
 
 # RabbitMQ
 MQ_USER="openstack"

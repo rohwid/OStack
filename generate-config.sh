@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source controller/services
+
 two() {
   read -p "Compute1 IP Address: " COM1
 
@@ -120,7 +122,7 @@ chrony() {
   read -p "Enter NTP server: " NTP
   read -p "Enter management network: " MAN_NET
 
-  echo "[OStack] Configuring NTP with chrony.."
+  echo "[OSTACK] Configuring NTP with chrony.."
 
   cat > controller/config/chrony.conf <<EOF
 # Welcome to the chrony configuration file. See chrony.conf(5) for more
@@ -220,7 +222,7 @@ EOF
 }
 
 db() {
-  echo "[OStack] Configuring databases.."
+  echo "[OSTACK] Configuring databases.."
 
   cat > controller/config/99-openstack.cnf <<EOF
 [mysqld]
@@ -235,7 +237,7 @@ EOF
 }
 
 memcached() {
-  echo "[OStack] Configuring memcached.."
+  echo "[OSTACK] Configuring memcached.."
 
   cat > controller/config/memcached.conf <<EOF
 # memcached default config file
@@ -292,154 +294,47 @@ EOF
 }
 
 etcd() {
-  echo "[OStack] Configuring etcd.."
+  echo "[OSTACK] Configuring etcd.."
+  echo "[OSTACK] Get etcd configuration file.."
+  cp controller/config/backup/etcd controller/config/
 
-  cat > controller/config/etcd <<EOF
-## etcd(1) daemon options
-## See "/usr/share/doc/etcd/Documentation/configuration.md.gz".
-
-### Member Flags
-
-##### -name
-ETCD_NAME="controller"
-
-##### -data-dir
-ETCD_DATA_DIR="/var/lib/etcd"
-
-##### -wal-dir
-# ETCD_WAL_DIR
-
-##### -snapshot-count
-# ETCD_SNAPSHOT_COUNT="10000"
-
-##### -heartbeat-interval
-# ETCD_HEARTBEAT_INTERVAL="100"
-
-##### -election-timeout
-# ETCD_ELECTION_TIMEOUT="1000"
-
-##### -listen-peer-urls
-ETCD_LISTEN_PEER_URLS="http://0.0.0.0:2380"
-
-##### -listen-client-urls
-ETCD_LISTEN_CLIENT_URLS="http://${CTRL}:2379"
-
-##### -max-snapshots
-# ETCD_MAX_SNAPSHOTS="5"
-
-##### -max-wals
-# ETCD_MAX_WALS="5"
-
-##### -cors
-# ETCD_CORS
-
-### Clustering Flags
-## For an explanation of the various ways to do cluster setup, see:
-## /usr/share/doc/etcd/Documentation/clustering.md.gz
-##
-## The command line parameters starting with -initial-cluster will be
-## ignored on subsequent runs of etcd as they are used only during initial
-## bootstrap process.
-
-##### -initial-advertise-peer-urls
-ETCD_INITIAL_ADVERTISE_PEER_URLS="http://${CTRL}:2380"
-
-##### -initial-cluster
-ETCD_INITIAL_CLUSTER="controller=http://${CTRL}:2380"
-
-##### -initial-cluster-state
-ETCD_INITIAL_CLUSTER_STATE="new"
-
-##### -initial-cluster-token
-ETCD_INITIAL_CLUSTER_TOKEN="etcd-cluster-01"
-
-##### -advertise-client-urls
-ETCD_ADVERTISE_CLIENT_URLS="http://${CTRL}:2379"
-
-##### -discovery
-# ETCD_DISCOVERY
-
-##### -discovery-srv
-# ETCD_DISCOVERY_SRV
-
-##### -discovery-fallback
-# ETCD_DISCOVERY_FALLBACK="proxy"
-
-##### -discovery-proxy
-# ETCD_DISCOVERY_PROXY
-
-### Proxy Flags
-
-##### -proxy
-# ETCD_PROXY="on"
-
-##### -proxy-failure-wait
-# ETCD_PROXY_FAILURE_WAIT="5000"
-
-##### -proxy-refresh-interval
-# ETCD_PROXY_REFRESH_INTERVAL="30000"
-
-##### -proxy-dial-timeout
-# ETCD_PROXY_DIAL_TIMEOUT="1000"
-
-##### -proxy-write-timeout
-# ETCD_PROXY_WRITE_TIMEOUT="5000"
-
-##### -proxy-read-timeout
-# ETCD_PROXY_READ_TIMEOUT="0"
-
-### Security Flags
-
-##### -ca-file [DEPRECATED]
-# ETCD_CA_FILE=""
-
-##### -cert-file
-# ETCD_CERT_FILE=""
-
-##### -key-file
-# ETCD_KEY_FILE=""
-
-##### -client-cert-auth
-# ETCD_CLIENT_CERT_AUTH
-
-##### -trusted-ca-file
-# ETCD_TRUSTED_CA_FILE
-
-##### -peer-ca-file [DEPRECATED]
-# ETCD_PEER_CA_FILE
-
-##### -peer-cert-file
-# ETCD_PEER_CERT_FILE
-
-##### -peer-key-file
-# ETCD_PEER_KEY_FILE
-
-##### -peer-client-cert-auth
-# ETCD_PEER_CLIENT_CERT_AUTH
-
-##### -peer-trusted-ca-file
-# ETCD_PEER_TRUSTED_CA_FILE
-
-### Logging Flags
-
-##### -debug
-# ETCD_DEBUG
-
-##### -log-package-levels
-# ETCD_LOG_PACKAGE_LEVELS
-
-#### Daemon parameters:
-# DAEMON_ARGS=""
-EOF
+  echo "[OSTACK] Configuring etcd.."
+  sed -i -e "12d" controller/config/etcd
+  sed -i -e '12i ETCD_NAME="controller"' controller/config/etcd
+  sed -i -e "16d" controller/config/etcd
+  sed -i -e '16i ETCD_DATA_DIR="/var/lib/etcd"' controller/config/etcd
+  sed -i -e "52d" controller/config/etcd
+  sed -i -e '52i ETCD_LISTEN_PEER_URLS="http://0.0.0.0:2380"' controller/config/etcd
+  sed -i -e "66d" controller/config/etcd
+  sed -i -e "66i ETCD_LISTEN_CLIENT_URLS="http://${CTRL}:2379"" controller/config/etcd
+  sed -i -e "98d" controller/config/etcd
+  sed -i -e "98i ETCD_INITIAL_ADVERTISE_PEER_URLS="http://${CTRL}:2380"" controller/config/etcd
+  sed -i -e "105d" controller/config/etcd
+  sed -i -e "105i ETCD_INITIAL_CLUSTER="controller=http://${CTRL}:2380"" controller/config/etcd
+  sed -i -e "113d" controller/config/etcd
+  sed -i -e '113i ETCD_INITIAL_CLUSTER_STATE="new"' controller/config/etcd
+  sed -i -e "122d" controller/config/etcd
+  sed -i -e '122i ETCD_INITIAL_CLUSTER_TOKEN="etcd-cluster-01"' controller/config/etcd
+  sed -i -e "133d" controller/config/etcd
+  sed -i -e "133i ETCD_ADVERTISE_CLIENT_URLS="http://${CTRL}:2379"" controller/config/etcd
 }
 
+keystone() {
+  echo "[OSTACK] Get keystone configuration file.."
+  cp controller/config/backup/keystone.conf.ori controller/config/keystone.conf
 
-echo " "
+  echo "[OSTACK] Orginal config found, create temporary config backup.."
+  sed -i -e "721d" controller/config/keystone.conf
+
+  echo "[OSTACK] Configuring keystone.."
+  sed -i -e "722i connection = mysql+pymysql://keystone:${KEYSTONE_DBPASS}@controller/keystone" controller/config/keystone.conf
+  sed -i -e '723i \\' controller/config/keystone.conf
+  echo "[OSTACK] Done."
+}
+
 echo "======================================================="
 echo "[OSTACK] Welcome to Configuration Generator"
 echo "======================================================="
-echo " "
-
 echo "Please answer this question carefully: "
 read -p "Number of host (Include controller and compute): " HOST
 read -p "Controller IP Address: " CTRL
@@ -450,24 +345,28 @@ case "${HOST}" in
         db
         memcached
         etcd
+        keystone
         ;;
     3)  three
         chrony
         db
         memcached
         etcd
+        #keystone
         ;;
     4)  four
         chrony
         db
         memcached
         etcd
+        #keystone
         ;;
     5)  five
         chrony
         db
         memcached
         etcd
+        #keystone
         ;;
     *)  echo "Input invalid. Input out of range or not a number."
         echo "Operation aborted."
