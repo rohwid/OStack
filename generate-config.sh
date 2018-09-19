@@ -23,6 +23,8 @@ ff02::3 ip6-allhosts
 EOF
 
   cp controller/config/hosts compute/config/hosts
+
+  echo "[OSTACK] Setup ${HOST} host done."
 }
 
 three() {
@@ -50,6 +52,8 @@ ff02::3 ip6-allhosts
 EOF
 
   cp controller/config/hosts compute/config/hosts
+
+  echo "[OSTACK] Setup ${HOST} host done."
 }
 
 four() {
@@ -81,6 +85,8 @@ ff02::3 ip6-allhosts
 EOF
 
   cp controller/config/hosts compute/config/hosts
+
+  echo "[OSTACK] Setup ${HOST} host done."
 }
 
 five() {
@@ -116,6 +122,8 @@ ff02::3 ip6-allhosts
 EOF
 
   cp controller/config/hosts compute/config/hosts
+
+  echo "[OSTACK] Setup ${HOST} host done."
 }
 
 chrony() {
@@ -219,6 +227,8 @@ rtcsync
 # one second, but only in the first three clock updates.
 makestep 1 3
 EOF
+
+  echo "[OSTACK] Chrony done."
 }
 
 db() {
@@ -234,6 +244,7 @@ max_connections = 4096
 collation-server = utf8_general_ci
 character-set-server = utf8
 EOF
+  echo "[OSTACK] Databases done."
 }
 
 memcached() {
@@ -291,6 +302,8 @@ logfile /var/log/memcached.log
 # Use a pidfile
 -P /var/run/memcached/memcached.pid
 EOF
+
+  echo "[OSTACK] Memcached done."
 }
 
 etcd() {
@@ -317,11 +330,13 @@ etcd() {
   sed -i -e '122i ETCD_INITIAL_CLUSTER_TOKEN="etcd-cluster-01"' controller/config/etcd
   sed -i -e "133d" controller/config/etcd
   sed -i -e "133i ETCD_ADVERTISE_CLIENT_URLS="http://${CTRL}:2379"" controller/config/etcd
+
+  echo "[OSTACK] Etcd done."
 }
 
 keystone() {
   echo "[OSTACK] Get keystone configuration file.."
-  cp controller/config/backup/keystone.conf.ori controller/config/keystone.conf
+  cp controller/config/backup/keystone.conf controller/config/
 
   echo "[OSTACK] Orginal config found, create temporary config backup.."
   sed -i -e "721d" controller/config/keystone.conf
@@ -329,11 +344,60 @@ keystone() {
   echo "[OSTACK] Configuring keystone.."
   sed -i -e "722i connection = mysql+pymysql://keystone:${KEYSTONE_DBPASS}@controller/keystone" controller/config/keystone.conf
   sed -i -e '723i \\' controller/config/keystone.conf
-  echo "[OSTACK] Done."
+  sed -i -e "2935d" controller/config/keystone.conf
+  sed -i -e "2935i provider = fernet" controller/config/keystone.conf
+
+  echo "[OSTACK] Get apache2 configuration file.."
+  cp controller/config/backup/apache2.conf controller/config/apache2.conf
+
+  echo " " >> controller/config/apache2.conf
+  echo "ServerName controller" >> controller/config/apache2.conf
+
+  echo "[OSTACK] Keystone done."
+}
+
+openrc() {
+  echo "[OSTACK] Creating init-openrc.."
+
+  cat > controller/config/init-openrc <<EOF
+export OS_USERNAME=admin
+export OS_PASSWORD=${KEYSTONE_ADMINPASS}
+export OS_PROJECT_NAME=admin
+export OS_USER_DOMAIN_NAME=Default
+export OS_PROJECT_DOMAIN_NAME=Default
+export OS_AUTH_URL=http://controller:5000/v3
+export OS_IDENTITY_API_VERSION=3
+EOF
+
+  echo "[OSTACK] Creating admin-openrc.."
+
+  cat > controller/config/admin-openrc <<EOF
+export OS_PROJECT_DOMAIN_NAME=Default
+export OS_USER_DOMAIN_NAME=Default
+export OS_PROJECT_NAME=admin
+export OS_USERNAME=admin
+export OS_PASSWORD=${KEYSTONE_ADMINPASS}
+export OS_AUTH_URL=http://controller:5000/v3
+export OS_IDENTITY_API_VERSION=3
+export OS_IMAGE_API_VERSION=2
+EOF
+
+  echo "[OSTACK] Creating demo-openrc.."
+
+  cat > controller/config/demo-openrc <<EOF
+export OS_PROJECT_DOMAIN_NAME=Default
+export OS_USER_DOMAIN_NAME=Default
+export OS_PROJECT_NAME=myproject
+export OS_USERNAME=myuser
+export OS_PASSWORD=${KEYSTONE_MYUSERPASS}
+export OS_AUTH_URL=http://controller:5000/v3
+export OS_IDENTITY_API_VERSION=3
+export OS_IMAGE_API_VERSION=2
+EOF
 }
 
 echo "======================================================="
-echo "[OSTACK] Welcome to Configuration Generator"
+echo "Welcome to openstack configuration generator"
 echo "======================================================="
 echo "Please answer this question carefully: "
 read -p "Number of host (Include controller and compute): " HOST
@@ -346,27 +410,31 @@ case "${HOST}" in
         memcached
         etcd
         keystone
+        openrc
         ;;
     3)  three
         chrony
         db
         memcached
         etcd
-        #keystone
+        keystone
+        openrc
         ;;
     4)  four
         chrony
         db
         memcached
         etcd
-        #keystone
+        keystone
+        openrc
         ;;
     5)  five
         chrony
         db
         memcached
         etcd
-        #keystone
+        keystone
+        openrc
         ;;
     *)  echo "Input invalid. Input out of range or not a number."
         echo "Operation aborted."

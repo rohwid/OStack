@@ -1,4 +1,4 @@
 #!/bin/bash
 
-rm controller/config/*
-rm compute/config/*
+rm -f controller/config/*
+rm -f compute/config/*
