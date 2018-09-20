@@ -15,21 +15,6 @@ chrony() {
       echo "[OSTACK] Creating original configuration backup.."
       sudo cp /etc/chrony/chrony.conf /etc/chrony/chrony.conf.ori
     fi
-
-    echo "[OSTACK] Configuring NTP with chrony.."
-    sudo cp ../config/chrony.conf /etc/chrony/
-
-    echo "[OSTACK] Modifiying chrony permission.."
-    sudo chown root:root /etc/chrony/chrony.conf
-    sudo chmod 644 /etc/chrony/chrony.conf
-
-    echo "[OSTACK] Restarting chrony.."
-    sudo service chrony stop
-    sudo chronyd -q "${CHRONICS} iburst"
-    sudo service chrony start
-
-    echo "[OSTACK] Done."
-    ostack_pkg
   else
     echo "[OSTACK] Chrony not found.."
     echo "[OSTACK] Installing chrony.."
@@ -42,22 +27,22 @@ chrony() {
       echo "[OSTACK] Creating original configuration backup.."
       sudo cp /etc/chrony/chrony.conf /etc/chrony/chrony.conf.ori
     fi
-
-    echo "[OSTACK] Configuring NTP with chrony.."
-    sudo cp ../config/chrony.conf /etc/chrony/
-
-    echo "[OSTACK] Modifiying chrony permission.."
-    sudo chown root:root /etc/chrony/chrony.conf
-    sudo chmod 644 /etc/chrony/chrony.conf
-
-    echo "[OSTACK] Restarting chrony.."
-    sudo service chrony stop
-    sudo chronyd -q "${CHRONICS} iburst"
-    sudo service chrony start
-
-    echo "[OSTACK] Done."
-    ostack_pkg
   fi
+
+  echo "[OSTACK] Configuring NTP with chrony.."
+  sudo cp ../config/chrony.conf /etc/chrony/
+
+  echo "[OSTACK] Modifiying chrony permission.."
+  sudo chown root:root /etc/chrony/chrony.conf
+  sudo chmod 644 /etc/chrony/chrony.conf
+
+  echo "[OSTACK] Restarting chrony.."
+  sudo service chrony stop
+  sudo chronyd -q "${CHRONICS} iburst"
+  sudo service chrony start
+
+  echo "[OSTACK] Done."
+  ostack_pkg
 }
 
 ostack_pkg() {
@@ -192,19 +177,6 @@ memcached() {
       echo "[OSTACK] Backup original configuration.."
       sudo cp /etc/memcached.conf /etc/memcached.conf.ori
     fi
-
-    echo "[OSTACK] Configuring memcached.."
-    sudo cp ../config/memcached.conf /etc/
-
-    echo "[OSTACK] Modifiying openstack databases permission.."
-    sudo chown root:root /etc/memcached.conf
-    sudo chmod 644 /etc/memcached.conf
-
-    echo "[OSTACK] Restarting memcached.."
-    sudo service memcached restart
-
-    echo "[OSTACK] Done."
-    etcd
   else
     echo "[OSTACK] Memcached not found.."
     echo "[OSTACK] Installing memcached.."
@@ -217,20 +189,20 @@ memcached() {
       echo "[OSTACK] Backup original configuration.."
       sudo cp /etc/memcached.conf /etc/memcached.conf.ori
     fi
-
-    echo "[OSTACK] Configuring memcached.."
-    sudo cp ../config/memcached.conf /etc/
-
-    echo "[OSTACK] Modifiying memcached permission.."
-    sudo chown root:root /etc/memcached.conf
-    sudo chmod 644 /etc/memcached.conf
-
-    echo "[OSTACK] Restarting memcached.."
-    sudo service memcached restart
-
-    echo "[OSTACK] Done."
-    etcd
   fi
+
+  echo "[OSTACK] Configuring memcached.."
+  sudo cp ../config/memcached.conf /etc/
+
+  echo "[OSTACK] Modifiying memcached permission.."
+  sudo chown root:root /etc/memcached.conf
+  sudo chmod 644 /etc/memcached.conf
+
+  echo "[OSTACK] Restarting memcached.."
+  sudo service memcached restart
+
+  echo "[OSTACK] Done."
+  etcd
 }
 
 etcd() {

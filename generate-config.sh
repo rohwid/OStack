@@ -308,7 +308,7 @@ EOF
 etcd() {
   echo "[OSTACK] Configuring etcd.."
   echo "[OSTACK] Get etcd configuration file.."
-  cp controller/config/backup/etcd controller/config/
+  cp controller/config/backup/etcd.ori controller/config/etcd
 
   echo "[OSTACK] Configuring etcd.."
   sed -i -e "12d" controller/config/etcd
@@ -335,24 +335,70 @@ etcd() {
 
 keystone() {
   echo "[OSTACK] Get keystone configuration file.."
-  cp controller/config/backup/keystone.conf controller/config/
-
-  echo "[OSTACK] Orginal config found, create temporary config backup.."
-  sed -i -e "721d" controller/config/keystone.conf
+  cp controller/config/backup/keystone.conf.ori controller/config/keystone.conf
 
   echo "[OSTACK] Configuring keystone.."
+  sed -i -e "721d" controller/config/keystone.conf
   sed -i -e "722i connection = mysql+pymysql://keystone:${KEYSTONE_DBPASS}@controller/keystone" controller/config/keystone.conf
   sed -i -e '723i \\' controller/config/keystone.conf
   sed -i -e "2935d" controller/config/keystone.conf
   sed -i -e "2935i provider = fernet" controller/config/keystone.conf
 
   echo "[OSTACK] Get apache2 configuration file.."
-  cp controller/config/backup/apache2.conf controller/config/apache2.conf
+  cp controller/config/backup/apache2.conf.ori controller/config/apache2.conf
 
   echo " " >> controller/config/apache2.conf
   echo "ServerName controller" >> controller/config/apache2.conf
 
   echo "[OSTACK] Keystone done."
+}
+
+glance() {
+  echo "[OSTACK] Get glance configuration file.."
+  cp controller/config/backup/glance-api.conf.ori controller/config/glance-api.conf
+
+  echo "[OSTACK] Configuring glance-api.."
+  sed -i -e "1925d" controller/config/glance-api.conf
+  sed -i -e '1925i \\' controller/config/glance-api.conf
+  sed -i -e '1926i \\' controller/config/glance-api.conf
+  sed -i -e "1926i connection = mysql+pymysql://glance:${GLANCE_DBPASS}@controller/glance" controller/config/glance-api.conf
+  sed -i -e '2045i \\' controller/config/glance-api.conf
+  sed -i -e '2045i stores = file,http' controller/config/glance-api.conf
+  sed -i -e '2046i default_store = file' controller/config/glance-api.conf
+  sed -i -e '2047i filesystem_store_datadir = /var/lib/glance/images/' controller/config/glance-api.conf
+  sed -i -e '3482i \\' controller/config/glance-api.conf
+  sed -i -e '3482i www_authenticate_uri = http://controller:5000' controller/config/glance-api.conf
+  sed -i -e '3483i auth_url = http://controller:5000' controller/config/glance-api.conf
+  sed -i -e '3484i memcached_servers = controller:11211' controller/config/glance-api.conf
+  sed -i -e '3485i auth_type = password' controller/config/glance-api.conf
+  sed -i -e '3486i project_domain_name = Default' controller/config/glance-api.conf
+  sed -i -e '3487i user_domain_name = Default' controller/config/glance-api.conf
+  sed -i -e '3488i project_name = service' controller/config/glance-api.conf
+  sed -i -e '3489i username = glance' controller/config/glance-api.conf
+  sed -i -e "3490i password = ${GLANCE_ADMINPASS}" controller/config/glance-api.conf
+
+  echo "[OSTACK] Get glance configuration file.."
+  cp controller/config/backup/glance-registry.conf.ori controller/config/glance-registry.conf
+
+  echo "[OSTACK] Configuring glance-registry.."
+  sed -i -e "1171d" controller/config/glance-registry.conf
+  sed -i -e '1171i \\' controller/config/glance-registry.conf
+  sed -i -e '1172i \\' controller/config/glance-registry.conf
+  sed -i -e "1172i connection = mysql+pymysql://glance:${GLANCE_DBPASS}@controller/glance" controller/config/glance-registry.conf
+  sed -i -e '1291i \\' controller/config/glance-registry.conf
+  sed -i -e '1291i www_authenticate_uri = http://controller:5000' controller/config/glance-registry.conf
+  sed -i -e '1292i auth_url = http://controller:5000' controller/config/glance-registry.conf
+  sed -i -e '1293i memcached_servers = controller:11211' controller/config/glance-registry.conf
+  sed -i -e '1294i auth_type = password' controller/config/glance-registry.conf
+  sed -i -e '1295i project_domain_name = Default' controller/config/glance-registry.conf
+  sed -i -e '1296i user_domain_name = Default' controller/config/glance-registry.conf
+  sed -i -e '1297i project_name = service' controller/config/glance-registry.conf
+  sed -i -e '1298i username = glance' controller/config/glance-registry.conf
+  sed -i -e "1299i password = ${GLANCE_DBPASS}" controller/config/glance-registry.conf
+  sed -i -e "2303d" controller/config/glance-registry.conf
+  sed -i -e '2303i flavor = keystone' controller/config/glance-registry.conf
+
+  echo "[OSTACK] Glance done."
 }
 
 openrc() {
@@ -393,6 +439,8 @@ export OS_AUTH_URL=http://controller:5000/v3
 export OS_IDENTITY_API_VERSION=3
 export OS_IMAGE_API_VERSION=2
 EOF
+
+  echo "[OSTACK] All openrc created."
 }
 
 echo "======================================================="
@@ -409,6 +457,7 @@ case "${HOST}" in
         memcached
         etcd
         keystone
+        glance
         openrc
         ;;
     3)  three
@@ -417,6 +466,7 @@ case "${HOST}" in
         memcached
         etcd
         keystone
+        glance
         openrc
         ;;
     4)  four
@@ -425,6 +475,7 @@ case "${HOST}" in
         memcached
         etcd
         keystone
+        glance
         openrc
         ;;
     5)  five
@@ -433,6 +484,7 @@ case "${HOST}" in
         memcached
         etcd
         keystone
+        glance
         openrc
         ;;
     *)  echo "Input invalid. Input out of range or not a number."

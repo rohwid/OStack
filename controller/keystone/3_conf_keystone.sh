@@ -2,28 +2,35 @@
 
 source ../services
 
-keystone_db() {
+db() {
   read -n1 -r -p "Create keystone database on '$(hostname)'. press ENTER to continue!" ENTER
 
-  mysql --user="${MYSQL_USER}" --password="${MYSQL_PASS}" --execute="CREATE DATABASE keystone; GRANT ALL PRIVILEGES ON keystone.* TO 'keystone'@'localhost' IDENTIFIED BY '${KEYSTONE_DBPASS}'; GRANT ALL PRIVILEGES ON keystone.* TO 'keystone'@'%' IDENTIFIED BY '${KEYSTONE_DBPASS}';"
+  sudo mysql --user="${MYSQL_USER}" --password="${MYSQL_PASS}" --execute="CREATE DATABASE keystone; GRANT ALL PRIVILEGES ON keystone.* TO 'keystone'@'localhost' IDENTIFIED BY '${KEYSTONE_DBPASS}'; GRANT ALL PRIVILEGES ON keystone.* TO 'keystone'@'%' IDENTIFIED BY '${KEYSTONE_DBPASS}';"
 
-  keystone_pkg
+  pkg
 }
 
-keystone_pkg() {
+pkg() {
   read -n1 -r -p "Install and configure keystone on '$(hostname)'. press ENTER to continue!" ENTER
 
   if [[ -d /etc/keystone ]]; then
     echo "[OSTACK] Keystone found.."
     echo "[OSTACK] Creating last configuration backup.."
-    sudo cp /etc/chrony/chrony.conf /etc/chrony/chrony.conf.bak
+
+    if [[ -f /etc/keystone/keystone.conf.ori ]]; then
+      echo "[OSTACK] Creating last configuration backup.."
+      sudo cp /etc/keystone/keystone.conf /etc/keystone/keystone.conf.bak
+    else
+      echo "[OSTACK] Creating original configuration backup.."
+      sudo cp /etc/keystone/keystone.conf /etc/keystone/keystone.conf.ori
+    fi
   else
     echo "[OSTACK] Keystone not found.."
     echo "[OSTACK] Installing keystone.."
     sudo apt install keystone apache2 libapache2-mod-wsgi -y
 
-    echo "[OSTACK] Creating configuration backup.."
-    sudo cp /etc/chrony/chrony.conf /etc/chrony/chrony.conf.ori
+    echo "[OSTACK] Creating original configuration backup.."
+    sudo cp /etc/keystone/keystone.conf /etc/keystone/keystone.conf.ori
   fi
 
   echo "[OSTACK] Configuring keystone.."
@@ -49,14 +56,21 @@ keystone_pkg() {
 apache() {
   read -n1 -r -p "Install and configure apache2 on '$(hostname)'. press ENTER to continue!" ENTER
 
-  if [[ -f /etc/apache2/apache2.conf ]]; then
+  if [[ -d /etc/apache2 ]]; then
     echo "[OSTACK] Apache2 found.."
     echo "[OSTACK] Creating last configuration backup.."
-    sudo cp /etc/apache2/apache2.conf /etc/apache2/apache2.conf.bak
+
+    if [[ -f /etc/apache2/apache2.conf.ori ]]; then
+      echo "[OSTACK] Creating last configuration backup.."
+      sudo cp /etc/apache2/apache2.conf /etc/apache2/apache2.conf.bak
+    else
+      echo "[OSTACK] Creating original configuration backup.."
+      sudo cp /etc/apache2/apache2.conf /etc/apache2/apache2.conf.ori
+    fi
   else
     echo "[OSTACK] Apache2 not found.."
     echo "[OSTACK] Installing apache2.."
-    sudo apt install apache2
+    sudo apt install apache2 libapache2-mod-wsgi -y
 
     echo "[OSTACK] Creating original configuration backup.."
     sudo cp /etc/apache2/apache2.conf /etc/apache2/apache2.conf.ori
@@ -120,4 +134,4 @@ done_mesg() {
 echo "======================================================="
 echo "Configure openstack KEYSTONE on '$(hostname)'.."
 echo "======================================================="
-keystone_db
+db
