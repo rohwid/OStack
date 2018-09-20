@@ -6,6 +6,8 @@ keystone_db() {
   read -n1 -r -p "Create keystone database on '$(hostname)'. press ENTER to continue!" ENTER
 
   mysql --user="${MYSQL_USER}" --password="${MYSQL_PASS}" --execute="CREATE DATABASE keystone; GRANT ALL PRIVILEGES ON keystone.* TO 'keystone'@'localhost' IDENTIFIED BY '${KEYSTONE_DBPASS}'; GRANT ALL PRIVILEGES ON keystone.* TO 'keystone'@'%' IDENTIFIED BY '${KEYSTONE_DBPASS}';"
+
+  keystone_pkg
 }
 
 keystone_pkg() {
@@ -18,7 +20,7 @@ keystone_pkg() {
   else
     echo "[OSTACK] Keystone not found.."
     echo "[OSTACK] Installing keystone.."
-    sudo apt install keystone apache2 libapache2-mod-wsgi
+    sudo apt install keystone apache2 libapache2-mod-wsgi -y
 
     echo "[OSTACK] Creating configuration backup.."
     sudo cp /etc/chrony/chrony.conf /etc/chrony/chrony.conf.ori
@@ -98,18 +100,20 @@ openrc() {
 done_mesg() {
     echo "[OSTACK] Done."
 
-    echo "======================================================="
+    echo "==================================================================================="
     echo "Post installation note"
-    echo "======================================================="
-    echo "Configure administrative account in your linux enviroment."
-    echo "Before continue to next step on '4_conf_keystone.sh'."
-    echo "Use 'init-openrc' to load all enviroment varaible:"
+    echo "==================================================================================="
+    echo "Configure administrative account in your linux enviroment.Before continue to next "
+    echo "step on '4_conf_keystone.sh'.Use 'init-openrc' to load all enviroment varaible:"
     echo " "
-    echo "$ . ~/init-openrc"
+    echo "$ . ~/ostack-openrc/init-openrc"
     echo " "
-    echo "Or"
+    echo "OR"
     echo " "
-    echo "$ source ~/init-openrc"
+    echo "$ source ~/ostack-openrc/init-openrc"
+    echo " "
+    echo "==================================================================================="
+    echo " "
     echo " "
 }
 

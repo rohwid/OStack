@@ -1,8 +1,12 @@
 #!/bin/bash
 
-echo "======================================================="
+echo "==================================================================================="
 echo "Configure openstack KEYSTONE on '$(hostname)'.."
-echo "======================================================="
+echo "==================================================================================="
+echo " "
+echo "WARNING! Please execute it with user which load "
+echo "'~/ostack-openrc/admin-openrc' as enviroment variable"
+echo " "
 
 read -n1 -r -p "Create new domain on keystone as example domain. press ENTER to continue!" ENTER
 openstack domain create --description "An Example Domain" example
@@ -33,19 +37,22 @@ openstack --os-auth-url http://controller:5000/v3 --os-project-domain-name Defau
 
 echo "[OSTACK] Done."
 
-echo "======================================================="
-echo "Post installation note"
-echo "======================================================="
+echo "==================================================================================="
+echo "POST INSTALLATION NOTE"
+echo "==================================================================================="
 echo "Load the 'admin-openrc' file to populate environment variables."
 echo "It will also load the location of keystone and admin project and user credentials:"
 echo " "
 echo "$ . ~/ostack-openrc/admin-openrc"
 echo " "
-echo "Or"
+echo "OR"
 echo " "
 echo "$ source ~/ostack-openrc/admin-openrc"
 echo " "
 echo "Then request the authentication token:"
 echo " "
 echo "$ openstack token issue"
+echo " "
+echo "==================================================================================="
+echo " "
 echo " "
