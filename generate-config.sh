@@ -9,10 +9,10 @@ two() {
 127.0.0.1	localhost
 
 # controller
-${CTRL}	controller
+${CTRL}   controller
 
 # compute1
-${COM1} compute1
+${COM1}   compute1
 
 # The following lines are desirable for IPv6 capable hosts
 ::1     localhost ip6-localhost ip6-loopback
@@ -35,13 +35,13 @@ three() {
 127.0.0.1	localhost
 
 # controller
-${CTRL}	controller
+${CTRL}   controller
 
 # compute1
-${COM1} compute1
+${COM1}   compute1
 
 # compute2
-${COM2} compute2
+${COM2}   compute2
 
 # The following lines are desirable for IPv6 capable hosts
 ::1     localhost ip6-localhost ip6-loopback
@@ -65,16 +65,16 @@ four() {
 127.0.0.1	localhost
 
 # controller
-${CTRL}	controller
+${CTRL}   controller
 
 # compute1
-${COM1} compute1
+${COM1}   compute1
 
 # compute2
-${COM2} compute2
+${COM2}   compute2
 
 # compute3
-${COM3} compute3
+${COM3}   compute3
 
 # The following lines are desirable for IPv6 capable hosts
 ::1     localhost ip6-localhost ip6-loopback
@@ -99,19 +99,19 @@ five() {
 127.0.0.1	localhost
 
 # controller
-${CTRL}	controller
+${CTRL}   controller
 
 # compute1
-${COM1} compute1
+${COM1}   compute1
 
 # compute2
-${COM2} compute2
+${COM2}   compute2
 
 # compute3
-${COM3} compute3
+${COM3}   compute3
 
 # compute4
-${COM4} compute4
+${COM4}   compute4
 
 # The following lines are desirable for IPv6 capable hosts
 ::1     localhost ip6-localhost ip6-loopback
@@ -127,7 +127,6 @@ EOF
 }
 
 chrony() {
-  read -p "Enter NTP server: " NTP
   read -p "Enter management network: " MAN_NET
 
   echo "[OSTACK] Configuring NTP with chrony.."
@@ -151,7 +150,7 @@ chrony() {
 # See http://www.pool.ntp.org/join.html for more information.
 
 # NTP server Indonesia
-${NTP} iburst
+${CHRONICS} iburst
 
 # This directive specify the location of the file containing ID/key pairs for
 # NTP authentication.

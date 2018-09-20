@@ -34,20 +34,20 @@ compute() {
 
 ctrl_with_port() {
     read -p "Enter port number:" PORT
-    scp -P $PORT -r [!.]* $UNAME@$IP_ADDR:~/ostack/controller
+    scp -P $PORT controller $UNAME@$IP_ADDR:~
 }
 
 ctrl_without_port() {
-    scp -r [!.]* $UNAME@$IP_ADDR:~/ostack/controller
+    scp -r controller $UNAME@$IP_ADDR:~
 }
 
 comp_with_port() {
     read -p "Enter port number:" PORT
-    scp -P $PORT -r [!.]* $UNAME@$IP_ADDR:~/ostack/compute
+    scp -P $PORT compute -r [!.]* $UNAME@$IP_ADDR:~
 }
 
 comp_without_port() {
-    scp -r [!.]* $UNAME@$IP_ADDR:~/ostack/compute
+    scp -r compute $UNAME@$IP_ADDR:~
 }
 
 read -p "Enter Username: " UNAME

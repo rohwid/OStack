@@ -1,10 +1,10 @@
 #!/bin/bash
 
-source ../../services.sh
+source ../services
 
 config_hosts() {
   echo "======================================================="
-  echo "[OSTACK] Configure controller hosts"
+  echo "Configure openstack controller hosts"
   echo "======================================================="
 
   if [[ -f /etc/hosts.ori ]]; then
@@ -24,20 +24,18 @@ config_hosts() {
 
 config_hostname() {
   echo "======================================================="
-  echo "[OSTACK] Configure controller hostname"
+  echo "Configure openstack controller hostname"
   echo "======================================================="
-
-  read -p "Enter hostname (Compute1,2,... n): " NAME
 
   if [[ -f /etc/hostname.ori ]]; then
     echo "[OSTACK] Configuring openstack controller hostname.."
-    echo ${NAME} > /etc/hostname
+    sudo echo "controller" > /etc/hostname
   else
     echo "[OSTACK] Backup original configuration.."
     sudo cp /etc/hostname /etc/hostname.ori
 
     echo "[OSTACK] Configuring openstack controller hosts.."
-    sudo echo ${NAME} > /etc/hostname
+    sudo echo "controller" > /etc/hostname
   fi
 
   echo "[OSTACK] Done."

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source ../services.sh
+source ../services
 
 chrony() {
   read -n1 -r -p "Install and configure NTP with chrony on '$(hostname)'. press ENTER to continue!" ENTER
@@ -24,7 +24,9 @@ chrony() {
     sudo chmod 644 /etc/chrony/chrony.conf
 
     echo "[OSTACK] Restarting chrony.."
-    service chrony restart
+    sudo service chrony stop
+    sudo chronyd -q "${CHRONICS} iburst"
+    sudo service chrony start
 
     echo "[OSTACK] Done."
     ostack_pkg
@@ -49,7 +51,9 @@ chrony() {
     sudo chmod 644 /etc/chrony/chrony.conf
 
     echo "[OSTACK] Restarting chrony.."
-    sudo service chrony restart
+    sudo service chrony stop
+    sudo chronyd -q "${CHRONICS} iburst"
+    sudo service chrony start
 
     echo "[OSTACK] Done."
     ostack_pkg
@@ -246,7 +250,7 @@ etcd() {
   else
     echo "[OSTACK] Etcd not found.."
     echo "[OSTACK] Installing etcd.."
-    sudo apt install memcached python-memcache -y
+    sudo apt install etcd -y
 
     if [[ -f /etc/default/etcd.ori ]]; then
       echo "[OSTACK] Backup current configuration.."

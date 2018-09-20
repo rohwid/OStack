@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source ../services.sh
+source ../services
 
 chrony() {
   read -n1 -r -p "Install and configure NTP with chrony on '$(hostname)'. press ENTER to continue!" ENTER
@@ -23,7 +23,9 @@ chrony() {
     fi
 
     echo "[OSTACK] Restarting chrony.."
-    sudo service chrony restart
+    sudo service chrony stop
+    sudo chronyd -q "server controller iburst"
+    sudo service chrony start
 
     echo "[OSTACK] Done."
     ostack_pkg
@@ -47,7 +49,9 @@ chrony() {
     fi
 
     echo "[OSTACK] Restarting chrony.."
-    sudo service chrony restart
+    sudo service chrony stop
+    sudo chronyd -q "server controller iburst"
+    sudo service chrony start
 
     echo "[OSTACK] Done."
     ostack_pkg
