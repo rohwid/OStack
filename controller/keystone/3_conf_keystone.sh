@@ -100,13 +100,19 @@ openrc() {
   mkdir ~/ostack-openrc
 
   echo "[OSTACK] Configuring init-openrc.."
-  sudo cp ../config/init-openrc ~/ostack-openrc
+  if [[ ! -f ~/ostack-openrc/init-openrc ]];then
+    sudo cp ../config/init-openrc ~/ostack-openrc
+  fi
 
   echo "[OSTACK] Configuring admin-openrc.."
-  sudo cp ../config/admin-openrc ~/ostack-openrc
+  if [[ ! -f ~/ostack-openrc/admin-openrc ]];then
+    sudo cp ../config/admin-openrc ~/ostack-openrc
+  fi
 
   echo "[OSTACK] Configuring demo-openrc.."
-  sudo cp ../config/admin-openrc ~/ostack-openrc
+  if [[ ! -f ~/ostack-openrc/demo-openrc ]];then
+    sudo cp ../config/demo-openrc ~/ostack-openrc
+  fi
 
   done_mesg
 }

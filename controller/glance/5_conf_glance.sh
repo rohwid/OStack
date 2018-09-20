@@ -9,7 +9,7 @@ db() {
 }
 
 pkg() {
-  read -n1 -r -p "Create glance database on '$(hostname)'. press ENTER to continue!" ENTER
+  read -n1 -r -p "Install glance package on '$(hostname)'. press ENTER to continue!" ENTER
 
   if [[ -d /etc/glance ]]; then
     echo "[OSTACK] Glance found.."
@@ -63,6 +63,25 @@ pkg() {
   sudo service glance-api restart
 }
 
+verify() {
+  read -n1 -r -p "Verify glance service. press ENTER to continue!" ENTER
+
+  echo "[OSTACK] Create glance image directory and download images.."
+  if [[ ! -d ~/glance-images ]]; then
+    mkdir ~/glance-images
+  fi
+
+  if [[ ! -f ~/glance-images/cirros-0.4.0-x86_64-disk.img ]]; then
+    wget -P ~/glance-images/ http://download.cirros-cloud.net/0.4.0/cirros-0.4.0-x86_64-disk.img
+  fi
+
+  read -n1 -r -p "Upload images to glance. press ENTER to continue!" ENTER
+  openstack image create "cirros" --file ~/glance-images/cirros-0.4.0-x86_64-disk.img --disk-format qcow2 --container-format bare --public
+
+  read -n1 -r -p "Show images in glance. press ENTER to continue!" ENTER
+  openstack image list
+}
+
 
 echo "==================================================================================="
 echo "Configure openstack KEYSTONE on '$(hostname)'.."
@@ -95,5 +114,7 @@ read -n1 -r -p "Create admin Image service API endpoints. press ENTER to continu
 openstack endpoint create --region RegionOne image admin http://controller:9292
 
 pkg
+
+verify
 
 echo "[OSTACK] Done."

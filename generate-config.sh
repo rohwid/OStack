@@ -394,7 +394,7 @@ glance() {
   sed -i -e '1296i user_domain_name = Default' controller/config/glance-registry.conf
   sed -i -e '1297i project_name = service' controller/config/glance-registry.conf
   sed -i -e '1298i username = glance' controller/config/glance-registry.conf
-  sed -i -e "1299i password = ${GLANCE_DBPASS}" controller/config/glance-registry.conf
+  sed -i -e "1299i password = ${GLANCE_ADMINPASS}" controller/config/glance-registry.conf
   sed -i -e "2303d" controller/config/glance-registry.conf
   sed -i -e '2303i flavor = keystone' controller/config/glance-registry.conf
 
