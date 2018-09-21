@@ -26,8 +26,6 @@ db() {
           echo "Operation aborted."
           exit
   esac
-
-  pkg
 }
 
 pkg() {

@@ -27,8 +27,7 @@ chrony() {
     sudo chronyd -q "server controller iburst"
     sudo service chrony start
 
-    echo "[OSTACK] Done."
-    ostack_pkg
+    echo "[OSTACK] Chrony done."
   else
     echo "[OSTACK] Chrony not found.."
     echo "[OSTACK] Installing chrony.."
@@ -53,8 +52,7 @@ chrony() {
     sudo chronyd -q "server controller iburst"
     sudo service chrony start
 
-    echo "[OSTACK] Done."
-    ostack_pkg
+    echo "[OSTACK] Chrony done."
   fi
 }
 
@@ -73,3 +71,6 @@ echo "======================================================="
 echo "[OSTACK] CONFIGURING ENVIRONMENT ON '$(hostname)'.."
 echo "======================================================="
 chrony
+ostack_pkg
+
+echo "[OSTACK] Done."

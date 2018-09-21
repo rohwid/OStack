@@ -108,6 +108,9 @@ config_db() {
 
       echo "[OSTACK] Restarting MySQL.."
       sudo service mysql restart
+
+      echo "[OSTACK] MySQL secure installation.."
+      sudo mysql_secure_installation
     else
       echo "[OSTACK] Creating openstack mysql configuration for openstack.."
       sudo cp ../config/99-openstack.cnf /etc/mysql/mariadb.conf.d/
@@ -124,8 +127,7 @@ config_db() {
     fi
   fi
 
-  echo "[OSTACK] Done."
-  rabbit_mq
+  echo "[OSTACK] Database done."
 }
 
 rabbit_mq() {
@@ -143,8 +145,7 @@ rabbit_mq() {
     echo "[OSTACK] restart rabbitmq-server.."
     sudo service rabbitmq-server restart
 
-    echo "[OSTACK] Done."
-    memcached
+    echo "[OSTACK] RabbitMQ done."
   else
     echo "[OSTACK] Rabbitmq-server not found.."
     echo "[OSTACK] Installing rabbitmq-server.."
@@ -159,8 +160,7 @@ rabbit_mq() {
     echo "[OSTACK] restart rabbitmq-server.."
     sudo service rabbitmq-server restart
 
-    echo "[OSTACK] Done."
-    memcached
+    echo "[OSTACK] RabbitMQ done."
   fi
 }
 
@@ -201,8 +201,7 @@ memcached() {
   echo "[OSTACK] Restarting memcached.."
   sudo service memcached restart
 
-  echo "[OSTACK] Done."
-  etcd
+  echo "[OSTACK] Memcached done."
 }
 
 etcd() {
@@ -245,11 +244,16 @@ etcd() {
   sudo systemctl enable etcd
   sudo systemctl start etcd
 
-  echo "[OSTACK] Done."
+  echo "[OSTACK] Etcd done."
 }
 
 echo "======================================================="
 echo "[OSTACK] Configure ENVIRONMENT on '$(hostname)'.."
 echo "======================================================="
-
 chrony
+config_db
+rabbit_mq
+memcached
+etcd
+
+echo "[OSTACK] Done done."

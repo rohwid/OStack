@@ -14,6 +14,7 @@ echo " "
 echo " $ source ~/ostack-openrc/init-openrc"
 echo " "
 echo "==================================================================================="
+echo " "
 
 register() {
   read -p "Have you setup keystone register service? [Y/N]: " OPT
