@@ -376,6 +376,8 @@ glance() {
   sed -i -e '3488i project_name = service' controller/config/glance-api.conf
   sed -i -e '3489i username = glance' controller/config/glance-api.conf
   sed -i -e "3490i password = ${GLANCE_ADMINPASS}" controller/config/glance-api.conf
+  sed -i -e "4521d" controller/config/glance-api.conf
+  sed -i -e '4521i flavor = keystone' controller/config/glance-api.conf
 
   echo "[OSTACK] Get glance configuration file.."
   cp controller/config/backup/glance-registry.conf.ori controller/config/glance-registry.conf

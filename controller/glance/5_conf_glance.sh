@@ -3,9 +3,83 @@
 source ../services
 
 db() {
-  read -n1 -r -p "Create glance database on '$(hostname)'. press ENTER to continue!" ENTER
+  read -p "Have you register glance to database? [Y/N]: " OPT
 
-  sudo mysql --user="${MYSQL_USER}" --password="${MYSQL_PASS}" --execute="CREATE DATABASE glance; GRANT ALL PRIVILEGES ON glance.* TO 'glance'@'localhost' IDENTIFIED BY '${GLANCE_DBPASS}'; GRANT ALL PRIVILEGES ON glance.* TO 'glance'@'%' IDENTIFIED BY '${GLANCE_DBPASS}';"
+  case "${OPT}" in
+      Y)  register
+          ;;
+      y)  register
+          ;;
+      N)  read -n1 -r -p "Create glance database on '$(hostname)'. press ENTER to continue!" ENTER
+
+          sudo mysql --user="${MYSQL_USER}" --password="${MYSQL_PASS}" --execute="CREATE DATABASE glance; GRANT ALL PRIVILEGES ON glance.* TO 'glance'@'localhost' IDENTIFIED BY '${GLANCE_DBPASS}'; GRANT ALL PRIVILEGES ON glance.* TO 'glance'@'%' IDENTIFIED BY '${GLANCE_DBPASS}';"
+
+          register
+          ;;
+      n)  read -n1 -r -p "Create glance database on '$(hostname)'. press ENTER to continue!" ENTER
+
+          sudo mysql --user="${MYSQL_USER}" --password="${MYSQL_PASS}" --execute="CREATE DATABASE glance; GRANT ALL PRIVILEGES ON glance.* TO 'glance'@'localhost' IDENTIFIED BY '${GLANCE_DBPASS}'; GRANT ALL PRIVILEGES ON glance.* TO 'glance'@'%' IDENTIFIED BY '${GLANCE_DBPASS}';"
+
+          register
+          ;;
+      *)  echo "Input invalid. Please choose between [Y/N]."
+          echo "Operation aborted."
+          exit
+  esac
+}
+
+register() {
+  read -p "Have you register glance to keystone? [Y/N]: " OPT
+
+  case "${OPT}" in
+      Y)  pkg
+          ;;
+      y)  pkg
+          ;;
+      N)  read -n1 -r -p "Create glance user. press ENTER to continue!" ENTER
+          openstack user create --domain default --password-prompt glance
+
+          read -n1 -r -p "Add admin role to glance user and service project. press ENTER to continue!" ENTER
+          openstack role add --project service --user glance admin
+
+          read -n1 -r -p "Create the glance service entity. press ENTER to continue!" ENTER
+          openstack service create --name glance --description "OpenStack Image" image
+
+          read -n1 -r -p "Create public Image service API endpoints. press ENTER to continue!" ENTER
+          openstack endpoint create --region RegionOne image public http://controller:9292
+
+          read -n1 -r -p "Create internal Image service API endpoints. press ENTER to continue!" ENTER
+          openstack endpoint create --region RegionOne image internal http://controller:9292
+
+          read -n1 -r -p "Create admin Image service API endpoints. press ENTER to continue!" ENTER
+          openstack endpoint create --region RegionOne image admin http://controller:9292
+
+          pkg
+          ;;
+      n)  read -n1 -r -p "Create glance user. press ENTER to continue!" ENTER
+          openstack user create --domain default --password-prompt glance
+
+          read -n1 -r -p "Add admin role to glance user and service project. press ENTER to continue!" ENTER
+          openstack role add --project service --user glance admin
+
+          read -n1 -r -p "Create the glance service entity. press ENTER to continue!" ENTER
+          openstack service create --name glance --description "OpenStack Image" image
+
+          read -n1 -r -p "Create public Image service API endpoints. press ENTER to continue!" ENTER
+          openstack endpoint create --region RegionOne image public http://controller:9292
+
+          read -n1 -r -p "Create internal Image service API endpoints. press ENTER to continue!" ENTER
+          openstack endpoint create --region RegionOne image internal http://controller:9292
+
+          read -n1 -r -p "Create admin Image service API endpoints. press ENTER to continue!" ENTER
+          openstack endpoint create --region RegionOne image admin http://controller:9292
+
+          pkg
+          ;;
+      *)  echo "Input invalid. Please choose between [Y/N]."
+          echo "Operation aborted."
+          exit
+  esac
 }
 
 pkg() {
@@ -37,6 +111,9 @@ pkg() {
 
     echo "[OSTACK] Creating configuration backup.."
     sudo cp /etc/glance/glance-api.conf /etc/glance/glance-api.conf.ori
+
+    echo "[OSTACK] Creating configuration backup.."
+    sudo cp /etc/glance/glance-registry.conf /etc/glance/glance-registry.conf.ori
   fi
 
   echo "[OSTACK] Configuring glance-api.."
@@ -90,30 +167,16 @@ echo " "
 echo "WARNING! Please make sure you have execute '~/ostack-openrc/admin-openrc'"
 echo "as enviroment variable before continue this process."
 echo " "
+echo " $ . ~/ostack-openrc/admin-openrc"
+echo " "
+echo " OR"
+echo " "
+echo " $ source ~/ostack-openrc/admin-openrc"
+echo " "
+echo "==================================================================================="
+
 read -n1 -r -p "Press ENTER to continue or CTRL+C to cancel!" ENTER
-
 db
-
-read -n1 -r -p "Create glance user. press ENTER to continue!" ENTER
-openstack user create --domain default --password-prompt glance
-
-read -n1 -r -p "Add admin role to glance user and service project. press ENTER to continue!" ENTER
-openstack role add --project service --user glance admin
-
-read -n1 -r -p "Create the glance service entity. press ENTER to continue!" ENTER
-openstack service create --name glance --description "OpenStack Image" image
-
-read -n1 -r -p "Create public Image service API endpoints. press ENTER to continue!" ENTER
-openstack endpoint create --region RegionOne image public http://controller:9292
-
-read -n1 -r -p "Create internal Image service API endpoints. press ENTER to continue!" ENTER
-openstack endpoint create --region RegionOne image internal http://controller:9292
-
-read -n1 -r -p "Create admin Image service API endpoints. press ENTER to continue!" ENTER
-openstack endpoint create --region RegionOne image admin http://controller:9292
-
-pkg
-
 verify
 
 echo "[OSTACK] Done."

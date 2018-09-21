@@ -3,9 +3,29 @@
 source ../services
 
 db() {
-  read -n1 -r -p "Create keystone database on '$(hostname)'. press ENTER to continue!" ENTER
+  read -p "Have you register keystone to database? [Y/N]: " OPT
 
-  sudo mysql --user="${MYSQL_USER}" --password="${MYSQL_PASS}" --execute="CREATE DATABASE keystone; GRANT ALL PRIVILEGES ON keystone.* TO 'keystone'@'localhost' IDENTIFIED BY '${KEYSTONE_DBPASS}'; GRANT ALL PRIVILEGES ON keystone.* TO 'keystone'@'%' IDENTIFIED BY '${KEYSTONE_DBPASS}';"
+  case "${OPT}" in
+      Y)  pkg
+          ;;
+      y)  pkg
+          ;;
+      N)  read -n1 -r -p "Create keystone database on '$(hostname)'. press ENTER to continue!" ENTER
+
+          sudo mysql --user="${MYSQL_USER}" --password="${MYSQL_PASS}" --execute="CREATE DATABASE keystone; GRANT ALL PRIVILEGES ON keystone.* TO 'keystone'@'localhost' IDENTIFIED BY '${KEYSTONE_DBPASS}'; GRANT ALL PRIVILEGES ON keystone.* TO 'keystone'@'%' IDENTIFIED BY '${KEYSTONE_DBPASS}';"
+
+          pkg
+          ;;
+      n)  read -n1 -r -p "Create keystone database on '$(hostname)'. press ENTER to continue!" ENTER
+
+          sudo mysql --user="${MYSQL_USER}" --password="${MYSQL_PASS}" --execute="CREATE DATABASE keystone; GRANT ALL PRIVILEGES ON keystone.* TO 'keystone'@'localhost' IDENTIFIED BY '${KEYSTONE_DBPASS}'; GRANT ALL PRIVILEGES ON keystone.* TO 'keystone'@'%' IDENTIFIED BY '${KEYSTONE_DBPASS}';"
+
+          pkg
+          ;;
+      *)  echo "Input invalid. Please choose between [Y/N]."
+          echo "Operation aborted."
+          exit
+  esac
 
   pkg
 }
@@ -49,11 +69,9 @@ pkg() {
 
   read -n1 -r -p "Bootstrap keystone on '$(hostname)'. press ENTER to continue!" ENTER
   keystone-manage bootstrap --bootstrap-password ${KEYSTONE_ADMINPASS} --bootstrap-admin-url http://controller:5000/v3/ --bootstrap-internal-url http://controller:5000/v3/ --bootstrap-public-url http://controller:5000/v3/ --bootstrap-region-id RegionOne
-
-  apache
 }
 
-apache() {
+apache2() {
   read -n1 -r -p "Install and configure apache2 on '$(hostname)'. press ENTER to continue!" ENTER
 
   if [[ -d /etc/apache2 ]]; then
@@ -90,8 +108,6 @@ apache() {
   sudo service apache2 status
 
   echo "[OSTACK] Done."
-
-  openrc
 }
 
 openrc() {
@@ -113,13 +129,10 @@ openrc() {
   if [[ ! -f ~/ostack-openrc/demo-openrc ]];then
     sudo cp ../config/demo-openrc ~/ostack-openrc
   fi
-
-  done_mesg
 }
 
 done_mesg() {
-    echo "[OSTACK] Done."
-
+    echo " "
     echo "====================================================================================="
     echo "Post installation note"
     echo "====================================================================================="
@@ -141,3 +154,8 @@ echo "==========================================================================
 echo "Configure openstack KEYSTONE on '$(hostname)'.."
 echo "====================================================================================="
 db
+apache2
+openrc
+
+echo "[OSTACK] Done."
+done_mesg
