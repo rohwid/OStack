@@ -120,24 +120,24 @@ openrc() {
 done_mesg() {
     echo "[OSTACK] Done."
 
-    echo "==================================================================================="
+    echo "====================================================================================="
     echo "Post installation note"
-    echo "==================================================================================="
+    echo "====================================================================================="
     echo "Configure administrative account in your linux enviroment.Before continue to next "
     echo "step on '4_conf_keystone.sh'.Use 'init-openrc' to load all enviroment varaible:"
     echo " "
-    echo "$ . ~/ostack-openrc/init-openrc"
+    echo " $ . ~/ostack-openrc/init-openrc"
     echo " "
-    echo "OR"
+    echo " OR"
     echo " "
-    echo "$ source ~/ostack-openrc/init-openrc"
+    echo " $ source ~/ostack-openrc/init-openrc"
     echo " "
-    echo "==================================================================================="
+    echo "====================================================================================="
     echo " "
     echo " "
 }
 
-echo "======================================================="
+echo "====================================================================================="
 echo "Configure openstack KEYSTONE on '$(hostname)'.."
-echo "======================================================="
+echo "====================================================================================="
 db

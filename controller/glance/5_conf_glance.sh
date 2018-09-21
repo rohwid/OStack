@@ -43,7 +43,7 @@ pkg() {
   sudo cp ../config/glance-api.conf /etc/glance/glance-api.conf
 
   echo "[OSTACK] Configuring glance-registry.."
-  sudo cp ../config/glance-registry.conf /etc/keystone/glance-registry.conf
+  sudo cp ../config/glance-registry.conf /etc/glance/glance-registry.conf
 
   echo "[OSTACK] Modifiying glance-api permission.."
   sudo chown root:glance /etc/glance/glance-api.conf
@@ -91,7 +91,6 @@ echo "WARNING! Please make sure you have execute '~/ostack-openrc/admin-openrc'"
 echo "as enviroment variable before continue this process."
 echo " "
 read -n1 -r -p "Press ENTER to continue or CTRL+C to cancel!" ENTER
-echo " "
 
 db
 
