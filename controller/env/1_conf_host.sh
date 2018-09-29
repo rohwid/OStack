@@ -3,9 +3,11 @@
 source ../services
 
 config_hosts() {
+  echo " "
   echo "======================================================="
   echo "Configure openstack controller hosts"
   echo "======================================================="
+  echo " "
 
   if [[ -f /etc/hosts.ori ]]; then
     echo "[OSTACK] Configuring openstack controller hosts.."
@@ -23,9 +25,11 @@ config_hosts() {
 }
 
 config_hostname() {
+  echo " "
   echo "======================================================="
   echo "Configure openstack controller hostname"
   echo "======================================================="
+  echo " "
 
   if [[ -f /etc/hostname.ori ]]; then
     echo "[OSTACK] Configuring openstack controller hostname.."

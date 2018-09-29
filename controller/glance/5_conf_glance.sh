@@ -3,7 +3,7 @@
 source ../services
 
 db() {
-  read -p "Have you register glance to database? [Y/N]: " OPT
+  read -p "Have you register GLANCE to database? [Y/N]: " OPT
 
   case "${OPT}" in
       Y)  register
@@ -29,7 +29,7 @@ db() {
 }
 
 register() {
-  read -p "Have you register glance to keystone? [Y/N]: " OPT
+  read -p "Have you register GLANCE to KEYSTONE? [Y/N]: " OPT
 
   case "${OPT}" in
       Y)  pkg
@@ -83,7 +83,7 @@ register() {
 }
 
 pkg() {
-  read -n1 -r -p "Install glance package on '$(hostname)'. press ENTER to continue!" ENTER
+  read -n1 -r -p "Install GLANCE package on '$(hostname)'. press ENTER to continue!" ENTER
 
   if [[ -d /etc/glance ]]; then
     echo "[OSTACK] Glance found.."
@@ -109,10 +109,10 @@ pkg() {
     echo "[OSTACK] Installing glance.."
     sudo apt install glance -y
 
-    echo "[OSTACK] Creating configuration backup.."
+    echo "[OSTACK] Creating glance-api configuration backup.."
     sudo cp /etc/glance/glance-api.conf /etc/glance/glance-api.conf.ori
 
-    echo "[OSTACK] Creating configuration backup.."
+    echo "[OSTACK] Creating glance-registry configuration backup.."
     sudo cp /etc/glance/glance-registry.conf /etc/glance/glance-registry.conf.ori
   fi
 
@@ -141,7 +141,7 @@ pkg() {
 }
 
 verify() {
-  read -n1 -r -p "Verify glance service. press ENTER to continue!" ENTER
+  read -n1 -r -p "Verify GLANCE service. press ENTER to continue!" ENTER
 
   echo "[OSTACK] Create glance image directory and download images.."
   if [[ ! -d ~/glance-images ]]; then
@@ -159,9 +159,9 @@ verify() {
   openstack image list
 }
 
-
+echo " "
 echo "==================================================================================="
-echo "Configure openstack KEYSTONE on '$(hostname)'.."
+echo "Configure openstack GLANCE on '$(hostname)'"
 echo "==================================================================================="
 echo " "
 echo "WARNING! Please make sure you have execute '~/ostack-openrc/admin-openrc'"
@@ -174,7 +174,7 @@ echo " "
 echo " $ source ~/ostack-openrc/admin-openrc"
 echo " "
 echo "==================================================================================="
-
+echo " "
 read -n1 -r -p "Press ENTER to continue or CTRL+C to cancel!" ENTER
 db
 verify

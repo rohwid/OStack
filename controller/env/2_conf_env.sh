@@ -247,9 +247,11 @@ etcd() {
   echo "[OSTACK] Etcd done."
 }
 
+echo " "
 echo "======================================================="
-echo "[OSTACK] Configure ENVIRONMENT on '$(hostname)'.."
+echo "Configure ENVIRONMENT on '$(hostname)'"
 echo "======================================================="
+echo " "
 chrony
 config_db
 rabbit_mq

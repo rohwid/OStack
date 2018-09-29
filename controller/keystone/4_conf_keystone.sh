@@ -1,5 +1,6 @@
 #!/bin/bash
 
+echo " "
 echo "==================================================================================="
 echo "Configure openstack KEYSTONE on '$(hostname)'.."
 echo "==================================================================================="
@@ -17,7 +18,7 @@ echo "==========================================================================
 echo " "
 
 register() {
-  read -p "Have you setup keystone register service? [Y/N]: " OPT
+  read -p "Have you setup KEYSTONE register service? [Y/N]: " OPT
 
   case "${OPT}" in
       Y)  exit

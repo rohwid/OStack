@@ -3,7 +3,7 @@
 source ../services
 
 db() {
-  read -p "Have you register keystone to database? [Y/N]: " OPT
+  read -p "Have you register KEYSTONE to database? [Y/N]: " OPT
 
   case "${OPT}" in
       Y)  pkg
@@ -29,17 +29,17 @@ db() {
 }
 
 pkg() {
-  read -n1 -r -p "Install and configure keystone on '$(hostname)'. press ENTER to continue!" ENTER
+  read -n1 -r -p "Install and configure KEYSTONE on '$(hostname)'. press ENTER to continue!" ENTER
 
   if [[ -d /etc/keystone ]]; then
     echo "[OSTACK] Keystone found.."
     echo "[OSTACK] Creating last configuration backup.."
 
     if [[ -f /etc/keystone/keystone.conf.ori ]]; then
-      echo "[OSTACK] Creating last configuration backup.."
+      echo "[OSTACK] Creating keystone last configuration backup.."
       sudo cp /etc/keystone/keystone.conf /etc/keystone/keystone.conf.bak
     else
-      echo "[OSTACK] Creating original configuration backup.."
+      echo "[OSTACK] Creating keystone original configuration backup.."
       sudo cp /etc/keystone/keystone.conf /etc/keystone/keystone.conf.ori
     fi
   else
@@ -47,7 +47,7 @@ pkg() {
     echo "[OSTACK] Installing keystone.."
     sudo apt install keystone apache2 libapache2-mod-wsgi -y
 
-    echo "[OSTACK] Creating original configuration backup.."
+    echo "[OSTACK] Creating keystone original configuration backup.."
     sudo cp /etc/keystone/keystone.conf /etc/keystone/keystone.conf.ori
   fi
 
@@ -77,10 +77,10 @@ apache2() {
     echo "[OSTACK] Creating last configuration backup.."
 
     if [[ -f /etc/apache2/apache2.conf.ori ]]; then
-      echo "[OSTACK] Creating last configuration backup.."
+      echo "[OSTACK] Creating apache2 last configuration backup.."
       sudo cp /etc/apache2/apache2.conf /etc/apache2/apache2.conf.bak
     else
-      echo "[OSTACK] Creating original configuration backup.."
+      echo "[OSTACK] Creating apache2 original configuration backup.."
       sudo cp /etc/apache2/apache2.conf /etc/apache2/apache2.conf.ori
     fi
   else
@@ -88,7 +88,7 @@ apache2() {
     echo "[OSTACK] Installing apache2.."
     sudo apt install apache2 libapache2-mod-wsgi -y
 
-    echo "[OSTACK] Creating original configuration backup.."
+    echo "[OSTACK] Creating apache2 original configuration backup.."
     sudo cp /etc/apache2/apache2.conf /etc/apache2/apache2.conf.ori
   fi
 

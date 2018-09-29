@@ -1,5 +1,6 @@
 # All Password
 ALL_PASS="b201_cloud"
+METADATA="b201_cloud_metadata_secret"
 
 # Chrony server
 CHRONICS="server ntp.its.ac.id"
@@ -20,3 +21,16 @@ KEYSTONE_MYUSERPASS=${ALL_PASS}
 # Glance (Image Service)
 GLANCE_DBPASS=${ALL_PASS}
 GLANCE_ADMINPASS=${ALL_PASS}
+
+# Nova (Compute Service)
+NOVA_DBPASS=${ALL_PASS}
+NOVA_ADMINPASS=${ALL_PASS}
+
+# Placement
+PLACEMENT_DBPASS=${ALL_PASS}
+PLACEMENT_ADMINPASS=${ALL_PASS}
+
+# Neutron (Networking Service)
+NEUTRON_DBPASS=${ALL_PASS}
+NEUTRON_ADMINPASS=${ALL_PASS}
+NEUTRON_METADATA=${METADATA}

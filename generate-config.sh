@@ -403,6 +403,14 @@ glance() {
   echo "[OSTACK] Glance done."
 }
 
+nova() {
+
+}
+
+neutron() {
+
+}
+
 openrc() {
   echo "[OSTACK] Creating init-openrc.."
 
@@ -445,6 +453,17 @@ EOF
   echo "[OSTACK] All openrc created."
 }
 
+config_file() {
+  echo "[OSTACK] Copy service config file to controller.."
+  cp services controller
+
+  echo "[OSTACK] Copy service config file to compute.."
+  cp services compute
+
+  echo "[OSTACK] All config file created."
+}
+
+echo " "
 echo "======================================================="
 echo "Welcome to openstack configuration generator"
 echo "======================================================="
@@ -460,6 +479,8 @@ case "${HOST}" in
         etcd
         keystone
         glance
+        nova
+        neutron
         openrc
         ;;
     3)  three
@@ -469,6 +490,8 @@ case "${HOST}" in
         etcd
         keystone
         glance
+        nova
+        neutron
         openrc
         ;;
     4)  four
@@ -478,6 +501,8 @@ case "${HOST}" in
         etcd
         keystone
         glance
+        nova
+        neutron
         openrc
         ;;
     5)  five
@@ -487,9 +512,13 @@ case "${HOST}" in
         etcd
         keystone
         glance
+        nova
+        neutron
         openrc
         ;;
     *)  echo "Input invalid. Input out of range or not a number."
         echo "Operation aborted."
         exit
 esac
+
+echo "[OSTACK] Done."
