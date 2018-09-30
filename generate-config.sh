@@ -1,6 +1,19 @@
 #!/bin/bash
 
-source controller/services
+source services
+source servers
+
+config_file() {
+  echo "[OSTACK] Copy service and server config file to controller.."
+  cp services controller
+  cp servers controller
+
+  echo "[OSTACK] Copy service and server config file to compute.."
+  cp services compute
+  cp servers compute
+
+  echo "[OSTACK] All config file created."
+}
 
 two() {
   read -p "Compute1 IP Address: " COM1
@@ -403,12 +416,66 @@ glance() {
   echo "[OSTACK] Glance done."
 }
 
-nova() {
+nova_ctrl() {
+  echo "[OSTACK] Get nova configuration file.."
+  cp controller/config/backup/nova.conf.ori controller/config/nova.conf
 
+  echo "[OSTACK] Configuring nova.."
+  sed -i -e "2d" controller/config/nova.conf
+  sed -i -e "4i transport_url = rabbit://openstack:${MQ_PASS}@controller" controller/config/nova.conf
+  sed -i -e "5i my_ip = ${IP_M_CTRL}" controller/config/nova.conf
+  sed -i -e "6i use_neutron = true" controller/config/nova.conf
+  sed -i -e "7i firewall_driver = nova.virt.firewall.NoopFirewallDriver" controller/config/nova.conf
+  sed -i -e "3227d" controller/config/nova.conf
+  sed -i -e "3227i auth_strategy = keystone" controller/config/nova.conf
+  sed -i -e "3508d" controller/config/nova.conf
+  sed -i -e "3508i connection = mysql+pymysql://nova:${NOVA_DBPASS}@controller/nova_api" controller/config/nova.conf
+  sed -i -e "4579d" controller/config/nova.conf
+  sed -i -e "4579i connection = mysql+pymysql://nova:${NOVA_DBPASS}@controller/nova" controller/config/nova.conf
+  sed -i -e "5275d" controller/config/nova.conf
+  sed -i -e '5275i api_servers = http://controller:9292' controller/config/nova.conf
+  sed -i -e '6055i \\' controller/config/nova.conf
+  sed -i -e '6055i auth_url = http://controller:5000/v3' controller/config/nova.conf
+  sed -i -e '6056i memcached_servers = controller:11211' controller/config/nova.conf
+  sed -i -e '6057i auth_type = password' controller/config/nova.conf
+  sed -i -e '6058i project_domain_name = default' controller/config/nova.conf
+  sed -i -e '6059i user_domain_name = default' controller/config/nova.conf
+  sed -i -e '6060i project_name = service' controller/config/nova.conf
+  sed -i -e '6061i username = nova' controller/config/nova.conf
+  sed -i -e "6062i password = ${NOVA_ADMINPASS}" controller/config/nova.conf
+  sed -i -e "7894d" controller/config/nova.conf
+  sed -i -e '7894i lock_path = /var/lib/nova/tmp' controller/config/nova.conf
+  sed -i -e '8778i \\' controller/config/nova.conf
+  sed -i -e '8778i region_name = RegionOne' controller/config/nova.conf
+  sed -i -e '8779i project_domain_name = Default' controller/config/nova.conf
+  sed -i -e '8780i project_name = service' controller/config/nova.conf
+  sed -i -e '8781i auth_type = password' controller/config/nova.conf
+  sed -i -e '8782i user_domain_name = Default' controller/config/nova.conf
+  sed -i -e '8783i auth_url = http://controller:5000/v3' controller/config/nova.conf
+  sed -i -e '8784i username = placement' controller/config/nova.conf
+  sed -i -e "8785i password = ${PLACEMENT_ADMINPASS}" controller/config/nova.conf
+  sed -i -e '8927i \\' controller/config/nova.conf
+  sed -i -e '8927i [placement_database]' controller/config/nova.conf
+  sed -i -e "8928i connection = mysql+pymysql://placement:${PLACEMENT_DBPASS}@controller/placement" controller/config/nova.conf
+  sed -i -e "8929d" controller/config/nova.conf
+  sed -i -e "10278d" controller/config/nova.conf
+  sed -i -e '10278i enabled = true' controller/config/nova.conf
+  sed -i -e "10302d" controller/config/nova.conf
+  sed -i -e '10302i server_listen = $my_ip' controller/config/nova.conf
+  sed -i -e "10315d" controller/config/nova.conf
+  sed -i -e '10315i server_proxyclient_address = $my_ip' controller/config/nova.conf
 }
 
-neutron() {
+nova_comp() {
+  echo "[OSTACK] Get nova configuration file.."
+  cp compute/config/backup/nova.conf.ori compute/config/nova.conf
 
+  echo "[OSTACK] Get nova-compute configuration file.."
+  cp compute/config/backup/nova-compute.conf.ori compute/config/nova-compute.conf
+
+  echo "[OSTACK] Configuring nova.."
+  sed -i -e "2d" controller/config/nova.conf
+  sed -i -e "4i transport_url = rabbit://openstack:${MQ_PASS}@controller" controller/config/nova.conf
 }
 
 openrc() {
@@ -453,15 +520,6 @@ EOF
   echo "[OSTACK] All openrc created."
 }
 
-config_file() {
-  echo "[OSTACK] Copy service config file to controller.."
-  cp services controller
-
-  echo "[OSTACK] Copy service config file to compute.."
-  cp services compute
-
-  echo "[OSTACK] All config file created."
-}
 
 echo " "
 echo "======================================================="
@@ -472,48 +530,48 @@ read -p "Number of host (Include controller and compute): " HOST
 read -p "Controller IP Address: " CTRL
 
 case "${HOST}" in
-    2)  two
+    2)  config_file
+        two
         chrony
         db
         memcached
         etcd
         keystone
         glance
-        nova
-        neutron
+        nova_ctrl
         openrc
         ;;
-    3)  three
+    3)  config_file
+        three
         chrony
         db
         memcached
         etcd
         keystone
         glance
-        nova
-        neutron
+        nova_ctrl
         openrc
         ;;
-    4)  four
+    4)  config_file
+        four
         chrony
         db
         memcached
         etcd
         keystone
         glance
-        nova
-        neutron
+        nova_ctrl
         openrc
         ;;
-    5)  five
+    5)  config_file
+        five
         chrony
         db
         memcached
         etcd
         keystone
         glance
-        nova
-        neutron
+        nova_ctrl
         openrc
         ;;
     *)  echo "Input invalid. Input out of range or not a number."

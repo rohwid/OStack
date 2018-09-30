@@ -1,0 +1,20 @@
+## CONTROLLER
+
+# Management
+IN_M_CTRL=
+IP_M_CTRL="192.168.100.2"
+
+# Provider
+IN_P_CTRL=
+IP_P_CTRL="10.122.1.100"
+
+## COMPUTE
+NUM_COMP="2"
+
+# Management
+IN_M_COMP=
+IP_M_COMP="192.168.100.3"
+
+# Provider
+IN_P_COMP=
+IP_P_COMP="10.122.1.100"
