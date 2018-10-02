@@ -354,6 +354,7 @@ keystone() {
   sed -i -e "721d" controller/config/keystone.conf
   sed -i -e "722i connection = mysql+pymysql://keystone:${KEYSTONE_DBPASS}@controller/keystone" controller/config/keystone.conf
   sed -i -e '723i \\' controller/config/keystone.conf
+  
   sed -i -e "2935d" controller/config/keystone.conf
   sed -i -e "2935i provider = fernet" controller/config/keystone.conf
 
@@ -375,10 +376,12 @@ glance() {
   sed -i -e '1925i \\' controller/config/glance-api.conf
   sed -i -e '1926i \\' controller/config/glance-api.conf
   sed -i -e "1926i connection = mysql+pymysql://glance:${GLANCE_DBPASS}@controller/glance" controller/config/glance-api.conf
+  
   sed -i -e '2045i \\' controller/config/glance-api.conf
   sed -i -e '2045i stores = file,http' controller/config/glance-api.conf
   sed -i -e '2046i default_store = file' controller/config/glance-api.conf
   sed -i -e '2047i filesystem_store_datadir = /var/lib/glance/images/' controller/config/glance-api.conf
+  
   sed -i -e '3482i \\' controller/config/glance-api.conf
   sed -i -e '3482i www_authenticate_uri = http://controller:5000' controller/config/glance-api.conf
   sed -i -e '3483i auth_url = http://controller:5000' controller/config/glance-api.conf
@@ -389,6 +392,7 @@ glance() {
   sed -i -e '3488i project_name = service' controller/config/glance-api.conf
   sed -i -e '3489i username = glance' controller/config/glance-api.conf
   sed -i -e "3490i password = ${GLANCE_ADMINPASS}" controller/config/glance-api.conf
+  
   sed -i -e "4521d" controller/config/glance-api.conf
   sed -i -e '4521i flavor = keystone' controller/config/glance-api.conf
 
@@ -400,6 +404,7 @@ glance() {
   sed -i -e '1171i \\' controller/config/glance-registry.conf
   sed -i -e '1172i \\' controller/config/glance-registry.conf
   sed -i -e "1172i connection = mysql+pymysql://glance:${GLANCE_DBPASS}@controller/glance" controller/config/glance-registry.conf
+  
   sed -i -e '1291i \\' controller/config/glance-registry.conf
   sed -i -e '1291i www_authenticate_uri = http://controller:5000' controller/config/glance-registry.conf
   sed -i -e '1292i auth_url = http://controller:5000' controller/config/glance-registry.conf
@@ -410,6 +415,7 @@ glance() {
   sed -i -e '1297i project_name = service' controller/config/glance-registry.conf
   sed -i -e '1298i username = glance' controller/config/glance-registry.conf
   sed -i -e "1299i password = ${GLANCE_ADMINPASS}" controller/config/glance-registry.conf
+  
   sed -i -e "2303d" controller/config/glance-registry.conf
   sed -i -e '2303i flavor = keystone' controller/config/glance-registry.conf
 
@@ -426,14 +432,18 @@ nova_ctrl() {
   sed -i -e "5i my_ip = ${IP_M_CTRL}" controller/config/nova.conf
   sed -i -e "6i use_neutron = true" controller/config/nova.conf
   sed -i -e "7i firewall_driver = nova.virt.firewall.NoopFirewallDriver" controller/config/nova.conf
+  
   sed -i -e "3227d" controller/config/nova.conf
   sed -i -e "3227i auth_strategy = keystone" controller/config/nova.conf
   sed -i -e "3508d" controller/config/nova.conf
   sed -i -e "3508i connection = mysql+pymysql://nova:${NOVA_DBPASS}@controller/nova_api" controller/config/nova.conf
+  
   sed -i -e "4579d" controller/config/nova.conf
   sed -i -e "4579i connection = mysql+pymysql://nova:${NOVA_DBPASS}@controller/nova" controller/config/nova.conf
+  
   sed -i -e "5275d" controller/config/nova.conf
   sed -i -e '5275i api_servers = http://controller:9292' controller/config/nova.conf
+  
   sed -i -e '6055i \\' controller/config/nova.conf
   sed -i -e '6055i auth_url = http://controller:5000/v3' controller/config/nova.conf
   sed -i -e '6056i memcached_servers = controller:11211' controller/config/nova.conf
@@ -443,8 +453,10 @@ nova_ctrl() {
   sed -i -e '6060i project_name = service' controller/config/nova.conf
   sed -i -e '6061i username = nova' controller/config/nova.conf
   sed -i -e "6062i password = ${NOVA_ADMINPASS}" controller/config/nova.conf
+  
   sed -i -e "7894d" controller/config/nova.conf
   sed -i -e '7894i lock_path = /var/lib/nova/tmp' controller/config/nova.conf
+  
   sed -i -e '8778i \\' controller/config/nova.conf
   sed -i -e '8778i region_name = RegionOne' controller/config/nova.conf
   sed -i -e '8779i project_domain_name = Default' controller/config/nova.conf
@@ -454,14 +466,18 @@ nova_ctrl() {
   sed -i -e '8783i auth_url = http://controller:5000/v3' controller/config/nova.conf
   sed -i -e '8784i username = placement' controller/config/nova.conf
   sed -i -e "8785i password = ${PLACEMENT_ADMINPASS}" controller/config/nova.conf
+  
   sed -i -e '8927i \\' controller/config/nova.conf
   sed -i -e '8927i [placement_database]' controller/config/nova.conf
   sed -i -e "8928i connection = mysql+pymysql://placement:${PLACEMENT_DBPASS}@controller/placement" controller/config/nova.conf
   sed -i -e "8929d" controller/config/nova.conf
+  
   sed -i -e "10278d" controller/config/nova.conf
   sed -i -e '10278i enabled = true' controller/config/nova.conf
+  
   sed -i -e "10302d" controller/config/nova.conf
   sed -i -e '10302i server_listen = $my_ip' controller/config/nova.conf
+  
   sed -i -e "10315d" controller/config/nova.conf
   sed -i -e '10315i server_proxyclient_address = $my_ip' controller/config/nova.conf
 }
@@ -474,8 +490,53 @@ nova_comp() {
   cp compute/config/backup/nova-compute.conf.ori compute/config/nova-compute.conf
 
   echo "[OSTACK] Configuring nova.."
-  sed -i -e "2d" controller/config/nova.conf
-  sed -i -e "4i transport_url = rabbit://openstack:${MQ_PASS}@controller" controller/config/nova.conf
+  sed -i -e "2d" compute/config/nova.conf
+  sed -i -e "4i transport_url = rabbit://openstack:${MQ_PASS}@controller" compute/config/nova.conf
+  sed -i -e "5i my_ip = ${IP_M_COMP1}" compute/config/nova.conf
+  sed -i -e '6i use_neutron = true' compute/config/nova.conf
+  sed -i -e '7i firewall_driver = nova.virt.firewall.NoopFirewallDriver' compute/config/nova.conf
+  
+  sed -i -e "3227d" compute/config/nova.conf
+  sed -i -e "3227i auth_strategy = keystone" compute/config/nova.conf
+  
+  sed -i -e "5275d" compute/config/nova.conf
+  sed -i -e "5275i api_servers = http://controller:9292" compute/config/nova.conf
+  
+  sed -i -e '6055i \\' compute/config/nova.conf
+  sed -i -e "6055i auth_url = http://controller:5000/v3" compute/config/nova.conf
+  sed -i -e "6056i memcached_servers = controller:11211" compute/config/nova.conf
+  sed -i -e '6057i auth_type = password' compute/config/nova.conf
+  sed -i -e '6058i project_domain_name = default' compute/config/nova.conf
+  sed -i -e '6059i user_domain_name = default' compute/config/nova.conf
+  sed -i -e '6060i project_name = service' compute/config/nova.conf
+  sed -i -e '6061i username = nova' compute/config/nova.conf
+  sed -i -e "6062i password = ${NOVA_ADMINPASS}" compute/config/nova.conf
+  
+  sed -i -e "7894d" compute/config/nova.conf
+  sed -i -e "7894i lock_path = /var/lib/nova/tmp" compute/config/nova.conf
+  
+  sed -i -e '8778i \\' compute/config/nova.conf
+  sed -i -e "8778i region_name = RegionOne" compute/config/nova.conf
+  sed -i -e "8779i project_domain_name = Default" compute/config/nova.conf
+  sed -i -e "8780i project_name = service" compute/config/nova.conf
+  sed -i -e "8781i auth_type = password" compute/config/nova.conf
+  sed -i -e "8782i user_domain_name = Default" compute/config/nova.conf
+  sed -i -e "8783i auth_url = http://controller:5000/v3" compute/config/nova.conf
+  sed -i -e "8784i username = placement" compute/config/nova.conf
+  sed -i -e "8785i password = ${PLACEMENT_ADMINPASS}" compute/config/nova.conf
+  
+  sed -i -e "10276d" compute/config/nova.conf
+  sed -i -e "10276i enabled = true" compute/config/nova.conf
+  
+  sed -i -e "10300d" compute/config/nova.conf
+  sed -i -e "10300i server_listen = 0.0.0.0" compute/config/nova.conf
+  
+  sed -i -e "10313d" compute/config/nova.conf
+  sed -i -e '10313i server_proxyclient_address = $my_ip' compute/config/nova.conf
+
+  echo "[OSTACK] Configuring nova-compute.."
+  sed -i -e '4i virt_type=qemu' compute/config/nova-compute.conf
+  sed -i -e "5d" compute/config/nova-compute.conf
 }
 
 openrc() {
@@ -539,6 +600,7 @@ case "${HOST}" in
         keystone
         glance
         nova_ctrl
+        nova_comp
         openrc
         ;;
     3)  config_file
@@ -550,6 +612,7 @@ case "${HOST}" in
         keystone
         glance
         nova_ctrl
+        nova_comp
         openrc
         ;;
     4)  config_file
@@ -561,6 +624,7 @@ case "${HOST}" in
         keystone
         glance
         nova_ctrl
+        nova_comp
         openrc
         ;;
     5)  config_file
@@ -572,6 +636,7 @@ case "${HOST}" in
         keystone
         glance
         nova_ctrl
+        nova_comp
         openrc
         ;;
     *)  echo "Input invalid. Input out of range or not a number."
