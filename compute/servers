@@ -1,20 +1,9 @@
 ## CONTROLLER
 
 # Management
-IN_M_CTRL=
+IN_M_CTRL=enp3s0f0
 IP_M_CTRL="192.168.100.2"
 
 # Provider
-IN_P_CTRL=
+IN_P_CTRL=enp3s0f1
 IP_P_CTRL="10.122.1.100"
-
-## COMPUTE
-NUM_COMP="2"
-
-# Management
-IN_M_COMP1=
-IP_M_COMP1="192.168.100.3"
-
-# Provider
-IN_P_COMP1=
-IP_P_COMP1="10.122.1.100"

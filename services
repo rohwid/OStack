@@ -1,36 +1,36 @@
-# All Password
+## All Password
 ALL_PASS="b201_cloud"
 METADATA="b201_cloud_metadata_secret"
 
-# Chrony server
+## Chrony server
 CHRONICS="server ntp.its.ac.id"
 
-# MariaDB
+## MariaDB
 MYSQL_USER="root"
 MYSQL_PASS=${ALL_PASS}
 
-# RabbitMQ
+## RabbitMQ
 MQ_USER="openstack"
 MQ_PASS=${ALL_PASS}
 
-# Keystone (Identity Service)
+## Keystone (Identity Service)
 KEYSTONE_DBPASS=${MYSQL_PASS}
 KEYSTONE_ADMINPASS=${ALL_PASS}
 KEYSTONE_MYUSERPASS=${ALL_PASS}
 
-# Glance (Image Service)
+## Glance (Image Service)
 GLANCE_DBPASS=${ALL_PASS}
 GLANCE_ADMINPASS=${ALL_PASS}
 
-# Nova (Compute Service)
+## Nova (Compute Service)
 NOVA_DBPASS=${ALL_PASS}
 NOVA_ADMINPASS=${ALL_PASS}
 
-# Placement
+## Placement
 PLACEMENT_DBPASS=${ALL_PASS}
 PLACEMENT_ADMINPASS=${ALL_PASS}
 
-# Neutron (Networking Service)
+## Neutron (Networking Service)
 NEUTRON_DBPASS=${ALL_PASS}
 NEUTRON_ADMINPASS=${ALL_PASS}
 NEUTRON_METADATA=${METADATA}

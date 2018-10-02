@@ -257,8 +257,17 @@ echo " "
 echo " $ source ~/ostack-openrc/admin-openrc"
 echo " "
 echo "==================================================================================="
+echo " "
+read -n1 -r -p "Ensure your OS kernel supports network bridge filterspress ENTER to continue!" ENTER
 
-read -n1 -r -p "Press ENTER to continue or CTRL+C to cancel!" ENTER
+echo "[OSTACK] Here is the value of net.bridge.bridge-nf-call-iptables: "
+sysctl net.bridge.bridge-nf-call-iptables
+
+echo "[OSTACK] Here is the value of sysctl net.bridge.bridge-nf-call-ip6tables: "
+sysctl net.bridge.bridge-nf-call-ip6tables
+
+read -n1 -r -p "Make sure all values are set to 1. Press ENTER to continue or CTRL+C to cancel!" ENTER
+
 db
 
 echo "[OSTACK] Done."
