@@ -3,29 +3,15 @@
 source services
 source servers
 
-config_file() {
-  echo "[OSTACK] Copy service and server config file to controller.."
-  cp services controller
-  cp servers controller
+hosts() {
+  read -p "Number of Compute: " COMP_NUM
 
-  echo "[OSTACK] Copy service and server config file to compute.."
-  cp services compute
-  cp servers compute
-
-  echo "[OSTACK] All config file created."
-}
-
-two() {
-  read -p "Compute1 IP Address: " COM1
-
+  echo "[OSTACK] Configuring hosts for controller.."
   cat > controller/config/hosts <<EOF
 127.0.0.1	localhost
 
-# controller
-${CTRL}   controller
-
-# compute1
-${COM1}   compute1
+# Controller
+${IP_MAN_CTRL}   controller
 
 # The following lines are desirable for IPv6 capable hosts
 ::1     localhost ip6-localhost ip6-loopback
@@ -35,210 +21,86 @@ ff02::2 ip6-allrouters
 ff02::3 ip6-allhosts
 EOF
 
-  cp controller/config/hosts compute/config/hosts
+  echo "[OSTACK] Configuring servers.."
+cat > servers <<EOF
+## CONTROLLER
 
-  echo "[OSTACK] Setup ${HOST} host done."
-}
+# Management
+IN_M_CTRL="${IN_MAN_CTRL}"
+IP_M_CTRL="${IP_MAN_CTRL}"
 
-three() {
-  read -p "Compute1 IP Address: " COM1
-  read -p "Compute2 IP Address: " COM2
+# Provider
+IN_P_CTRL="${IN_PRO_CTRL}"
+IP_P_CTRL="${IP_PRO_CTRL}"
 
-  cat > controller/config/hosts <<EOF
-127.0.0.1	localhost
+## COMPUTE
+NUM="${COMP_NUM}"
 
-# controller
-${CTRL}   controller
-
-# compute1
-${COM1}   compute1
-
-# compute2
-${COM2}   compute2
-
-# The following lines are desirable for IPv6 capable hosts
-::1     localhost ip6-localhost ip6-loopback
-fe00::0 ip6-localnet
-ff02::1 ip6-allnodes
-ff02::2 ip6-allrouters
-ff02::3 ip6-allhosts
+##
 EOF
 
+  i=0
+  init_host_line=6
+  init_srv_line=14
+
+  while [ $i -lt $COMP_NUM ]; do
+    read -p "Compute$(($i+1)) management Network Interface: " IN_M_COMP
+    read -p "Compute$(($i+1)) management IP address: " IP_M_COMP
+    read -p "Compute$(($i+1)) provider Network Interface: " IN_P_COMP
+    read -p "Compute$(($i+1)) provider IP address: " IP_P_COMP
+    sed -i -e "${init_host_line}i \\\n" controller/config/hosts
+    sed -i -e "${init_host_line}i # Compute$(($i+1))" controller/config/hosts
+    sed -i -e "$(($init_host_line+1))i ${IP_M_COMP}   compute$(($i+1))" controller/config/hosts
+    sed -i -e "$((${init_host_line}+2))d" controller/config/hosts
+
+    sed -i -e "${init_srv_line}i \\\n" servers
+    sed -i -e "$(($init_srv_line))i # Compute$(($i+1)) - Management" servers
+    sed -i -e "$(($init_srv_line+1))i IN_M_COMP$(($i+1))=${IN_M_COMP}" servers
+    sed -i -e "$(($init_srv_line+2))i IP_M_COMP$(($i+1))=${IP_M_COMP}" servers
+    sed -i -e "$(($init_srv_line+4))i # Compute$(($i+1)) - Provider" servers
+    sed -i -e "$(($init_srv_line+5))i IN_P_COMP$(($i+1))=${IN_P_COMP}" servers
+    sed -i -e "$(($init_srv_line+6))i IP_P_COMP$(($i+1))=${IP_P_COMP}" servers
+    sed -i -e "$(($init_srv_line+7))i \\\n" servers
+    sed -i -e "$(($init_srv_line+10+$i))d" servers
+
+    let init_host_line=init_host_line+3
+    let init_srv_line=init_srv_line+8
+    let i=i+1
+  done
+
+  echo "[OSTACK] Configuring hosts for compute.."
   cp controller/config/hosts compute/config/hosts
 
-  echo "[OSTACK] Setup ${HOST} host done."
-}
-
-four() {
-  read -p "Compute1 IP Address: " COM1
-  read -p "Compute2 IP Address: " COM2
-  read -p "Compute3 IP Address: " COM3
-
-  cat > controller/config/hosts <<EOF
-127.0.0.1	localhost
-
-# controller
-${CTRL}   controller
-
-# compute1
-${COM1}   compute1
-
-# compute2
-${COM2}   compute2
-
-# compute3
-${COM3}   compute3
-
-# The following lines are desirable for IPv6 capable hosts
-::1     localhost ip6-localhost ip6-loopback
-fe00::0 ip6-localnet
-ff02::1 ip6-allnodes
-ff02::2 ip6-allrouters
-ff02::3 ip6-allhosts
-EOF
-
-  cp controller/config/hosts compute/config/hosts
-
-  echo "[OSTACK] Setup ${HOST} host done."
-}
-
-five() {
-  read -p "Compute1 IP Address: " COM1
-  read -p "Compute2 IP Address: " COM2
-  read -p "Compute3 IP Address: " COM3
-  read -p "Compute4 IP Address: " COM4
-
-  cat > controller/config/hosts <<EOF
-127.0.0.1	localhost
-
-# controller
-${CTRL}   controller
-
-# compute1
-${COM1}   compute1
-
-# compute2
-${COM2}   compute2
-
-# compute3
-${COM3}   compute3
-
-# compute4
-${COM4}   compute4
-
-# The following lines are desirable for IPv6 capable hosts
-::1     localhost ip6-localhost ip6-loopback
-fe00::0 ip6-localnet
-ff02::1 ip6-allnodes
-ff02::2 ip6-allrouters
-ff02::3 ip6-allhosts
-EOF
-
-  cp controller/config/hosts compute/config/hosts
-
-  echo "[OSTACK] Setup ${HOST} host done."
+  echo "[OSTACK] Setup ${COMP_NUM} host done."
 }
 
 chrony() {
-  read -p "Enter management network: " MAN_NET
+  echo "[OSTACK] Get chrony configuration file.."
+  cp controller/config/backup/chrony.conf.ori controller/config/chrony.conf
 
   echo "[OSTACK] Configuring NTP with chrony.."
+  sed -i -e '17i \\' controller/config/chrony.conf
+  sed -i -e "18d" controller/config/chrony.conf
+  sed -i -e "18d" controller/config/chrony.conf
+  sed -i -e "18d" controller/config/chrony.conf
+  sed -i -e "18d" controller/config/chrony.conf
+  sed -i -e "18i server ${CHRONICS} iburst" controller/config/chrony.conf
 
-  cat > controller/config/chrony.conf <<EOF
-# Welcome to the chrony configuration file. See chrony.conf(5) for more
-# information about usuable directives.
+  sed -i -e '30i \\' controller/config/chrony.conf
+  sed -i -e '30i \\' controller/config/chrony.conf
+  sed -i -e "31i ${MAN_NET}" controller/config/chrony.conf
 
-# This will use (up to):
-# - 4 sources from ntp.ubuntu.com which some are ipv6 enabled
-# - 2 sources from 2.ubuntu.pool.ntp.org which is ipv6 enabled as well
-# - 1 source from [01].ubuntu.pool.ntp.org each (ipv4 only atm)
-# This means by default, up to 6 dual-stack and up to 2 additional IPv4-only
-# sources will be used.
-# At the same time it retains some protection against one of the entries being
-# down (compare to just using one of the lines). See (LP: #1754358) for the
-# discussion.
-#
-# About using servers from the NTP Pool Project in general see (LP: #104525).
-# Approved by Ubuntu Technical Board on 2011-02-08.
-# See http://www.pool.ntp.org/join.html for more information.
+  echo "[OSTACK] Configuring chrony for compute.."
+  echo "[OSTACK] Get chrony configuration file.."
+  cp compute/config/backup/chrony.conf.ori compute/config/chrony.conf
 
-# NTP server Indonesia
-${CHRONICS} iburst
-
-# This directive specify the location of the file containing ID/key pairs for
-# NTP authentication.
-keyfile /etc/chrony/chrony.keys
-
-# This directive specify the file into which chronyd will store the rate
-# information.
-driftfile /var/lib/chrony/chrony.drift
-
-# Allow to connect other nodes
-allow ${MAN_NET}
-
-# Uncomment the following line to turn logging on.
-#log tracking measurements statistics
-
-# Log files location.
-logdir /var/log/chrony
-
-# Stop bad estimates upsetting machine clock.
-maxupdateskew 100.0
-
-# This directive enables kernel synchronisation (every 11 minutes) of the
-# real-time clock. Note that it can’t be used along with the 'rtcfile' directive.
-rtcsync
-
-# Step the system clock instead of slewing it if the adjustment is larger than
-# one second, but only in the first three clock updates.
-makestep 1 3
-EOF
-
-  cat > compute/config/chrony.conf <<EOF
-# Welcome to the chrony configuration file. See chrony.conf(5) for more
-# information about usuable directives.
-
-# This will use (up to):
-# - 4 sources from ntp.ubuntu.com which some are ipv6 enabled
-# - 2 sources from 2.ubuntu.pool.ntp.org which is ipv6 enabled as well
-# - 1 source from [01].ubuntu.pool.ntp.org each (ipv4 only atm)
-# This means by default, up to 6 dual-stack and up to 2 additional IPv4-only
-# sources will be used.
-# At the same time it retains some protection against one of the entries being
-# down (compare to just using one of the lines). See (LP: #1754358) for the
-# discussion.
-#
-# About using servers from the NTP Pool Project in general see (LP: #104525).
-# Approved by Ubuntu Technical Board on 2011-02-08.
-# See http://www.pool.ntp.org/join.html for more information.
-
-server controller iburst
-
-# This directive specify the location of the file containing ID/key pairs for
-# NTP authentication.
-keyfile /etc/chrony/chrony.keys
-
-# This directive specify the file into which chronyd will store the rate
-# information.
-driftfile /var/lib/chrony/chrony.drift
-
-# Uncomment the following line to turn logging on.
-#log tracking measurements statistics
-
-# Log files location.
-logdir /var/log/chrony
-
-# Stop bad estimates upsetting machine clock.
-maxupdateskew 100.0
-
-# This directive enables kernel synchronisation (every 11 minutes) of the
-# real-time clock. Note that it can’t be used along with the 'rtcfile' directive.
-rtcsync
-
-# Step the system clock instead of slewing it if the adjustment is larger than
-# one second, but only in the first three clock updates.
-makestep 1 3
-EOF
+  echo "[OSTACK] Configuring NTP with chrony.."
+  sed -i -e '17i \\' compute/config/chrony.conf
+  sed -i -e "18d" compute/config/chrony.conf
+  sed -i -e "18d" compute/config/chrony.conf
+  sed -i -e "18d" compute/config/chrony.conf
+  sed -i -e "18d" compute/config/chrony.conf
+  sed -i -e "18i server controller iburst" compute/config/chrony.conf
 
   echo "[OSTACK] Chrony done."
 }
@@ -248,7 +110,7 @@ db() {
 
   cat > controller/config/99-openstack.cnf <<EOF
 [mysqld]
-bind-address = ${CTRL}
+bind-address = ${IP_M_CTRL}
 
 default-storage-engine = innodb
 innodb_file_per_table = on
@@ -260,60 +122,12 @@ EOF
 }
 
 memcached() {
+  echo "[OSTACK] Get memcached configuration file.."
+  cp controller/config/backup/memcached.conf.ori controller/config/memcached.conf
+
   echo "[OSTACK] Configuring memcached.."
-
-  cat > controller/config/memcached.conf <<EOF
-# memcached default config file
-# 2003 - Jay Bonci <jaybonci@debian.org>
-# This configuration file is read by the start-memcached script provided as
-# part of the Debian GNU/Linux distribution.
-
-# Run memcached as a daemon. This command is implied, and is not needed for the
-# daemon to run. See the README.Debian that comes with this package for more
-# information.
--d
-
-# Log memcached's output to /var/log/memcached
-logfile /var/log/memcached.log
-
-# Be verbose
-# -v
-
-# Be even more verbose (print client commands as well)
-# -vv
-
-# Start with a cap of 64 megs of memory. It's reasonable, and the daemon default
-# Note that the daemon will grow to this size, but does not start out holding this much
-# memory
--m 64
-
-# Default connection port is 11211
--p 11211
-
-# Run the daemon as root. The start-memcached will default to running as root if no
-# -u command is present in this config file
--u memcache
-
-# Specify which IP address to listen on. The default is to listen on all IP addresses
-# This parameter is one of the only security measures that memcached has, so make sure
-# it's listening on a firewalled interface.
--l ${CTRL}
-
-# Limit the number of simultaneous incoming connections. The daemon default is 1024
-# -c 1024
-
-# Lock down all paged memory. Consult with the README and homepage before you do this
-# -k
-
-# Return error when memory is exhausted (rather than removing items)
-# -M
-
-# Maximize core file limit
-# -r
-
-# Use a pidfile
--P /var/run/memcached/memcached.pid
-EOF
+  sed -i -e "35d" controller/config/memcached.conf
+  sed -i -e "35i -l ${IP_M_CTRL}" controller/config/memcached.conf
 
   echo "[OSTACK] Memcached done."
 }
@@ -331,17 +145,17 @@ etcd() {
   sed -i -e "52d" controller/config/etcd
   sed -i -e '52i ETCD_LISTEN_PEER_URLS="http://0.0.0.0:2380"' controller/config/etcd
   sed -i -e "66d" controller/config/etcd
-  sed -i -e "66i ETCD_LISTEN_CLIENT_URLS="http://${CTRL}:2379"" controller/config/etcd
+  sed -i -e "66i ETCD_LISTEN_CLIENT_URLS="http://${IP_M_CTRL}:2379"" controller/config/etcd
   sed -i -e "98d" controller/config/etcd
-  sed -i -e "98i ETCD_INITIAL_ADVERTISE_PEER_URLS="http://${CTRL}:2380"" controller/config/etcd
+  sed -i -e "98i ETCD_INITIAL_ADVERTISE_PEER_URLS="http://${IP_M_CTRL}:2380"" controller/config/etcd
   sed -i -e "105d" controller/config/etcd
-  sed -i -e "105i ETCD_INITIAL_CLUSTER="controller=http://${CTRL}:2380"" controller/config/etcd
+  sed -i -e "105i ETCD_INITIAL_CLUSTER="controller=http://${IP_M_CTRL}:2380"" controller/config/etcd
   sed -i -e "113d" controller/config/etcd
   sed -i -e '113i ETCD_INITIAL_CLUSTER_STATE="new"' controller/config/etcd
   sed -i -e "122d" controller/config/etcd
   sed -i -e '122i ETCD_INITIAL_CLUSTER_TOKEN="etcd-cluster-01"' controller/config/etcd
   sed -i -e "133d" controller/config/etcd
-  sed -i -e "133i ETCD_ADVERTISE_CLIENT_URLS="http://${CTRL}:2379"" controller/config/etcd
+  sed -i -e "133i ETCD_ADVERTISE_CLIENT_URLS="http://${IP_M_CTRL}:2379"" controller/config/etcd
 
   echo "[OSTACK] Etcd done."
 }
@@ -426,10 +240,10 @@ nova_ctrl() {
   echo "[OSTACK] Get nova configuration file.."
   cp controller/config/backup/nova.conf.ori controller/config/nova.conf
 
-  echo "[OSTACK] Configuring nova.."
+  echo "[OSTACK] Configuring nova in controller.."
   sed -i -e "2d" controller/config/nova.conf
   sed -i -e "4i transport_url = rabbit://openstack:${MQ_PASS}@controller" controller/config/nova.conf
-  sed -i -e "5i my_ip = ${IP_M_CTRL}" controller/config/nova.conf # --> will reconfigure later
+  sed -i -e "5i my_ip = ${IP_M_CTRL}" controller/config/nova.conf
   sed -i -e "6i use_neutron = true" controller/config/nova.conf
   sed -i -e "7i firewall_driver = nova.virt.firewall.NoopFirewallDriver" controller/config/nova.conf
 
@@ -491,7 +305,7 @@ nova_comp() {
   echo "[OSTACK] Get nova configuration file.."
   cp compute/config/backup/nova.conf.ori compute/config/nova.conf
 
-  echo "[OSTACK] Configuring nova.."
+  echo "[OSTACK] Configuring nova in compute.."
   sed -i -e "2d" compute/config/nova.conf
   sed -i -e "4i transport_url = rabbit://openstack:${MQ_PASS}@controller" compute/config/nova.conf
   sed -i -e "5i my_ip = IP_M_COMP" compute/config/nova.conf # --> will reconfigure later
@@ -551,7 +365,7 @@ neutron_ctrl() {
   echo "[OSTACK] Get neutron configuration file.."
   cp controller/config/backup/neutron.conf.ori controller/config/neutron.conf
 
-  echo "[OSTACK] Configuring neutron.."
+  echo "[OSTACK] Configuring neutron in controller.."
   sed -i -e "3i service_plugins = router" controller/config/neutron.conf
   sed -i -e "4i allow_overlapping_ips = true" controller/config/neutron.conf
   sed -i -e "5i transport_url = rabbit://openstack:${MQ_PASS}@controller" controller/config/neutron.conf
@@ -654,14 +468,52 @@ neutron_comp() {
   echo "[OSTACK] Get neutron configuration file.."
   cp compute/config/backup/neutron.conf.ori compute/config/neutron.conf
 
-  echo "[OSTACK] Get neutron configuration file.."
-  cp compute/config/backup/neutron.conf.ori compute/config/neutron.conf
-
-  echo "[OSTACK] Configuring neutron.."
-  sed -i -e '3i \\' compute/config/neutron.conf
+  echo "[OSTACK] Configuring neutron in compute.."
   sed -i -e "3i transport_url = rabbit://openstack:${MQ_PASS}@controller" compute/config/neutron.conf
+  sed -i -e "29d" compute/config/neutron.conf
+  sed -i -e "29i auth_strategy = keystone" compute/config/neutron.conf
+  sed -i -e '826i \\' compute/config/neutron.conf
+  sed -i -e '826i \\' compute/config/neutron.conf
+  sed -i -e "827i www_authenticate_uri = http://controller:5000" compute/config/neutron.conf
+  sed -i -e "828i auth_url = http://controller:5000" compute/config/neutron.conf
+  sed -i -e "829i memcached_servers = controller:11211" compute/config/neutron.conf
+  sed -i -e "830i auth_type = password" compute/config/neutron.conf
+  sed -i -e "831i project_domain_name = default" compute/config/neutron.conf
+  sed -i -e "832i user_domain_name = default" compute/config/neutron.conf
+  sed -i -e "833i project_name = service" compute/config/neutron.conf
+  sed -i -e "834i username = neutron" compute/config/neutron.conf
+  sed -i -e "834i password = ${NEUTRON_ADMINPASS}" compute/config/neutron.conf
+
+  echo "[OSTACK] Get neutron configuration file.."
+  cp compute/config/backup/linuxbridge_agent.ini.ori compute/config/linuxbridge_agent.ini
+
+  echo "[OSTACK] Configuring linuxbridge_agent.."
+  sed -i -e "157d" compute/config/linuxbridge_agent.ini
+  sed -i -e "157i physical_interface_mappings = provider:IN_P_COMP" compute/config/linuxbridge_agent.ini # --> will reconfigure later
+  sed -i -e "188d" compute/config/linuxbridge_agent.ini
+  sed -i -e "188i firewall_driver = neutron.agent.linux.iptables_firewall.IptablesFirewallDriver" compute/config/linuxbridge_agent.ini
+  sed -i -e "193d" compute/config/linuxbridge_agent.ini
+  sed -i -e "193i enable_security_group = true" compute/config/linuxbridge_agent.ini
+  sed -i -e "208d" compute/config/linuxbridge_agent.ini
+  sed -i -e "208i enable_vxlan = true" compute/config/linuxbridge_agent.ini
+  sed -i -e "234d" compute/config/linuxbridge_agent.ini
+  sed -i -e "234i local_ip = IP_M_COMP" compute/config/linuxbridge_agent.ini # --> will reconfigure later
+  sed -i -e "258d" compute/config/linuxbridge_agent.ini
+  sed -i -e "258i l2_population = true" compute/config/linuxbridge_agent.ini
 
   echo "[OSTACK] Neutron in compute done."
+}
+
+config_file() {
+  echo "[OSTACK] Copy service and server config file to controller.."
+  cp services controller
+  cp servers controller
+
+  echo "[OSTACK] Copy service and server config file to compute.."
+  cp services compute
+  cp servers compute
+
+  echo "[OSTACK] All config file created."
 }
 
 openrc() {
@@ -711,66 +563,24 @@ echo " "
 echo "======================================================="
 echo "Welcome to openstack configuration generator"
 echo "======================================================="
-echo "Please answer this question carefully: "
-read -p "Number of host (Include controller and compute): " HOST
-read -p "Controller IP Address: " CTRL
+echo "Please answer this question carefully! "
+read -p "Controller management Network Interface: " IN_MAN_CTRL
+read -p "Controller management IP address: " IP_MAN_CTRL
+read -p "Controller provider Network Interface: " IN_PRO_CTRL
+read -p "Controller provider IP address: " IP_PRO_CTRL
 
-case "${HOST}" in
-    2)  config_file
-        two
-        chrony
-        db
-        memcached
-        etcd
-        keystone
-        glance
-        nova_ctrl
-        nova_comp
-        neutron_ctrl
-        openrc
-        ;;
-    3)  config_file
-        three
-        chrony
-        db
-        memcached
-        etcd
-        keystone
-        glance
-        nova_ctrl
-        nova_comp
-        neutron_ctrl
-        openrc
-        ;;
-    4)  config_file
-        four
-        chrony
-        db
-        memcached
-        etcd
-        keystone
-        glance
-        nova_ctrl
-        nova_comp
-        neutron_ctrl
-        openrc
-        ;;
-    5)  config_file
-        five
-        chrony
-        db
-        memcached
-        etcd
-        keystone
-        glance
-        nova_ctrl
-        nova_comp
-        neutron_ctrl
-        openrc
-        ;;
-    *)  echo "Input invalid. Input out of range or not a number."
-        echo "Operation aborted."
-        exit
-esac
+hosts
+chrony
+db
+memcached
+etcd
+keystone
+glance
+nova_ctrl
+nova_comp
+neutron_ctrl
+neutron_comp
+config_file
+openrc
 
 echo "[OSTACK] Done."

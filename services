@@ -4,6 +4,7 @@ METADATA="b201_cloud_metadata_secret"
 
 ## Chrony server
 CHRONICS="server ntp.its.ac.id"
+MAN_NET="192.168.100.0/24"
 
 ## MariaDB
 MYSQL_USER="root"

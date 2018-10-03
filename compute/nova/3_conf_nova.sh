@@ -1,6 +1,7 @@
 #!/bin/bash
 
 source ../services
+source ../servers
 
 pkg() {
   read -n1 -r -p "Install NOVA package on '$(hostname)'. press ENTER to continue!" ENTER
@@ -39,11 +40,17 @@ pkg() {
 
   echo "[OSTACK] Configuring nova.."
   sudo cp ../config/nova.conf /etc/nova/nova.conf
-  sudo cp ../config/nova-compute.conf /etc/nova/nova-compute.conf
+  sudo sed -i -e "5d" /etc/nova/nova.conf
+  sudo sed -i -e "5i my_ip = $((IP_M_COMP${COMP_NUM}))" /etc/nova/nova.conf
 
   echo "[OSTACK] Modifiying nova permission.."
   sudo chown nova:nova /etc/nova/nova.conf
   sudo chmod 640 /etc/nova/nova.conf
+
+  echo "[OSTACK] Configuring nova-compute.."
+  sudo cp ../config/nova-compute.conf /etc/nova/nova-compute.conf
+
+  echo "[OSTACK] Modifiying nova-compute permission.."
   sudo chown nova:nova /etc/nova/nova-compute.conf
   sudo chmod 600 /etc/nova/nova-compute.conf
 
@@ -91,8 +98,9 @@ echo " "
 echo "==================================================================================="
 echo "Configure openstack NOVA on '$(hostname)'.."
 echo "==================================================================================="
-echo " "
-read -n1 -r -p "Press ENTER to continue or CTRL+C to cancel!" ENTER
+echo "Please answer this question carefully or CTRL+C to cancel!"
+read -p "Compute Number [1 - ${NUM}]: " COMP_NUM
+
 pkg
 
 echo "[OSTACK] Nova-compute done."

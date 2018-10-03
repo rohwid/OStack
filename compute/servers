@@ -1,9 +1,50 @@
 ## CONTROLLER
 
 # Management
-IN_M_CTRL=enp3s0f0
-IP_M_CTRL="192.168.100.2"
+IN_M_CTRL="qw"
+IP_M_CTRL="12"
 
 # Provider
-IN_P_CTRL=enp3s0f1
-IP_P_CTRL="10.122.1.100"
+IN_P_CTRL="qw"
+IP_P_CTRL="12"
+
+## COMPUTE
+NUM="4"
+
+# Compute1 - Management
+IN_M_COMP1=qw
+IP_M_COMP1=12
+
+# Compute1 - Provider
+IN_P_COMP1=qw
+IP_P_COMP1=12
+
+# Compute2 - Management
+IN_M_COMP2=qw
+IP_M_COMP2=12
+
+# Compute2 - Provider
+IN_P_COMP2=qw
+IP_P_COMP2=12
+
+# Compute3 - Management
+IN_M_COMP3=qw
+IP_M_COMP3=12
+
+# Compute3 - Provider
+IN_P_COMP3=qw
+IP_P_COMP3=12
+
+# Compute4 - Management
+IN_M_COMP4=qw
+IP_M_COMP4=12
+
+# Compute4 - Provider
+IN_P_COMP4=qw
+IP_P_COMP4=12
+
+
+
+
+
+

@@ -1,6 +1,7 @@
 #!/bin/bash
 
 source ../services
+source ../servers
 
 pkg() {
   read -n1 -r -p "Install NEUTRON package on '$(hostname)'. press ENTER to continue!" ENTER
@@ -45,6 +46,10 @@ pkg() {
 
   echo "[OSTACK] Creating linuxbridge_agent original configuration backup.."
   sudo cp ../config/linuxbridge_agent.ini /etc/neutron/plugins/ml2/linuxbridge_agent.ini
+  sudo sed -i -e "157d" /etc/neutron/plugins/ml2/linuxbridge_agent.ini
+  sudo sed -i -e "157i physical_interface_mappings = provider:$((IN_P_COMP${COMP_NUM}))" /etc/neutron/plugins/ml2/linuxbridge_agent.ini
+  sudo sed -i -e "234d" /etc/neutron/plugins/ml2/linuxbridge_agent.ini
+  sudo sed -i -e "234i local_ip = $((IP_M_COMP${COMP_NUM}))" /etc/neutron/plugins/ml2/linuxbridge_agent.ini
 
   echo "[OSTACK] Modifiying linuxbridge_agent permission.."
   sudo chown root:neutron /etc/neutron/plugins/ml2/linuxbridge_agent.ini
@@ -86,8 +91,10 @@ echo " "
 echo "==================================================================================="
 echo "Configure openstack NOVA on '$(hostname)'.."
 echo "==================================================================================="
-echo " "
-read -n1 -r -p "Ensure your OS kernel supports network bridge filterspress ENTER to continue!" ENTER
+echo "Please answer this question carefully or CTRL+C to cancel!"
+read -p "Compute Number [1 - ${NUM}]: " COMP_NUM
+
+read -n1 -r -p "Ensure your OS kernel supports network bridge filters. press ENTER to continue!" ENTER
 
 echo "[OSTACK] Here is the value of net.bridge.bridge-nf-call-iptables: "
 sysctl net.bridge.bridge-nf-call-iptables
