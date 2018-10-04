@@ -55,11 +55,11 @@ EOF
 
     sed -i -e "${init_srv_line}i \\\n" servers
     sed -i -e "$(($init_srv_line))i # Compute$(($i+1)) - Management" servers
-    sed -i -e "$(($init_srv_line+1))i IN_M_COMP$(($i+1))=${IN_M_COMP}" servers
-    sed -i -e "$(($init_srv_line+2))i IP_M_COMP$(($i+1))=${IP_M_COMP}" servers
+    sed -i -e "$(($init_srv_line+1))i IN_M_COMP$(($i+1))="'"'${IN_M_COMP}'"'"" servers
+    sed -i -e "$(($init_srv_line+2))i IP_M_COMP$(($i+1))="'"'${IP_M_COMP}'"'"" servers
     sed -i -e "$(($init_srv_line+4))i # Compute$(($i+1)) - Provider" servers
-    sed -i -e "$(($init_srv_line+5))i IN_P_COMP$(($i+1))=${IN_P_COMP}" servers
-    sed -i -e "$(($init_srv_line+6))i IP_P_COMP$(($i+1))=${IP_P_COMP}" servers
+    sed -i -e "$(($init_srv_line+5))i IN_P_COMP$(($i+1))="'"'${IN_P_COMP}'"'"" servers
+    sed -i -e "$(($init_srv_line+6))i IP_P_COMP$(($i+1))="'"'${IP_P_COMP}'"'"" servers
     sed -i -e "$(($init_srv_line+7))i \\\n" servers
     sed -i -e "$(($init_srv_line+10+$i))d" servers
 
