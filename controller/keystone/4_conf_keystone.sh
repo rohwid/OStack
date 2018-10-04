@@ -87,7 +87,7 @@ register() {
 
 register
 
-echo "[OSTACK] Done."
+echo "[OSTACK] Keystone on '$(hostname)' done."
 
 echo " "
 echo "==================================================================================="
@@ -107,5 +107,4 @@ echo " "
 echo " $ openstack token issue"
 echo " "
 echo "==================================================================================="
-echo " "
 echo " "

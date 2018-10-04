@@ -44,10 +44,10 @@ EOF
   init_srv_line=14
 
   while [ $i -lt $COMP_NUM ]; do
-    read -p "Compute$(($i+1)) management Network Interface: " IN_M_COMP
-    read -p "Compute$(($i+1)) management IP address: " IP_M_COMP
-    read -p "Compute$(($i+1)) provider Network Interface: " IN_P_COMP
-    read -p "Compute$(($i+1)) provider IP address: " IP_P_COMP
+    read -p "Compute$(($i+1)) management Network Interface [eth0, enp3s0f0]: " IN_M_COMP
+    read -p "Compute$(($i+1)) management IP address [192.168.1.1]: " IP_M_COMP
+    read -p "Compute$(($i+1)) provider Network Interface [eth0, enp3s0f0]: " IN_P_COMP
+    read -p "Compute$(($i+1)) provider IP address [10.122.1.1]: " IP_P_COMP
     sed -i -e "${init_host_line}i \\\n" controller/config/hosts
     sed -i -e "${init_host_line}i # Compute$(($i+1))" controller/config/hosts
     sed -i -e "$(($init_host_line+1))i ${IP_M_COMP}   compute$(($i+1))" controller/config/hosts
@@ -87,8 +87,7 @@ chrony() {
   sed -i -e "18i server ${CHRONICS} iburst" controller/config/chrony.conf
 
   sed -i -e '30i \\' controller/config/chrony.conf
-  sed -i -e '30i \\' controller/config/chrony.conf
-  sed -i -e "31i ${MAN_NET}" controller/config/chrony.conf
+  sed -i -e "31i allow ${MAN_NET}" controller/config/chrony.conf
 
   echo "[OSTACK] Configuring chrony for compute.."
   echo "[OSTACK] Get chrony configuration file.."
@@ -127,7 +126,7 @@ memcached() {
 
   echo "[OSTACK] Configuring memcached.."
   sed -i -e "35d" controller/config/memcached.conf
-  sed -i -e "35i -l ${IP_M_CTRL}" controller/config/memcached.conf
+  sed -i -e "35i -l ${IP_MAN_CTRL}" controller/config/memcached.conf
 
   echo "[OSTACK] Memcached done."
 }
@@ -145,17 +144,17 @@ etcd() {
   sed -i -e "52d" controller/config/etcd
   sed -i -e '52i ETCD_LISTEN_PEER_URLS="http://0.0.0.0:2380"' controller/config/etcd
   sed -i -e "66d" controller/config/etcd
-  sed -i -e "66i ETCD_LISTEN_CLIENT_URLS="http://${IP_M_CTRL}:2379"" controller/config/etcd
+  sed -i -e "66i ETCD_LISTEN_CLIENT_URLS="http://${IP_MAN_CTRL}:2379"" controller/config/etcd
   sed -i -e "98d" controller/config/etcd
-  sed -i -e "98i ETCD_INITIAL_ADVERTISE_PEER_URLS="http://${IP_M_CTRL}:2380"" controller/config/etcd
+  sed -i -e "98i ETCD_INITIAL_ADVERTISE_PEER_URLS="http://${IP_MAN_CTRL}:2380"" controller/config/etcd
   sed -i -e "105d" controller/config/etcd
-  sed -i -e "105i ETCD_INITIAL_CLUSTER="controller=http://${IP_M_CTRL}:2380"" controller/config/etcd
+  sed -i -e "105i ETCD_INITIAL_CLUSTER="controller=http://${IP_MAN_CTRL}:2380"" controller/config/etcd
   sed -i -e "113d" controller/config/etcd
   sed -i -e '113i ETCD_INITIAL_CLUSTER_STATE="new"' controller/config/etcd
   sed -i -e "122d" controller/config/etcd
   sed -i -e '122i ETCD_INITIAL_CLUSTER_TOKEN="etcd-cluster-01"' controller/config/etcd
   sed -i -e "133d" controller/config/etcd
-  sed -i -e "133i ETCD_ADVERTISE_CLIENT_URLS="http://${IP_M_CTRL}:2379"" controller/config/etcd
+  sed -i -e "133i ETCD_ADVERTISE_CLIENT_URLS="http://${IP_MAN_CTRL}:2379"" controller/config/etcd
 
   echo "[OSTACK] Etcd done."
 }
@@ -243,7 +242,7 @@ nova_ctrl() {
   echo "[OSTACK] Configuring nova in controller.."
   sed -i -e "2d" controller/config/nova.conf
   sed -i -e "4i transport_url = rabbit://openstack:${MQ_PASS}@controller" controller/config/nova.conf
-  sed -i -e "5i my_ip = ${IP_M_CTRL}" controller/config/nova.conf
+  sed -i -e "5i my_ip = ${IP_MAN_CTRL}" controller/config/nova.conf
   sed -i -e "6i use_neutron = true" controller/config/nova.conf
   sed -i -e "7i firewall_driver = nova.virt.firewall.NoopFirewallDriver" controller/config/nova.conf
 
@@ -422,7 +421,7 @@ neutron_ctrl() {
 
   echo "[OSTACK] Configuring linuxbridge_agent.."
   sed -i -e "157d" controller/config/linuxbridge_agent.ini
-  sed -i -e "157i physical_interface_mappings = provider:${IN_P_CTRL}" controller/config/linuxbridge_agent.ini
+  sed -i -e "157i physical_interface_mappings = provider:${IN_PRO_CTRL}" controller/config/linuxbridge_agent.ini
   sed -i -e "188d" controller/config/linuxbridge_agent.ini
   sed -i -e "188i firewall_driver = neutron.agent.linux.iptables_firewall.IptablesFirewallDriver" controller/config/linuxbridge_agent.ini
   sed -i -e "193d" controller/config/linuxbridge_agent.ini
@@ -430,7 +429,7 @@ neutron_ctrl() {
   sed -i -e "208d" controller/config/linuxbridge_agent.ini
   sed -i -e "208i enable_vxlan = true" controller/config/linuxbridge_agent.ini
   sed -i -e "234d" controller/config/linuxbridge_agent.ini
-  sed -i -e "234i local_ip = ${IP_M_CTRL}" controller/config/linuxbridge_agent.ini
+  sed -i -e "234i local_ip = ${IP_MAN_CTRL}" controller/config/linuxbridge_agent.ini
   sed -i -e "258d" controller/config/linuxbridge_agent.ini
   sed -i -e "258i l2_population = true" controller/config/linuxbridge_agent.ini
 
@@ -558,17 +557,66 @@ EOF
   echo "[OSTACK] All openrc created."
 }
 
+restart_script() {
+  echo "[OSTACK] Creating restart-glance.sh.."
+
+  cat > controller/config/restart-glance.sh <<EOF
+#!/bin/bash
+
+sudo service glance-registry restart
+sudo service glance-api restart
+EOF
+
+  echo "[OSTACK] Creating restart-nova.sh.."
+
+  cat > controller/config/restart-nova.sh <<EOF
+#!/bin/bash
+
+sudo service nova-api restart
+sudo service neutron-server restart
+sudo service neutron-linuxbridge-agent restart
+sudo service neutron-dhcp-agent restart
+sudo service neutron-metadata-agent restart
+sudo service neutron-l3-agent restart
+EOF
+
+  cat > compute/config/restart-nova.sh <<EOF
+#!/bin/bash
+
+sudo service nova-compute restart
+EOF
+
+  cat > controller/config/restart-neutron.sh <<EOF
+#!/bin/bash
+
+sudo service nova-api restart
+sudo service neutron-server restart
+sudo service neutron-linuxbridge-agent restart
+sudo service neutron-dhcp-agent restart
+sudo service neutron-metadata-agent restart
+sudo service neutron-l3-agent restart
+EOF
+
+  cat > compute/config/restart-neutron.sh <<EOF
+#!/bin/bash
+
+service nova-compute restart
+service neutron-linuxbridge-agent restart
+EOF
+
+  echo "[OSTACK] All restart-script created."
+}
+
 
 echo " "
 echo "======================================================="
 echo "Welcome to openstack configuration generator"
 echo "======================================================="
 echo "Please answer this question carefully! "
-read -p "Controller management Network Interface: " IN_MAN_CTRL
-read -p "Controller management IP address: " IP_MAN_CTRL
-read -p "Controller provider Network Interface: " IN_PRO_CTRL
-read -p "Controller provider IP address: " IP_PRO_CTRL
-
+read -p "Controller Management Network Interface [eth0, enp3s0f0]: " IN_MAN_CTRL
+read -p "Controller management IP address [192.168.1.1]: " IP_MAN_CTRL
+read -p "Controller provider Network Interface [eth0, enp3s0f0]: " IN_PRO_CTRL
+read -p "Controller provider IP address [10.122.1.1]: " IP_PRO_CTRL
 hosts
 chrony
 db
@@ -582,5 +630,6 @@ neutron_ctrl
 neutron_comp
 config_file
 openrc
+restart_script
 
-echo "[OSTACK] Done."
+echo "[OSTACK] Generating config done."

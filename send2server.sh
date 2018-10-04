@@ -50,21 +50,21 @@ comp_without_port() {
     scp -r compute $UNAME@$IP_ADDR:~
 }
 
+read -p "Enter Server type [A. Controller/B. Compute]: " SERVER
 read -p "Enter Username: " UNAME
 read -p "Enter IP Address: " IP_ADDR
-read -p "Enter Server type [A. Controller/B. Compute]: " SERVER
 read -p "Use Specific Port [Y/N]: " USE_PORT
 
 case "${SERVER}" in
-    A)  controller
-        ;;
-    a)  controller
-        ;;
-    B)  compute
-        ;;
-    b)  compute
-        ;;
-    *)  echo "Input invalid. Please choose between [A/B]."
-        echo "Operation aborted."
-        exit
+  A)  controller
+      ;;
+  a)  controller
+      ;;
+  B)  compute
+      ;;
+  b)  compute
+      ;;
+  *)  echo "Input invalid. Please choose between [A/B]."
+      echo "Operation aborted."
+      exit
 esac

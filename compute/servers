@@ -1,23 +1,23 @@
 ## CONTROLLER
 
 # Management
-IN_M_CTRL="qw"
-IP_M_CTRL="12"
+IN_M_CTRL="enp0s3"
+IP_M_CTRL="192.168.100.10"
 
 # Provider
-IN_P_CTRL="qw"
-IP_P_CTRL="12"
+IN_P_CTRL="enp0s8"
+IP_P_CTRL="10.122.1.98"
 
 ## COMPUTE
 NUM="1"
 
 # Compute1 - Management
-IN_M_COMP1="qw"
-IP_M_COMP1="12"
+IN_M_COMP1="enp0s3"
+IP_M_COMP1="192.168.100.11"
 
 # Compute1 - Provider
-IN_P_COMP1="qw"
-IP_P_COMP1="12"
+IN_P_COMP1="enp0s8"
+IP_P_COMP1="10.122.1.99"
 
 
 

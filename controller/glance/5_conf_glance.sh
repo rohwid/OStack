@@ -140,6 +140,19 @@ pkg() {
   sudo service glance-api restart
 }
 
+restart_script() {
+  read -n1 -r -p "Create glance restart script on '$(hostname)'. press ENTER to continue!" ENTER
+
+  if [[ ! -d ~/restart_script ]];then
+    mkdir ~/restart-script
+  fi
+
+  echo "[OSTACK] Configuring restart-nova.."
+  if [[ ! -f ~/restart_script/restart-glance.sh ]];then
+    cp ../config/restart-glance.sh ~/restart-script/
+  fi
+}
+
 verify() {
   read -n1 -r -p "Verify GLANCE service. press ENTER to continue!" ENTER
 
@@ -176,7 +189,9 @@ echo " "
 echo "==================================================================================="
 echo " "
 read -n1 -r -p "Press ENTER to continue or CTRL+C to cancel!" ENTER
+
 db
+restart_script
 verify
 
-echo "[OSTACK] Done."
+echo "[OSTACK] Glance on '$(hostname)' done."

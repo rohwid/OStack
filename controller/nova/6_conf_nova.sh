@@ -173,7 +173,7 @@ pkg() {
   sudo su -s /bin/sh -c "nova-manage db sync" nova
 
   read -n1 -r -p "Verify nova cell0 and cell1 are registered correctly. press ENTER to continue!" ENTER
-  su -s /bin/sh -c "nova-manage cell_v2 list_cells" nova
+  sudo su -s /bin/sh -c "nova-manage cell_v2 list_cells" nova
 
   echo "[OSTACK] Restarting nova-api.."
   sudo service nova-api restart
@@ -187,6 +187,20 @@ pkg() {
   echo "[OSTACK] Restarting nova-novncproxy.."
   sudo service nova-novncproxy restart
 }
+
+restart_script() {
+  read -n1 -r -p "Create nova restart script on '$(hostname)'. press ENTER to continue!" ENTER
+
+  if [[ ! -d ~/restart_script ]];then
+    mkdir ~/restart-script
+  fi
+
+  echo "[OSTACK] Configuring restart-nova.."
+  if [[ ! -f ~/restart_script/restart-nova.sh ]];then
+    cp ../config/restart-nova.sh ~/restart-script/
+  fi
+}
+
 
 echo " "
 echo "==================================================================================="
@@ -206,5 +220,6 @@ echo "==========================================================================
 
 read -n1 -r -p "Press ENTER to continue or CTRL+C to cancel!" ENTER
 db
+restart_script
 
 echo "[OSTACK] Done."

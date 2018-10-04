@@ -104,8 +104,6 @@ apache2() {
 
   echo "[OSTACK] Apache2 status"
   sudo service apache2 status
-
-  echo "[OSTACK] Done."
 }
 
 openrc() {
@@ -129,31 +127,28 @@ openrc() {
   fi
 }
 
-done_mesg() {
-    echo " "
-    echo "====================================================================================="
-    echo "Post installation note"
-    echo "====================================================================================="
-    echo "Configure administrative account in your linux enviroment.Before continue to next "
-    echo "step on '4_conf_keystone.sh'.Use 'init-openrc' to load all enviroment varaible:"
-    echo " "
-    echo " $ . ~/ostack-openrc/init-openrc"
-    echo " "
-    echo " OR"
-    echo " "
-    echo " $ source ~/ostack-openrc/init-openrc"
-    echo " "
-    echo "====================================================================================="
-    echo " "
-    echo " "
-}
-
 echo "====================================================================================="
 echo "Configure openstack KEYSTONE on '$(hostname)'.."
 echo "====================================================================================="
+
 db
 apache2
 openrc
 
 echo "[OSTACK] Done."
-done_mesg
+
+echo " "
+echo "====================================================================================="
+echo "Post installation note"
+echo "====================================================================================="
+echo "Configure administrative account in your linux enviroment.Before continue to next "
+echo "step on '4_conf_keystone.sh'.Use 'init-openrc' to load all enviroment varaible:"
+echo " "
+echo " $ . ~/ostack-openrc/init-openrc"
+echo " "
+echo " OR"
+echo " "
+echo " $ source ~/ostack-openrc/init-openrc"
+echo " "
+echo "====================================================================================="
+echo " "

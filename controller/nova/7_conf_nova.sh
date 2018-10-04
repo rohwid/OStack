@@ -19,17 +19,10 @@ echo " "
 echo "==================================================================================="
 echo " "
 
-read -n1 -r -p "Create new domain on keystone as example domain. press ENTER to continue!" ENTER
-su -s /bin/sh -c "nova-manage cell_v2 discover_hosts --verbose" nova
+read -n1 -r -p "Discover compute host. press ENTER to continue!" ENTER
+sudo su -s /bin/sh -c "nova-manage cell_v2 discover_hosts --verbose" nova
 
-read -n1 -r -p "Create new domain on keystone as example domain. press ENTER to continue!" ENTER
-su -s /bin/sh -c "nova-manage cell_v2 discover_hosts --verbose" nova
-
-# TODO
-# ADD SCHEDULER TO ADD MORE THAN ONE NODES
-# READ SERVER CONFIG FILE
-
-echo "[OSTACK] Nova done."
+echo "[OSTACK] Nova on '$(hostname)' done."
 
 echo " "
 echo "==================================================================================="
@@ -62,5 +55,4 @@ echo " "
 echo " # nova-status upgrade check"
 echo " "
 echo "==================================================================================="
-echo " "
 echo " "
