@@ -573,11 +573,10 @@ EOF
 #!/bin/bash
 
 sudo service nova-api restart
-sudo service neutron-server restart
-sudo service neutron-linuxbridge-agent restart
-sudo service neutron-dhcp-agent restart
-sudo service neutron-metadata-agent restart
-sudo service neutron-l3-agent restart
+sudo service nova-scheduler restart
+sudo service nova-conductor restart
+sudo service nova-novncproxy restart
+
 EOF
 
   cat > compute/config/restart-nova.sh <<EOF
@@ -600,8 +599,8 @@ EOF
   cat > compute/config/restart-neutron.sh <<EOF
 #!/bin/bash
 
-service nova-compute restart
-service neutron-linuxbridge-agent restart
+sudo service nova-compute restart
+sudo service neutron-linuxbridge-agent restart
 EOF
 
   echo "[OSTACK] All restart-script created."
@@ -609,9 +608,9 @@ EOF
 
 
 echo " "
-echo "======================================================="
+echo "====================================================================================="
 echo "Welcome to openstack configuration generator"
-echo "======================================================="
+echo "====================================================================================="
 echo "Please answer this question carefully! "
 read -p "Controller Management Network Interface [eth0, enp3s0f0]: " IN_MAN_CTRL
 read -p "Controller management IP address [192.168.1.1]: " IP_MAN_CTRL
