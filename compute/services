@@ -3,7 +3,7 @@ ALL_PASS="b201_cloud"
 METADATA="b201_cloud_metadata_secret"
 
 ## Chrony server
-CHRONICS="server ntp.its.ac.id"
+CHRONICS="ntp.its.ac.id"
 MAN_NET="192.168.100.0/24"
 
 ## MariaDB

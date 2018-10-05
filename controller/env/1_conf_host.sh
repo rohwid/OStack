@@ -3,15 +3,11 @@
 source ../services
 
 config_hosts() {
-  echo " "
-  echo "======================================================="
-  echo "Configure openstack controller hosts"
-  echo "======================================================="
-  echo " "
+  read -n1 -r -p "Change hosts on '$(hostname)'. press ENTER to continue!" ENTER
 
   if [[ -f /etc/hosts.ori ]]; then
-    echo "[OSTACK] Configuring openstack controller hosts.."
-
+    echo "[OSTACK] Backup current configuration.."
+    sudo cp /etc/hosts /etc/hosts.bak
   else
     echo "[OSTACK] Backup original configuration.."
     sudo cp /etc/hosts /etc/hosts.ori
@@ -25,13 +21,12 @@ config_hosts() {
 }
 
 config_hostname() {
-  echo " "
-  echo "======================================================="
-  echo "Configure openstack controller hostname"
-  echo "======================================================="
-  echo " "
+  read -n1 -r -p "Change hostname '$(hostname)' to 'controller'. press ENTER to continue!" ENTER
 
   if [[ -f /etc/hostname.ori ]]; then
+    echo "[OSTACK] Backup current configuration.."
+    sudo cp /etc/hostname /etc/hostname.bak
+
     echo "[OSTACK] Configuring openstack controller hostname.."
     sudo echo "controller" > /etc/hostname
   else
@@ -57,4 +52,13 @@ do_reboot() {
   fi
 }
 
+echo " "
+echo "==================================================================================="
+echo "Configure openstack controller hosts and hostname"
+echo "==================================================================================="
+echo " "
+echo "WARNING! Please make sure you have execute it as root or using sudo"
+echo " "
+echo "==================================================================================="
+read -n1 -r -p "Press ENTER to continue or CTRL+C to cancel!" ENTER
 config_hosts

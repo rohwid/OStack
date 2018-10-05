@@ -67,10 +67,10 @@ ostack_pkg() {
   fi
 }
 
-echo "======================================================="
-echo "[OSTACK] CONFIGURING ENVIRONMENT ON '$(hostname)'.."
-echo "======================================================="
+echo "==================================================================================="
+echo "CONFIGURING ENVIRONMENT ON '$(hostname)'"
+echo "==================================================================================="
 chrony
 ostack_pkg
 
-echo "[OSTACK] Done."
+echo "[OSTACK] Setup '$(hostname)' environment done."

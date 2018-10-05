@@ -248,9 +248,9 @@ etcd() {
 }
 
 echo " "
-echo "======================================================="
+echo "==================================================================================="
 echo "Configure ENVIRONMENT on '$(hostname)'"
-echo "======================================================="
+echo "==================================================================================="
 echo " "
 chrony
 config_db
@@ -258,4 +258,4 @@ rabbit_mq
 memcached
 etcd
 
-echo "[OSTACK] Done done."
+echo "[OSTACK] Setup '$(hostname)' environment done."
