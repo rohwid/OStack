@@ -66,7 +66,7 @@ pkg() {
   sudo keystone-manage credential_setup --keystone-user keystone --keystone-group keystone
 
   read -n1 -r -p "Bootstrap keystone on '$(hostname)'. press ENTER to continue!" ENTER
-  keystone-manage bootstrap --bootstrap-password ${KEYSTONE_ADMINPASS} --bootstrap-admin-url http://controller:5000/v3/ --bootstrap-internal-url http://controller:5000/v3/ --bootstrap-public-url http://controller:5000/v3/ --bootstrap-region-id RegionOne
+  sudo keystone-manage bootstrap --bootstrap-password ${KEYSTONE_ADMINPASS} --bootstrap-admin-url http://controller:5000/v3/ --bootstrap-internal-url http://controller:5000/v3/ --bootstrap-public-url http://controller:5000/v3/ --bootstrap-region-id RegionOne
 }
 
 apache2() {

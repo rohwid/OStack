@@ -267,35 +267,48 @@ nova_ctrl() {
   sed -i -e '6061i username = nova' controller/config/nova.conf
   sed -i -e "6062i password = ${NOVA_ADMINPASS}" controller/config/nova.conf
 
-  sed -i -e "7894d" controller/config/nova.conf
-  sed -i -e '7894i lock_path = /var/lib/nova/tmp' controller/config/nova.conf
+  sed -i -e '7567i \\' controller/config/nova.conf
+  sed -i -e '7567i url = http://controller:9696' controller/config/nova.conf
+  sed -i -e '7568i auth_url = http://controller:5000' controller/config/nova.conf
+  sed -i -e '7569i auth_type = password' controller/config/nova.conf
+  sed -i -e '7570i project_domain_name = default' controller/config/nova.conf
+  sed -i -e '7571i user_domain_name = default' controller/config/nova.conf
+  sed -i -e '7572i region_name = RegionOne' controller/config/nova.conf
+  sed -i -e '7573i project_name = service' controller/config/nova.conf
+  sed -i -e '7574i username = neutron' controller/config/nova.conf
+  sed -i -e "7575i password = ${NEUTRON_ADMINPASS}" controller/config/nova.conf
+  sed -i -e '7576i service_metadata_proxy = true' controller/config/nova.conf
+  sed -i -e "7577i metadata_proxy_shared_secret = ${METADATA}" controller/config/nova.conf
 
-  sed -i -e '8778i \\' controller/config/nova.conf
-  sed -i -e '8778i region_name = RegionOne' controller/config/nova.conf
-  sed -i -e '8779i project_domain_name = Default' controller/config/nova.conf
-  sed -i -e '8780i project_name = service' controller/config/nova.conf
-  sed -i -e '8781i auth_type = password' controller/config/nova.conf
-  sed -i -e '8782i user_domain_name = Default' controller/config/nova.conf
-  sed -i -e '8783i auth_url = http://controller:5000/v3' controller/config/nova.conf
-  sed -i -e '8784i username = placement' controller/config/nova.conf
-  sed -i -e "8785i password = ${PLACEMENT_ADMINPASS}" controller/config/nova.conf
+  sed -i -e "7906d" controller/config/nova.conf
+  sed -i -e '7906i lock_path = /var/lib/nova/tmp' controller/config/nova.conf
 
-  sed -i -e '8927i \\' controller/config/nova.conf
-  sed -i -e '8927i [placement_database]' controller/config/nova.conf
-  sed -i -e "8928i connection = mysql+pymysql://placement:${PLACEMENT_DBPASS}@controller/placement" controller/config/nova.conf
-  sed -i -e "8929d" controller/config/nova.conf
+  sed -i -e '8790i \\' controller/config/nova.conf
+  sed -i -e '8790i region_name = RegionOne' controller/config/nova.conf
+  sed -i -e '8791i project_domain_name = Default' controller/config/nova.conf
+  sed -i -e '8792i project_name = service' controller/config/nova.conf
+  sed -i -e '8793i auth_type = password' controller/config/nova.conf
+  sed -i -e '8794i user_domain_name = Default' controller/config/nova.conf
+  sed -i -e '8795i auth_url = http://controller:5000/v3' controller/config/nova.conf
+  sed -i -e '8796i username = placement' controller/config/nova.conf
+  sed -i -e "8797i password = ${PLACEMENT_ADMINPASS}" controller/config/nova.conf
 
-  sed -i -e "9447d" controller/config/nova.conf
-  sed -i -e '9447i discover_hosts_in_cells_interval = 300' controller/config/nova.conf
+  sed -i -e '8939i \\' controller/config/nova.conf
+  sed -i -e '8939i [placement_database]' controller/config/nova.conf
+  sed -i -e "8940i connection = mysql+pymysql://placement:${PLACEMENT_DBPASS}@controller/placement" controller/config/nova.conf
+  sed -i -e "8941d" controller/config/nova.conf
 
-  sed -i -e "10278d" controller/config/nova.conf
-  sed -i -e '10278i enabled = true' controller/config/nova.conf
+  sed -i -e "9459d" controller/config/nova.conf
+  sed -i -e '9459i discover_hosts_in_cells_interval = 300' controller/config/nova.conf
 
-  sed -i -e "10302d" controller/config/nova.conf
-  sed -i -e '10302i server_listen = $my_ip' controller/config/nova.conf
+  sed -i -e "10290d" controller/config/nova.conf
+  sed -i -e '10290i enabled = true' controller/config/nova.conf
 
-  sed -i -e "10315d" controller/config/nova.conf
-  sed -i -e '10315i server_proxyclient_address = $my_ip' controller/config/nova.conf
+  sed -i -e "10314d" controller/config/nova.conf
+  sed -i -e '10314i server_listen = $my_ip' controller/config/nova.conf
+
+  sed -i -e "10327d" controller/config/nova.conf
+  sed -i -e '10327i server_proxyclient_address = $my_ip' controller/config/nova.conf
 
   echo "[OSTACK] Nova in controller done."
 }
@@ -328,27 +341,38 @@ nova_comp() {
   sed -i -e '6061i username = nova' compute/config/nova.conf
   sed -i -e "6062i password = ${NOVA_ADMINPASS}" compute/config/nova.conf
 
-  sed -i -e "7894d" compute/config/nova.conf
-  sed -i -e "7894i lock_path = /var/lib/nova/tmp" compute/config/nova.conf
+  sed -i -e '7567i \\' compute/config/nova.conf
+  sed -i -e '7567i url = http://controller:9696' compute/config/nova.conf
+  sed -i -e '7568i auth_url = http://controller:5000' compute/config/nova.conf
+  sed -i -e '7569i auth_type = password' compute/config/nova.conf
+  sed -i -e '7570i project_domain_name = default' compute/config/nova.conf
+  sed -i -e '7571i user_domain_name = default' compute/config/nova.conf
+  sed -i -e '7572i region_name = RegionOne' compute/config/nova.conf
+  sed -i -e '7573i project_name = service' compute/config/nova.conf
+  sed -i -e '7574i username = neutron' compute/config/nova.conf
+  sed -i -e "7575i password = ${NEUTRON_ADMINPASS}" compute/config/nova.conf
 
-  sed -i -e '8778i \\' compute/config/nova.conf
-  sed -i -e "8778i region_name = RegionOne" compute/config/nova.conf
-  sed -i -e "8779i project_domain_name = Default" compute/config/nova.conf
-  sed -i -e "8780i project_name = service" compute/config/nova.conf
-  sed -i -e "8781i auth_type = password" compute/config/nova.conf
-  sed -i -e "8782i user_domain_name = Default" compute/config/nova.conf
-  sed -i -e "8783i auth_url = http://controller:5000/v3" compute/config/nova.conf
-  sed -i -e "8784i username = placement" compute/config/nova.conf
-  sed -i -e "8785i password = ${PLACEMENT_ADMINPASS}" compute/config/nova.conf
+  sed -i -e "7904d" compute/config/nova.conf
+  sed -i -e "7904i lock_path = /var/lib/nova/tmp" compute/config/nova.conf
 
-  sed -i -e "10276d" compute/config/nova.conf
-  sed -i -e "10276i enabled = true" compute/config/nova.conf
+  sed -i -e '8788i \\' compute/config/nova.conf
+  sed -i -e '8788i region_name = RegionOne' compute/config/nova.conf
+  sed -i -e '8789i project_domain_name = Default' compute/config/nova.conf
+  sed -i -e '8790i project_name = service' compute/config/nova.conf
+  sed -i -e '8791i auth_type = password' compute/config/nova.conf
+  sed -i -e '8792i user_domain_name = Default' compute/config/nova.conf
+  sed -i -e '8793i auth_url = http://controller:5000/v3' compute/config/nova.conf
+  sed -i -e '8794i username = placement' compute/config/nova.conf
+  sed -i -e "8795i password = ${PLACEMENT_ADMINPASS}" compute/config/nova.conf
 
-  sed -i -e "10300d" compute/config/nova.conf
-  sed -i -e "10300i server_listen = 0.0.0.0" compute/config/nova.conf
+  sed -i -e "10286d" compute/config/nova.conf
+  sed -i -e "10286i enabled = true" compute/config/nova.conf
 
-  sed -i -e "10313d" compute/config/nova.conf
-  sed -i -e '10313i server_proxyclient_address = $my_ip' compute/config/nova.conf
+  sed -i -e "10310d" compute/config/nova.conf
+  sed -i -e "10310i server_listen = 0.0.0.0" compute/config/nova.conf
+
+  sed -i -e "10323d" compute/config/nova.conf
+  sed -i -e '10323i server_proxyclient_address = $my_ip' compute/config/nova.conf
 
   echo "[OSTACK] Get nova-compute configuration file.."
   cp compute/config/backup/nova-compute.conf.ori compute/config/nova-compute.conf

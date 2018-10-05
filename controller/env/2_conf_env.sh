@@ -38,7 +38,7 @@ chrony() {
 
   echo "[OSTACK] Restarting chrony.."
   sudo service chrony stop
-  sudo chronyd -q "${CHRONICS} iburst"
+  sudo chronyd -q "server ${CHRONICS} iburst"
   sudo service chrony start
 
   echo "[OSTACK] Done."

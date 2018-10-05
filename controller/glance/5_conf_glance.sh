@@ -148,7 +148,7 @@ restart_script() {
   fi
 
   echo "[OSTACK] Configuring restart-nova.."
-  if [[ ! -f ~/restart_script/restart-glance.sh ]];then
+  if [[ ! -f ~/restart-script/restart-glance.sh ]];then
     cp ../config/restart-glance.sh ~/restart-script/
   fi
 }
@@ -189,7 +189,6 @@ echo " "
 echo "==================================================================================="
 echo " "
 read -n1 -r -p "Press ENTER to continue or CTRL+C to cancel!" ENTER
-
 db
 restart_script
 verify

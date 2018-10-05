@@ -61,13 +61,13 @@ pkg() {
 restart_script() {
   read -n1 -r -p "Create nova restart script on '$(hostname)'. press ENTER to continue!" ENTER
 
-  if [[ ! -d ~/restart_script ]];then
+  if [[ ! -d ~/restart-script ]];then
     mkdir ~/restart-script
   fi
 
   echo "[OSTACK] Configuring restart-nova.."
-  if [[ ! -f ~/restart_script/restart-glance.sh ]];then
-    cp ../config/restart-glance.sh ~/restart-script/
+  if [[ ! -f ~/restart_script/restart-nova.sh ]];then
+    cp ../config/restart-nova.sh ~/restart-script/
   fi
 }
 
