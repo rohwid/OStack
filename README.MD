@@ -8,9 +8,9 @@
 
 ## Optional Program
 
-+ `pull-controller` get configuration from controller. [WARNING! READ and EDIT it before use].
-+ `pull-compute` get configuration from compute. [WARNING! READ and EDIT it before use].
-+ `vbox-testing` a directory which contain script to force interface configuration when use virtualbox to run openstack. [WARNING! READ and EDIT it before use].
++ `pull-controller` get configuration from controller. **[WARNING! READ and EDIT it before use]**.
++ `pull-compute` get configuration from compute. **[WARNING! READ and EDIT it before use]**.
++ `vbox-testing` a directory which contain script to force interface configuration when use virtualbox to run openstack. **[WARNING! READ and EDIT it before use]**.
 
 ## Execute Order
 
@@ -19,11 +19,11 @@ Here the execute order to deploy openstack with this program, make sure you foll
 + Edit `servers` configuration file.
 + Execute `generate-config.sh` and follow all instruction and requirement.
 
-    $ ./generate-config.sh
+        $ ./generate-config.sh
 
 + Execute `send2server.sh` and follow all instruction and requirement.
 
-    $ ./send2server.sh
+        $ ./send2server.sh
 
 + After all configuration send to controller and compute, just execute it by the number on script name (ex. `1_conf_host.sh`, `2_conf_env.sh`, `3_conf_keystone.sh` and etc) in the controller and all compute. Configure the controller first, follow all instruction and read post installation notes.
 
