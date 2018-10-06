@@ -1,46 +1,30 @@
-## Sync Server IP Address
+## Main Program
 
-Modify the `servers` and `conf_hosts` script. The `conf_hosts` script was located on `controller\env` and `compute\env`. Make sure the IP address, ethernet card, and server number are correct. The default configuration and aloso the rule is:
++ `services` contain info about the services, **edit** it before generate config with `generate-config.sh`.
++ `servers` contain all info about the server and **don't edit** this. It will automatically fill when execute `generate-config.sh`.
++ `generate-config.sh` to generate all configuration before send to the server.
++ `send2server.sh` are use to send to the server as controller or compute to deploy later.
++ `clean.sh` to clean configuration after generate it.
 
-+ Start on `server0` as `controller`.
-+ In `server1` - `server-n` described as `compute1` - `compute-n`, and you can expand it.
-+ Default ethernet card variable is `IP_ADDR0_ETH0` and `IP_ADDR0_ETH1`.
-+ In `compute1` use `IP_ADDR1_ETH0` and `IP_ADDR1_ETH1`, so `IP_ADDR-n_ETH0` and `IP_ADDR-n_ETH1` for `compute-n`.
-+ Every server has two ethernet card by default.
+## Optional Program
 
-## Send to Server and Suicide
-
-Use `send2server` script to send all this scripts to server. It will used to deploy and configure the openstack. If you wanna delete all your script in the server, just execute `suicide` script in it.
++ `pull-controller` get configuration from controller. [WARNING! READ and EDIT it before use].
++ `pull-compute` get configuration from compute. [WARNING! READ and EDIT it before use].
++ `vbox-testing` a directory which contain script to force interface configuration when use virtualbox to run openstack. [WARNING! READ and EDIT it before use].
 
 ## Execute Order
 
-Execute everything on `controller` before `compute`, like the execute order bellow. Make sure the IP address and the nodes were sycroinzed each other.
+Here the execute order to deploy openstack with this program, make sure you follow all this step and read every instruction and post installation notes when execute it.
 
-#### On `controller`
++ Edit `servers` configuration file.
++ Execute `generate-config.sh` and follow all instruction and requirement.
 
-1. On `env`:
-    + conf_hosts_ctrl
-    + dep_env_ctrl
-    + conf_env_ctrl
+    $ ./generate-config.sh
 
-2. On `keystone`:
-    + conf_keystonedb_ctrl
-    + dep_keystone_ctrl
-    + conf_keystone_ctrl
-    + `temp-admin-openrc`, command to execute: `. temp-admin-openrc`.
-    + apl_keystone_ctrl
-    + `admin-openrc`, command to execute: `. ~/admin-openrc`.
-    + token_issue_ctrl
++ Execute `send2server.sh` and follow all instruction and requirement.
 
-3. On `glance`:
-    + conf_glance_db
-    + rel_glance_keystone
-    + dep_glace_ctrl
-    + conf_glace_ctrl
+    $ ./send2server.sh
 
-#### On `compute`
++ After all configuration send to controller and compute, just execute it by the number on script name (ex. `1_conf_host.sh`, `2_conf_env.sh`, `3_conf_keystone.sh` and etc) in the controller and all compute. Configure the controller first, follow all instruction and read post installation notes.
 
-1. On `env`:
-    + conf_hosts_comp
-    + dep_env_comp
-    + conf_env_comp
++ If all configure process are done. Just try to [Launch Instance](https://docs.openstack.org/install-guide/launch-instance.html) manually.
