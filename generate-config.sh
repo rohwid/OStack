@@ -591,8 +591,10 @@ sudo service glance-registry restart
 sudo service glance-api restart
 EOF
 
-  echo "[OSTACK] Creating restart-nova.sh.."
+  echo "[OSTACK] Change restart-glance.sh permission.."
+  chmod +x controller/config/restart-glance.sh
 
+  echo "[OSTACK] Creating restart-nova.sh for controller.."
   cat > controller/config/restart-nova.sh <<EOF
 #!/bin/bash
 
@@ -600,15 +602,23 @@ sudo service nova-api restart
 sudo service nova-scheduler restart
 sudo service nova-conductor restart
 sudo service nova-novncproxy restart
-
 EOF
 
+  echo "[OSTACK] Change restart-nova.sh for controller permission.."
+  chmod +x controller/config/restart-nova.sh
+
+  echo "[OSTACK] Creating restart-nova.sh for compute.."
   cat > compute/config/restart-nova.sh <<EOF
 #!/bin/bash
 
 sudo service nova-compute restart
 EOF
 
+  echo "[OSTACK] Change restart-nova.sh for compute permission.."
+  chmod +x compute/config/restart-nova.sh
+
+
+  echo "[OSTACK] Creating restart-neutron.sh for controller.."
   cat > controller/config/restart-neutron.sh <<EOF
 #!/bin/bash
 
@@ -620,12 +630,21 @@ sudo service neutron-metadata-agent restart
 sudo service neutron-l3-agent restart
 EOF
 
+  echo "[OSTACK] Change restart-neutron.sh for controller permission.."
+  chmod +x controller/config/restart-neutron.sh
+
+
+  echo "[OSTACK] Creating restart-neutron.sh for compute.."
+
   cat > compute/config/restart-neutron.sh <<EOF
 #!/bin/bash
 
 sudo service nova-compute restart
 sudo service neutron-linuxbridge-agent restart
 EOF
+
+  echo "[OSTACK] Change restart-neutron.sh for compute permission.."
+  chmod +x compute/config/restart-neutron.sh
 
   echo "[OSTACK] All restart-script created."
 }

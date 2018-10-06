@@ -28,3 +28,37 @@ Here the execute order to deploy openstack with this program, make sure you foll
 + After all configuration send to controller and compute, just execute it by the number on script name (ex. `1_conf_host.sh`, `2_conf_env.sh`, `3_conf_keystone.sh` and etc) in the controller and all compute. Configure the controller first, follow all instruction and read post installation notes.
 
 + If all configure process are done. Just try to [Launch Instance](https://docs.openstack.org/install-guide/launch-instance.html) manually.
+
+## Important Command to Check the Services are Running
+
+Check keystone is running or not by check the provided token:
+
+    $ openstack token issue
+
+Check keystone is running or not by check the provided user, service and endpoint:
+
+    $ openstack user list
+
+    $ openstack service list
+
+    $ openstack endpoint list
+
+Check glance is running or not by check the provided OS images:
+
+    $ openstack image list
+
+Check nova is running or not by check all nova services:
+
+    $ openstack compute service list
+
+Check nova is running or not by check all services catalog:
+
+    $ openstack catalog list
+
+Check all nova service status (run as root):
+
+    # nova-status upgrade check
+
+Check neutron is running or not by check all the agent:
+
+    $ openstack network agent list
