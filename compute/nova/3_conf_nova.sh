@@ -69,6 +69,11 @@ restart_script() {
   if [[ ! -f ~/restart_script/restart-nova.sh ]];then
     cp ../config/restart-nova.sh ~/restart-script/
   fi
+
+  echo "[OSTACK] Configuring status-nova.."
+  if [[ ! -f ~/restart_script/status-nova.sh ]];then
+    cp ../config/status-nova.sh ~/restart-script/
+  fi
 }
 
 echo " "
@@ -87,7 +92,7 @@ echo " "
 echo "==================================================================================="
 echo "POST INSTALLATION NOTE"
 echo "==================================================================================="
-echo "Load the 'admin-openrc' file to populate environment variables."
+echo "Load the 'admin-openrc' file on CONTROLLER to populate environment variables."
 echo "It will also load the location of keystone and admin project and user credentials:"
 echo " "
 echo " $ . ~/ostack-openrc/admin-openrc"
@@ -96,8 +101,9 @@ echo " OR"
 echo " "
 echo " $ source ~/ostack-openrc/admin-openrc"
 echo " "
-echo "Make sure you have configure the compute node first. Then execute it to "
-echo "list service components to verify successful launch and register every process:"
+echo "Execute 'controller/nova/7_conf_nova.sh' after successfully configure new compute."
+echo "Then execute it to list service components to verify the compute successfully"
+echo "configured and every process was registered:"
 echo " "
 echo " $ openstack compute service list"
 echo " "

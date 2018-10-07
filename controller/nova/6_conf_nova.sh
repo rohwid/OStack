@@ -199,6 +199,11 @@ restart_script() {
   if [[ ! -f ~/restart-script/restart-nova.sh ]];then
     cp ../config/restart-nova.sh ~/restart-script/
   fi
+
+  echo "[OSTACK] Configuring status-nova.."
+  if [[ ! -f ~/restart-script/status-nova.sh ]];then
+    cp ../config/status-nova.sh ~/restart-script/
+  fi
 }
 
 

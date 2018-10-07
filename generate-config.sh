@@ -582,8 +582,8 @@ EOF
 }
 
 restart_script() {
+    ## GLANCE
   echo "[OSTACK] Creating restart-glance.sh.."
-
   cat > controller/config/restart-glance.sh <<EOF
 #!/bin/bash
 
@@ -594,6 +594,20 @@ EOF
   echo "[OSTACK] Change restart-glance.sh permission.."
   chmod +x controller/config/restart-glance.sh
 
+  echo "[OSTACK] Creating status-glance.sh.."
+
+  cat > controller/config/status-glance.sh <<EOF
+#!/bin/bash
+
+sudo service glance-registry status
+sudo service glance-api status
+EOF
+
+  echo "[OSTACK] Change status-glance.sh permission.."
+  chmod +x controller/config/status-glance.sh
+
+
+  ## NOVA - CONTROLLER
   echo "[OSTACK] Creating restart-nova.sh for controller.."
   cat > controller/config/restart-nova.sh <<EOF
 #!/bin/bash
@@ -607,6 +621,21 @@ EOF
   echo "[OSTACK] Change restart-nova.sh for controller permission.."
   chmod +x controller/config/restart-nova.sh
 
+  echo "[OSTACK] Creating status-nova.sh for controller.."
+  cat > controller/config/status-nova.sh <<EOF
+#!/bin/bash
+
+sudo service nova-api status
+sudo service nova-scheduler status
+sudo service nova-conductor status
+sudo service nova-novncproxy status
+EOF
+
+  echo "[OSTACK] Change status-nova.sh for controller permission.."
+  chmod +x controller/config/status-nova.sh
+
+
+  ## NOVA - COMPUTE
   echo "[OSTACK] Creating restart-nova.sh for compute.."
   cat > compute/config/restart-nova.sh <<EOF
 #!/bin/bash
@@ -617,7 +646,18 @@ EOF
   echo "[OSTACK] Change restart-nova.sh for compute permission.."
   chmod +x compute/config/restart-nova.sh
 
+  echo "[OSTACK] Creating status-nova.sh for compute.."
+  cat > compute/config/status-nova.sh <<EOF
+#!/bin/bash
 
+sudo service nova-compute status
+EOF
+
+  echo "[OSTACK] Change status-nova.sh for compute permission.."
+  chmod +x compute/config/status-nova.sh
+
+
+  ## NEUTRON - CONTROLLER
   echo "[OSTACK] Creating restart-neutron.sh for controller.."
   cat > controller/config/restart-neutron.sh <<EOF
 #!/bin/bash
@@ -633,9 +673,24 @@ EOF
   echo "[OSTACK] Change restart-neutron.sh for controller permission.."
   chmod +x controller/config/restart-neutron.sh
 
+  echo "[OSTACK] Creating status-neutron.sh for controller.."
+  cat > controller/config/status-neutron.sh <<EOF
+#!/bin/bash
 
+sudo service nova-api status
+sudo service neutron-server status
+sudo service neutron-linuxbridge-agent status
+sudo service neutron-dhcp-agent status
+sudo service neutron-metadata-agent status
+sudo service neutron-l3-agent status
+EOF
+
+  echo "[OSTACK] Change status-neutron.sh for controller permission.."
+  chmod +x controller/config/status-neutron.sh
+
+
+  ## NEUTRON - COMPUTE
   echo "[OSTACK] Creating restart-neutron.sh for compute.."
-
   cat > compute/config/restart-neutron.sh <<EOF
 #!/bin/bash
 
@@ -646,7 +701,18 @@ EOF
   echo "[OSTACK] Change restart-neutron.sh for compute permission.."
   chmod +x compute/config/restart-neutron.sh
 
-  echo "[OSTACK] All restart-script created."
+  echo "[OSTACK] Creating status-neutron.sh for compute.."
+  cat > compute/config/status-neutron.sh <<EOF
+#!/bin/bash
+
+sudo service nova-compute status
+sudo service neutron-linuxbridge-agent status
+EOF
+
+  echo "[OSTACK] Change status-neutron.sh for compute permission.."
+  chmod +x compute/config/status-neutron.sh
+
+  echo "[OSTACK] All restart-script and status-script created."
 }
 
 

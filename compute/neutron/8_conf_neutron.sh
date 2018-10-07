@@ -83,6 +83,11 @@ restart_script() {
   if [[ ! -f ~/restart-script/restart-neutron.sh ]];then
     cp ../config/restart-neutron.sh ~/restart-script/
   fi
+
+  echo "[OSTACK] Configuring status-neutron.."
+  if [[ ! -f ~/restart-script/status-neutron.sh ]];then
+    cp ../config/status-neutron.sh ~/restart-script/
+  fi
 }
 
 

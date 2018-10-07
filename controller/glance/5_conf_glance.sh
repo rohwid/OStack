@@ -147,9 +147,14 @@ restart_script() {
     mkdir ~/restart-script
   fi
 
-  echo "[OSTACK] Configuring restart-nova.."
+  echo "[OSTACK] Configuring status-nova.."
   if [[ ! -f ~/restart-script/restart-glance.sh ]];then
     cp ../config/restart-glance.sh ~/restart-script/
+  fi
+
+  echo "[OSTACK] Configuring status-glance.."
+  if [[ ! -f ~/restart-script/status-glance.sh ]];then
+    cp ../config/status-glance.sh ~/restart-script/
   fi
 }
 
