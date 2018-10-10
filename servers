@@ -1,50 +1,23 @@
 ## CONTROLLER
 
 # Management
-IN_M_CTRL="enp3s0f0"
-IP_M_CTRL="192.168.100.2"
+IN_M_CTRL="enp0s3"
+IP_M_CTRL="192.168.100.10"
 
 # Provider
-IN_P_CTRL="enp3s0f1"
-IP_P_CTRL="10.122.1.210"
+IN_P_CTRL="eno0s8"
+IP_P_CTRL="10.122.1.98"
 
 ## COMPUTE
-NUM="4"
+NUM="1"
 
 # Compute1 - Management
-IN_M_COMP1="enp3s0f0"
-IP_M_COMP1="192.168.100.3"
+IN_M_COMP1="enp0s3"
+IP_M_COMP1="192.168.100.11"
 
 # Compute1 - Provider
-IN_P_COMP1="enp3s0f1"
-IP_P_COMP1="10.122.1.211"
-
-# Compute2 - Management
-IN_M_COMP2="enp3s0f0"
-IP_M_COMP2="192.168.100.4"
-
-# Compute2 - Provider
-IN_P_COMP2="enp3s0f1"
-IP_P_COMP2="10.122.1.212"
-
-# Compute3 - Management
-IN_M_COMP3="enp3s0f0"
-IP_M_COMP3="192.168.100.5"
-
-# Compute3 - Provider
-IN_P_COMP3="enp3s0f1"
-IP_P_COMP3="10.122.1.213"
-
-# Compute4 - Management
-IN_M_COMP4="enp3s0f0"
-IP_M_COMP4="192.168.100.6"
-
-# Compute4 - Provider
-IN_P_COMP4="enp3s0f1"
-IP_P_COMP4="10.122.1.214"
-
-
-
+IN_P_COMP1="enp0s8"
+IP_P_COMP1="10.122.1.99"
 
 
 

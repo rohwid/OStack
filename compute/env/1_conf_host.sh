@@ -21,7 +21,7 @@ config_hosts() {
 }
 
 config_hostname() {
-  read -n1 -r -p "Change hostname '$(hostname)' to 'controller'. press ENTER to continue!" ENTER
+  read -n1 -r -p "Change hostname '$(hostname)' to 'compute'. press ENTER to continue!" ENTER
 
   if [[ -f /etc/hostname.ori ]]; then
     echo "[OSTACK] Configuring openstack controller hostname.."
