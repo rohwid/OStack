@@ -1,3 +1,36 @@
+## Network interface configuration
+
+Before deploy all the scripts make sure you've configure the network interface `/etc/network/interface` like this:
+
+    auto lo
+    iface lo inet loopback
+
+    auto enp3s0f0
+    iface enp3s0f0 inet static
+          address 192.168.100.2
+          netmask 255.255.255.0
+          gateway 192.168.100.1
+          dns-nameserver 202.46.129.3 202.46.129.2
+
+    auto enp3s0f1
+    iface enp3s0f1 inet manual
+          up ip link set dev $IFACE up
+          down ip link set dev $IFACE down
+
+In case the IP address of **controller** or **compute** is `192.168.100.2` and the **management interface** is `enp3s0f0` and the **controller interface** is `enp3s0f1`.
+
+### In case with Ubuntu 18.04.1 LTS
+
+There are some major upgrade like the interface configuration is using `netplan`. Here i suggest you to use `net-tools` instead of `netplan`, like the previous LTS version (Ubuntu 16.04).
+
+Install net-tools:
+
+    $ sudo apt install net-tools ifupdown
+
+Find and change grub configuration in `/etc/default/grub` to disable netplan:
+
+    GRUB_CMDLINE_LINUX="netcfg/do_not_use_netplan=true"
+
 ## Main Program
 
 + `services` contain info about the services, **edit** it before generate config with `generate-config.sh`.
