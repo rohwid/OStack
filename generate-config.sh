@@ -380,6 +380,9 @@ nova_comp() {
   sed -i -e "10323d" compute/config/nova.conf
   sed -i -e '10323i server_proxyclient_address = $my_ip' compute/config/nova.conf
 
+  sed -i -e "10341d" compute/config/nova.conf
+  sed -i -e "10341i novncproxy_base_url = http://${IP_M_CTRL}:6080/vnc_auto.html" compute/config/nova.conf
+
   echo "[OSTACK] Get nova-compute configuration file.."
   cp compute/config/backup/nova-compute.conf.ori compute/config/nova-compute.conf
 
